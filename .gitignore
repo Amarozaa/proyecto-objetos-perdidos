@@ -1,0 +1,21 @@
+# Node modules (frontend)
+front-end/node_modules/
+
+# Node modules (si alguna vez pones backend en Node)
+back-end/node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Build / dist
+front-end/dist/
+back-end/dist/
+
+# IDEs
+.vscode/
+.idea/

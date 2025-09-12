@@ -1,0 +1,22 @@
+{
+  "objetos": [
+    {
+      "id": 1,
+      "titulo": "Mochila negra",
+      "descripcion": "Mochila negra marca Jansport, con cuadernos y estuche dentro.",
+      "lugar": "Biblioteca piso 2",
+      "fecha": "2025-09-10",
+      "estado": "perdido",
+      "usuario": "Amaro Zurita"
+    },
+    {
+      "id": 2,
+      "titulo": "Llaves con llavero rojo",
+      "descripcion": "Juego de llaves con llavero de peluche rojo.",
+      "lugar": "Patio central",
+      "fecha": "2025-09-11",
+      "estado": "encontrado",
+      "usuario": "El mish"
+    }
+  ]
+}
