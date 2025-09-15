@@ -3,6 +3,7 @@ export interface Usuario {
   nombre: string;
   password: string;
   email: string;
+  telefono?: string;
 }
 
 // Los tipos definen si el objeto ha sido perdido o encontrado (tipo de la publicación)
@@ -14,7 +15,7 @@ export type Estado = "Resuelto" | "No resuelto";
 // Categorías de objetos para filtros y búsquedas
 export type Categoria = "Electrónicos" | "Ropa" | "Documentos" | "Accesorios" | "Deportes" | "Útiles" | "Otros";
 
-export interface Objeto {
+export interface Publicacion {
   id: number;
   titulo: string;
   descripcion: string;
@@ -25,12 +26,11 @@ export interface Objeto {
   categoria: Categoria;
   imagen_url?: string;
   fecha_creacion?: string;
-  contacto_adicional?: string;
   usuario: Usuario;
 }
 
-// Interface para crear nuevos objetos (sin campos auto-generados)
-export interface CrearObjeto {
+// Interface para crear nuevas publicaciones
+export interface CrearPublicacion {
   titulo: string;
   descripcion: string;
   lugar: string;
@@ -38,5 +38,4 @@ export interface CrearObjeto {
   tipo: Tipo;
   categoria: Categoria;
   imagen_url?: string;
-  contacto_adicional?: string;
 }
