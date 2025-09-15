@@ -1,1 +1,1 @@
-{"root":["./src/App.tsx","./src/main.tsx","./types.ts"],"version":"5.9.2"}
+{"root":["./src/App.tsx","./src/main.tsx","./src/types.ts","./src/components/PublicationForm.tsx","./src/pages/CreatePublicationPage.tsx"],"version":"5.9.2"}

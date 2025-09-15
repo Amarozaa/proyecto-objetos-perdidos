@@ -14,7 +14,9 @@ Thumbs.db
 
 # Build / dist
 front-end/dist/
+frontend/dist/
 back-end/dist/
+backend/dist/
 
 # IDEs
 .vscode/

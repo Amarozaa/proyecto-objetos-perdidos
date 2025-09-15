@@ -1,7 +1,9 @@
+import CreatePublicationPage from './pages/CreatePublicationPage';
+
 function App() {
   return (
-    <div style={{ textAlign: "center", marginTop: "2rem" }}>
-      <h1>Holaasdas Mundo</h1>
+    <div style={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
+      <CreatePublicationPage />
     </div>
   );
 }
