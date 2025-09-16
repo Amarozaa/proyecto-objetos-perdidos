@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { publicacionesApi, usuariosApi } from '../services/api';
 import { Publicacion, Usuario } from '../types/types';
+import "../styles/PublicacionDetalle.css"
 
 const PublicacionDetalle: React.FC = () => {
   const { id } = useParams();
@@ -33,26 +34,34 @@ const PublicacionDetalle: React.FC = () => {
   }
 
   return (
-    <div>
-      <h2>
-        {publicacion.titulo} - {publicacion.categoria}
-      </h2>
-      <div>
-        <strong>Publicado por:</strong>
-        {usuario ? (
-          <span> {usuario.nombre} ({usuario.email})</span>
-        ) : (
-          <span> No disponible</span>
-        )}
+    <div className="detalle-container">
+      <h2>Detalles de la publicación</h2>
+
+      <div className="detalle-card">
+        <div className="detalle-contenido">
+          <h3>
+            {publicacion.titulo}
+            <span className="categoria">{publicacion.categoria}</span>
+            <span className="estado">{publicacion.estado}</span>
+          </h3>
+
+          <p><strong>Publicado por:</strong> {usuario ? usuario.nombre : "No disponible"}</p>
+          <p><strong>Fecha de publicación:</strong> {publicacion.fecha}</p>
+          <p><strong>Encontrado en:</strong> {publicacion.lugar}</p>
+          <p><strong>Tipo:</strong> {publicacion.tipo}</p>
+          <p><strong>Descripción:</strong> {publicacion.descripcion}</p>
+
+          <button className="boton-cerrar">Cerrar detalles</button>
+        </div>
+
+        <div className="detalle-imagen">
+          {publicacion.imagen_url ? (
+            <img src={publicacion.imagen_url} alt={publicacion.titulo} />
+          ) : (
+            "Imagen"
+          )}
+        </div>
       </div>
-      <p><strong>Fecha de publicación:</strong> {publicacion.fecha}</p>
-      <p><strong>Encontrado en:</strong> {publicacion.lugar}</p>
-      <p><strong>Tipo:</strong> {publicacion.tipo}</p>
-      <p><strong>Estado:</strong> {publicacion.estado}</p>
-      <p className="descripcion"><strong>Descripción:</strong> {publicacion.descripcion}</p>
-      {publicacion.imagen_url && (
-        <img src={publicacion.imagen_url} alt={publicacion.titulo} style={{ maxWidth: '300px' }} />
-      )}
     </div>
   );
 };
