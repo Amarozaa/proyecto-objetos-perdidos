@@ -1,8 +1,17 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Inicio from "./pages/Inicio";
+import ListadoObjetosPerdidos from "./pages/ListadoObjetosPerdidos";
+import FormularioPublicacion from "./pages/FormularioPublicacion";
+
 function App() {
   return (
-    <div style={{ textAlign: "center", marginTop: "2rem" }}>
-      <h1>Holaasdas Mundo</h1>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Inicio />} />
+        <Route path="/listado" element={<ListadoObjetosPerdidos />} />
+        <Route path="/formulario" element={<FormularioPublicacion />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
