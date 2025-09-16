@@ -32,15 +32,9 @@
       "estado": "No resuelto",
       "tipo": "Perdido",
       "categoria": "Electrónicos",
-      "imagen_url": "",
+      "imagen_url": "/images/publicaciones/iPhone.jpg",
       "fecha_creacion": "2024-03-15T10:30:00.000Z",
-      "usuario": {
-        "id": 1,
-        "nombre": "Juan Pérez",
-        "password": "123456",
-        "email": "juan@email.com",
-        "telefono": "555-0101"
-      }
+      "usuario_id": 1
     },
     {
       "id": 2,
@@ -51,15 +45,9 @@
       "estado": "No resuelto",
       "tipo": "Encontrado",
       "categoria": "Ropa",
-      "imagen_url": "",
+      "imagen_url": "/images/publicaciones/Chaqueta.jpg",
       "fecha_creacion": "2024-03-14T15:45:00.000Z",
-      "usuario": {
-        "id": 2,
-        "nombre": "María García",
-        "password": "123456",
-        "email": "maria@email.com",
-        "telefono": "555-0102"
-      }
+      "usuario_id": 2
     },
     {
       "id": 3,
@@ -70,15 +58,9 @@
       "estado": "Resuelto",
       "tipo": "Perdido",
       "categoria": "Accesorios",
-      "imagen_url": "",
+      "imagen_url": "/images/publicaciones/Llaves.jpg",
       "fecha_creacion": "2024-03-13T09:15:00.000Z",
-      "usuario": {
-        "id": 3,
-        "nombre": "Carlos López",
-        "password": "123456",
-        "email": "carlos@email.com",
-        "telefono": "555-0103"
-      }
+      "usuario_id": 3
     },
     {
       "id": 4,
@@ -89,15 +71,9 @@
       "estado": "No resuelto",
       "tipo": "Encontrado",
       "categoria": "Documentos",
-      "imagen_url": "",
+      "imagen_url": "/images/publicaciones/Cedula.jpg",
       "fecha_creacion": "2024-03-12T14:20:00.000Z",
-      "usuario": {
-        "id": 1,
-        "nombre": "Juan Pérez",
-        "password": "123456",
-        "email": "juan@email.com",
-        "telefono": "555-0101"
-      }
+      "usuario_id": 1
     },
     {
       "id": 5,
@@ -108,15 +84,9 @@
       "estado": "No resuelto",
       "tipo": "Perdido",
       "categoria": "Electrónicos",
-      "imagen_url": "",
+      "imagen_url": "/images/publicaciones/Audifonos.jpeg",
       "fecha_creacion": "2024-03-11T16:30:00.000Z",
-      "usuario": {
-        "id": 2,
-        "nombre": "María García",
-        "password": "123456",
-        "email": "maria@email.com",
-        "telefono": "555-0102"
-      }
+      "usuario_id": 2
     }
   ]
 }

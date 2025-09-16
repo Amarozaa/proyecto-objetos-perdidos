@@ -26,7 +26,7 @@ export interface Publicacion {
   categoria: Categoria;
   imagen_url?: string;
   fecha_creacion?: string;
-  usuario: Usuario;
+  usuario_id: Number;
 }
 
 // Interface para crear nuevas publicaciones

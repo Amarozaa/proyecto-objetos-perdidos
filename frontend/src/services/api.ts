@@ -12,27 +12,68 @@ const api = axios.create({
 
 // Servicios para publicaciones
 export const publicacionesApi = {
-  // Obtener todas las publicaciones
+  // Obtener todas las publicaciones con datos de usuario expandidos
   obtenerTodas: async (): Promise<Publicacion[]> => {
-    const response = await api.get('/publicaciones');
-    return response.data;
+    const [publicacionesResponse, usuariosResponse] = await Promise.all([
+      api.get('/publicaciones'),
+      api.get('/usuarios')
+    ]);
+    
+    const publicaciones = publicacionesResponse.data;
+    const usuarios = usuariosResponse.data;
+    
+    // Expandir los datos del usuario
+    return publicaciones.map((pub: any) => ({
+      ...pub,
+      usuario: usuarios.find((u: Usuario) => u.id === pub.usuario_id) || {
+        id: pub.usuario_id,
+        nombre: 'Usuario desconocido',
+        email: '',
+        password: '',
+        telefono: ''
+      }
+    }));
   },
 
-  // Obtener publicación por ID
+  // Obtener publicación por ID con datos de usuario expandidos
   obtenerPorId: async (id: number): Promise<Publicacion> => {
-    const response = await api.get(`/publicaciones/${id}`);
-    return response.data;
+    const [publicacionResponse, usuariosResponse] = await Promise.all([
+      api.get(`/publicaciones/${id}`),
+      api.get('/usuarios')
+    ]);
+    
+    const publicacion = publicacionResponse.data;
+    const usuarios = usuariosResponse.data;
+    
+    return {
+      ...publicacion,
+      usuario: usuarios.find((u: Usuario) => u.id === publicacion.usuario_id) || {
+        id: publicacion.usuario_id,
+        nombre: 'Usuario desconocido',
+        email: '',
+        password: '',
+        telefono: ''
+      }
+    };
   },
 
   // Crear nueva publicación
-  crear: async (publicacion: CrearPublicacion & { usuario: Usuario }): Promise<Publicacion> => {
+  crear: async (publicacion: CrearPublicacion & { usuario_id: number }): Promise<Publicacion> => {
     const nuevaPublicacion = {
       ...publicacion,
       estado: 'No resuelto' as const,
       fecha_creacion: new Date().toISOString(),
     };
+    
     const response = await api.post('/publicaciones', nuevaPublicacion);
-    return response.data;
+    
+    // Obtener datos del usuario para la respuesta
+    const usuarioResponse = await api.get(`/usuarios/${publicacion.usuario_id}`);
+    
+    return {
+      ...response.data,
+      usuario: usuarioResponse.data
+    };
   },
 
   // Actualizar publicación

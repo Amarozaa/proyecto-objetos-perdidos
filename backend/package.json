@@ -4,8 +4,7 @@
   "description": "Backend simulado para sistema de objetos perdidos",
   "main": "server.js",
   "scripts": {
-    "start": "json-server --watch db.json --port 3001",
-    "dev": "json-server --watch db.json --port 3001 --routes routes.json"
+    "start": "json-server --watch data/db.json --port 3001"
   },
   "dependencies": {
     "axios": "^1.12.2",
@@ -14,7 +13,6 @@
   "keywords": [
     "json-server",
     "mock",
-    "api",
     "objetos-perdidos"
   ],
   "author": "",

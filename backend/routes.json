@@ -1,7 +1,0 @@
-{
-  "/api/*": "/$1",
-  "/api/publicaciones": "/publicaciones",
-  "/api/publicaciones/:id": "/publicaciones/:id",
-  "/api/usuarios": "/usuarios",
-  "/api/usuarios/:id": "/usuarios/:id"
-}
