@@ -1,8 +1,6 @@
-import React from 'react';
-
-import { useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
-import { CrearPublicacion, Tipo, Categoria, Estado, Publicacion, Usuario } from "../types/types";
+import { CrearPublicacion, Publicacion, Usuario } from "../types/types";
 
 interface Props {
   usuario: Usuario;
@@ -20,6 +18,9 @@ const FormularioPublicacion: React.FC<Props> = ({ usuario, onPublicacionCreada }
     imagen_url: "",
   });
 
+  // nuevo estado para el archivo seleccionado
+  const [file, setFile] = useState<File | null>(null);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
@@ -30,10 +31,22 @@ const FormularioPublicacion: React.FC<Props> = ({ usuario, onPublicacionCreada }
     }));
   };
 
+  // guardar archivo seleccionado
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+
+      // Simulamos la ruta final de la imagen
+      setFormData((prev) => ({
+        ...prev,
+        imagen_url: `/images/publicaciones/${e.target.files![0].name}`,
+      }));
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Construimos la publicación con usuario y estado inicial
     const nuevaPublicacion: Omit<Publicacion, "id"> = {
       ...formData,
       estado: "No resuelto",
@@ -42,8 +55,9 @@ const FormularioPublicacion: React.FC<Props> = ({ usuario, onPublicacionCreada }
     };
 
     try {
+      // IMPORTANTE: esto solo guarda en db.json
       const res = await axios.post<Publicacion>(
-        "http://localhost:3001/api/publicaciones",
+        "http://localhost:3001/publicaciones",
         nuevaPublicacion
       );
       onPublicacionCreada(res.data);
@@ -58,47 +72,25 @@ const FormularioPublicacion: React.FC<Props> = ({ usuario, onPublicacionCreada }
     <div style={{ maxWidth: "600px", margin: "2rem auto" }}>
       <h2>Crear publicación</h2>
       <form onSubmit={handleSubmit}>
+        {/* campos normales */}
         <div>
           <label>Título:</label>
-          <input
-            type="text"
-            name="titulo"
-            value={formData.titulo}
-            onChange={handleChange}
-            required
-          />
+          <input type="text" name="titulo" value={formData.titulo} onChange={handleChange} required />
         </div>
 
         <div>
           <label>Descripción:</label>
-          <textarea
-            name="descripcion"
-            value={formData.descripcion}
-            onChange={handleChange}
-            required
-          />
+          <textarea name="descripcion" value={formData.descripcion} onChange={handleChange} required />
         </div>
 
         <div>
           <label>Lugar:</label>
-          <input
-            type="text"
-            name="lugar"
-            value={formData.lugar}
-            onChange={handleChange}
-            required
-          />
+          <input type="text" name="lugar" value={formData.lugar} onChange={handleChange} required />
         </div>
 
         <div>
-          <label>Fecha del hallazgo/pérdida:</label>
-          <input
-            type="date"
-            name="fecha"
-            value={formData.fecha}
-            onChange={handleChange}
-            required
-          />
+          <label>Fecha:</label>
+          <input type="date" name="fecha" value={formData.fecha} onChange={handleChange} required />
         </div>
 
         <div>
@@ -122,15 +114,15 @@ const FormularioPublicacion: React.FC<Props> = ({ usuario, onPublicacionCreada }
           </select>
         </div>
 
+        {/* campo para subir archivo */}
         <div>
-          <label>Imagen (URL):</label>
-          <input
-            type="text"
-            name="imagen_url"
-            value={formData.imagen_url}
-            onChange={handleChange}
-          />
+          <label>Imagen:</label>
+          <input type="file" accept="image/*" onChange={handleFileChange} />
         </div>
+
+        {formData.imagen_url && (
+          <p>📂 Se guardará en: <strong>{formData.imagen_url}</strong></p>
+        )}
 
         <button type="submit" style={{ marginTop: "1rem" }}>
           Crear publicación
