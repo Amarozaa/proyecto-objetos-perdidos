@@ -57,7 +57,10 @@ body {
   margin-bottom: 1.1rem;
 }
 
+
 .formulario-publicacion-box button[type="submit"] {
+  display: block;
+  margin: 1.2rem auto 0 auto;
   background: #17635b;
   color: #fff;
   border: none;
@@ -66,7 +69,6 @@ body {
   font-size: 1.1rem;
   font-weight: 500;
   cursor: pointer;
-  margin-top: 0.5rem;
   transition: background 0.2s;
 }
 
