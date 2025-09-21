@@ -1,0 +1,90 @@
+body {
+  background: #e7e6f0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+}
+
+.formulario-publicacion-container {
+  max-width: 600px;
+  margin: 2rem auto;
+}
+
+.formulario-publicacion-box {
+  background: white;
+  border: 2px solid #222;
+  border-radius: 28px;
+  padding: 2rem 2.5rem 1.5rem 2.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+.formulario-publicacion-box label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+}
+
+.formulario-publicacion-box input[type="text"],
+.formulario-publicacion-box input[type="date"],
+.formulario-publicacion-box select,
+.formulario-publicacion-box textarea {
+  width: 100%;
+  padding: 0.5rem 0.8rem;
+  border: 1.5px solid #222;
+  border-radius: 10px;
+  margin-bottom: 1.1rem;
+  font-size: 1rem;
+  background: #f7f7fa;
+  box-sizing: border-box;
+}
+
+.formulario-publicacion-box textarea {
+  min-height: 70px;
+  resize: vertical;
+}
+
+.formulario-publicacion-row {
+  display: flex;
+  gap: 1.2rem;
+  margin-bottom: 1.1rem;
+}
+
+.formulario-publicacion-row > div {
+  flex: 1;
+}
+
+.formulario-publicacion-box input[type="file"] {
+  border: none;
+  background: none;
+  margin-bottom: 1.1rem;
+}
+
+.formulario-publicacion-box button[type="submit"] {
+  background: #17635b;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.7rem 2.5rem;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background 0.2s;
+}
+
+.formulario-publicacion-box button[type="submit"]:hover {
+  background: #104d45;
+}
+
+.formulario-publicacion-box p {
+  margin-bottom: 1.1rem;
+  font-size: 0.98rem;
+}
+
+@media (max-width: 700px) {
+  .formulario-publicacion-box {
+    padding: 1rem;
+  }
+  .formulario-publicacion-row {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
