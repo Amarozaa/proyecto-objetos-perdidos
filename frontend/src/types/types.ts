@@ -4,6 +4,7 @@ export interface Usuario {
   password: string;
   email: string;
   telefono?: string;
+  imagen_url?: string;
 }
 
 // Los tipos definen si el objeto ha sido perdido o encontrado (tipo de la publicación)
