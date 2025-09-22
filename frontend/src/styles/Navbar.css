@@ -14,6 +14,9 @@
   flex-flow: row wrap;
   justify-content: flex-end;
   align-items: center;
+  padding: 0.35em 1.2em;
+  min-height: 52px;
+  margin-bottom: 0.5rem;
 }
 
 .navbar > * {
@@ -22,14 +25,14 @@
 
 #logo-id {
   margin: 0 auto;
-  width: 4%;
-  padding: .5em;
+  width: 3.2%;
+  padding: 0.3em;
   margin: .1em;
 }
 
 .navbar h1 {
-  font-size: 3rem;
-  margin: .1em;
+  font-size: 2.2rem;
+  margin: 0.1em;
   margin-right: auto;
   color: var(--blue-color);
 }
@@ -37,10 +40,10 @@
 .navbar a {
   position: relative;
   text-decoration: none;
-  margin: 0 2em;
-  padding: .25em;
+  margin: 0 1.2em;
+  padding: 0.18em;
   font-weight: 600;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   transition: color 0.5s ease;
 }
 
@@ -60,9 +63,14 @@
   transition: transform 0.3s ease;
 }
 
-
 .navbar-page:hover::after {
   transform: scale(1, 1);
+}
+
+.navbar-page.active {
+  color: #226a63;
+  font-weight: bold;
+  border-bottom: 3px solid #226a63;
 }
 
 /* BUTTON */
@@ -71,7 +79,7 @@
     text-align: center;
     padding: 0.8em;
     font-weight: 400;
-    font-size: 1.2rem; 
+    font-size: 1.2rem;
     border-radius: 16px;
     color: white;
 }

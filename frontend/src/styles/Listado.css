@@ -3,6 +3,7 @@
   margin: 2rem auto;
   padding: 1rem 2rem;
   font-family: Arial, sans-serif;
+  background-color: #e7e6f0;
 }
 
 .listado-container h1 {
@@ -142,7 +143,7 @@
   font-weight: normal;
 }
 .filtro-btn.selected {
-  background-color: #4a90a4;
+  background-color: #226a63;
   color: white;
   font-weight: bold;
 }
@@ -183,4 +184,8 @@
   margin: 2rem auto;
   padding: 1rem 2rem;
   font-family: Arial, sans-serif;
+}
+
+.perfil-container .listado-container {
+  background-color: #e7e6f0;
 }

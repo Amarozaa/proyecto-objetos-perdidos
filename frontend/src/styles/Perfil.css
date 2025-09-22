@@ -8,9 +8,13 @@
     --gray-color:  #1e1e1e;
 }
 
-.perfil-container{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+.perfil-container {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1rem 2rem;
+  font-family: Arial, sans-serif;
 }
 
 .perfil-container h1{
@@ -33,7 +37,7 @@
     background-color: var(--blue-color);
     text-align: center;
     font-weight: 400;
-    font-size: 0.9rem; 
+    font-size: 0.9rem;
     border-radius: 6px;
     margin-top: 0.5rem;
     padding: 0.4rem 1rem;
@@ -43,4 +47,12 @@
 .edit-btn:hover {
     background-color: var(--blue-hover-color);
     transition: 0.2s ease;
+}
+
+.listado-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1rem 2rem;
+  background-color: #e7e6f0;
+  font-family: Arial, sans-serif;
 }

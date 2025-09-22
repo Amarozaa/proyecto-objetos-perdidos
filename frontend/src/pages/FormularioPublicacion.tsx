@@ -43,7 +43,7 @@ const FormularioPublicacion: React.FC = () => {
 
   return (
     <div className="formulario-publicacion-container">
-      <h2 style={{ marginBottom: "1.5rem" }}>Crea una publicación!</h2>
+      <h2 style={{ marginBottom: "1.5rem" }}>Crea una publicación</h2>
       <div className="formulario-publicacion-box">
         <form onSubmit={handleSubmit}>
           <div>
