@@ -1,0 +1,82 @@
+:root {
+    font-family: Helvetica, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+    --background-color: #d7d6dd;
+    --blue-color: #226a63;
+    --blue-hover-color: #134c47;
+    --gray-color:  #1e1e1e;
+}
+
+/* NAVBAR */
+.navbar {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.navbar > * {
+  color: var(--gray-color);
+}
+
+#logo-id {
+  margin: 0 auto;
+  width: 4%;
+  padding: .5em;
+  margin: .1em;
+}
+
+.navbar h1 {
+  font-size: 3rem;
+  margin: .1em;
+  margin-right: auto;
+  color: var(--blue-color);
+}
+
+.navbar a {
+  position: relative;
+  text-decoration: none;
+  margin: 0 2em;
+  padding: .25em;
+  font-weight: 600;
+  font-size: 1.5rem;
+  transition: color 0.5s ease;
+}
+
+.navbar a:hover {
+  color: var(--blue-color);
+}
+
+.navbar-page::after{
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 0.175em;
+  background: var(--blue-color);
+  left: 0;
+  bottom: 0;
+  transform: scale(0, 1);
+  transition: transform 0.3s ease;
+}
+
+
+.navbar-page:hover::after {
+  transform: scale(1, 1);
+}
+
+/* BUTTON */
+.big-btn {
+    background-color: var(--blue-color);
+    text-align: center;
+    padding: 0.8em;
+    font-weight: 400;
+    font-size: 1.2rem; 
+    border-radius: 16px;
+    color: white;
+}
+
+.big-btn:hover {
+    background-color: var(--blue-hover-color);
+    transition: 0.2s ease;
+}

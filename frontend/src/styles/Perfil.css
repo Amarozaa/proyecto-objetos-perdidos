@@ -1,0 +1,46 @@
+:root {
+    font-family: Helvetica, sans-serif;
+    line-height: 1.5;
+    font-weight: 400;
+    --background-color: #d7d6dd;
+    --blue-color: #226a63;
+    --blue-hover-color: #134c47;
+    --gray-color:  #1e1e1e;
+}
+
+.perfil-container{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.perfil-container h1{
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: #2e3d35;
+    text-align: left;
+}
+
+.perfil-container img{
+    border-radius: 50%;
+}
+
+.data-container {
+  padding: 1rem 2rem;
+  font-family: Helvetica, sans-serif;
+}
+
+.edit-btn {
+    background-color: var(--blue-color);
+    text-align: center;
+    font-weight: 400;
+    font-size: 0.9rem; 
+    border-radius: 6px;
+    margin-top: 0.5rem;
+    padding: 0.4rem 1rem;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: var(--blue-hover-color);
+    transition: 0.2s ease;
+}
