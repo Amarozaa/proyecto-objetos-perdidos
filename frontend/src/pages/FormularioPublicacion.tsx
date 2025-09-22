@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./FormularioPublicacion.css";
+import "../styles/FormularioPublicacion.css";
 
 const FormularioPublicacion: React.FC = () => {
   const navigate = useNavigate();
@@ -43,7 +43,7 @@ const FormularioPublicacion: React.FC = () => {
 
   return (
     <div className="formulario-publicacion-container">
-      <h2 style={{ marginBottom: "1.5rem" }}>Información de la publicación</h2>
+      <h2 style={{ marginBottom: "1.5rem" }}>Crea una publicación!</h2>
       <div className="formulario-publicacion-box">
         <form onSubmit={handleSubmit}>
           <div>
@@ -55,6 +55,7 @@ const FormularioPublicacion: React.FC = () => {
               value={formData.titulo}
               onChange={handleChange}
               required
+              placeholder="Ej: Mochila negra, billetera, celular..."
             />
           </div>
 
@@ -68,6 +69,7 @@ const FormularioPublicacion: React.FC = () => {
                 value={formData.lugar}
                 onChange={handleChange}
                 required
+                placeholder="¿Dónde se perdió o encontró?"
               />
             </div>
             <div>
@@ -79,6 +81,7 @@ const FormularioPublicacion: React.FC = () => {
                 value={formData.fecha}
                 onChange={handleChange}
                 required
+                placeholder="Fecha"
               />
             </div>
           </div>
@@ -123,6 +126,7 @@ const FormularioPublicacion: React.FC = () => {
               value={formData.descripcion}
               onChange={handleChange}
               required
+              placeholder="Describe el objeto, características, color, marca, etc."
             />
           </div>
 
@@ -133,6 +137,7 @@ const FormularioPublicacion: React.FC = () => {
               type="file"
               accept="image/*"
               onChange={handleFileChange}
+              placeholder="Sube una imagen del objeto"
             />
           </div>
 
@@ -144,6 +149,13 @@ const FormularioPublicacion: React.FC = () => {
 
           <button type="submit">Publicar</button>
         </form>
+      </div>
+      <div className="formulario-publicacion-box" style={{ marginTop: "2rem" }}>
+        <strong>¿Qué significa el tipo?</strong>
+        <ul style={{ marginTop: "0.5rem", paddingLeft: "1.2rem" }}>
+          <li><strong>Perdido:</strong> significa que perdiste un objeto y quieres recuperarlo</li>
+          <li><strong>Encontrado:</strong> significa que encontraste un objeto y quieres devolverlo</li>
+        </ul>
       </div>
     </div>
   );

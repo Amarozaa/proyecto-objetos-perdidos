@@ -1,4 +1,6 @@
 .detalle-container {
+  max-width: 960px;
+  margin: 2rem auto;
   padding: 1rem 2rem;
   font-family: Arial, sans-serif;
 }
@@ -11,12 +13,13 @@
 
 .detalle-card {
   background-color: #e0e0e0;
-  border-radius: 12px;
+  border-radius: 28px;
   padding: 1.5rem;
   box-shadow: 0px 1px 4px rgba(0,0,0,0.1);
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  border: 2px solid #222;
 }
 
 .detalle-contenido {
@@ -33,24 +36,55 @@
 }
 
 .categoria {
-  display: inline-block;
-  padding: 0.3rem 0.8rem;
-  border-radius: 8px;
-  font-size: 0.8rem;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
   font-weight: bold;
-  background-color: #d2a679;
-  color: #fff;
+  margin-left: 12px;
+}
+.categoria.electronicos {
+  background-color: #e3f2fd;
+  color: #1565c0;
+}
+.categoria.ropa {
+  background-color: #f3e5f5;
+  color: #7b1fa2;
+}
+.categoria.documentos {
+  background-color: #fff3e0;
+  color: #ef6c00;
+}
+.categoria.accesorios {
+  background-color: #e8f5e8;
+  color: #2e7d32;
+}
+.categoria.deportes {
+  background-color: #ffebee;
+  color: #c62828;
+}
+.categoria.utiles {
+  background-color: #f1f8e9;
+  color: #558b2f;
+}
+.categoria.otros {
+  background-color: #fafafa;
+  color: #616161;
 }
 
 .estado {
-  display: inline-block;
-  padding: 0.3rem 0.8rem;
-  border-radius: 8px;
-  font-size: 0.8rem;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
   font-weight: bold;
-  background-color: #d98b8b;
-  color: #fff;
-  margin-left: auto;
+  margin-left: 8px;
+  color: white;
+  background-color: #f44336;
+}
+.estado.resuelto {
+  background-color: #4caf50;
+}
+.estado.pendiente {
+  background-color: #ff9800;
 }
 
 .detalle-contenido p {

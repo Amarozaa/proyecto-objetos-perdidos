@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { publicacionesApi } from '../services/api';
@@ -36,14 +35,14 @@ const ListadoObjetosPerdidos: React.FC = () => {
     const diferenciaDias = Math.floor(diferenciaMilisegundos / (1000 * 60 * 60 * 24));
 
     if (diferenciaDias === 0) {
-      return `Hoy a las ${fecha.toLocaleTimeString('es-ES', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
+      return `Hoy a las ${fecha.toLocaleTimeString('es-ES', {
+        hour: '2-digit',
+        minute: '2-digit'
       })}`;
     } else if (diferenciaDias === 1) {
-      return `Ayer a las ${fecha.toLocaleTimeString('es-ES', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
+      return `Ayer a las ${fecha.toLocaleTimeString('es-ES', {
+        hour: '2-digit',
+        minute: '2-digit'
       })}`;
     } else if (diferenciaDias <= 7) {
       return `Hace ${diferenciaDias} días`;
@@ -65,55 +64,23 @@ const ListadoObjetosPerdidos: React.FC = () => {
   return (
     <div className="listado-container">
       <h1>Listado de objetos perdidos</h1>
-      
-      {/* Switch/Filtros */}
-      <div style={{ 
-        marginBottom: '20px', 
-        display: 'flex', 
-        gap: '10px',
-        backgroundColor: '#f5f5f5',
-        padding: '10px',
-        borderRadius: '8px'
-      }}>
+
+      <div className="filtros-switch">
         <button
           onClick={() => setFiltroTipo('Todos')}
-          style={{
-            padding: '8px 16px',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            backgroundColor: filtroTipo === 'Todos' ? '#4a90a4' : 'white',
-            color: filtroTipo === 'Todos' ? 'white' : '#333',
-            fontWeight: filtroTipo === 'Todos' ? 'bold' : 'normal'
-          }}
+          className={`filtro-btn${filtroTipo === 'Todos' ? ' selected' : ''}`}
         >
           Todos ({publicaciones.length})
         </button>
         <button
           onClick={() => setFiltroTipo('Perdido')}
-          style={{
-            padding: '8px 16px',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            backgroundColor: filtroTipo === 'Perdido' ? '#4a90a4' : 'white',
-            color: filtroTipo === 'Perdido' ? 'white' : '#333',
-            fontWeight: filtroTipo === 'Perdido' ? 'bold' : 'normal'
-          }}
+          className={`filtro-btn${filtroTipo === 'Perdido' ? ' selected' : ''}`}
         >
         Perdidos ({publicaciones.filter(p => p.tipo === 'Perdido').length})
         </button>
         <button
           onClick={() => setFiltroTipo('Encontrado')}
-          style={{
-            padding: '8px 16px',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            backgroundColor: filtroTipo === 'Encontrado' ? '#4a90a4' : 'white',
-            color: filtroTipo === 'Encontrado' ? 'white' : '#333',
-            fontWeight: filtroTipo === 'Encontrado' ? 'bold' : 'normal'
-          }}
+          className={`filtro-btn${filtroTipo === 'Encontrado' ? ' selected' : ''}`}
         >
         Encontrados ({publicaciones.filter(p => p.tipo === 'Encontrado').length})
         </button>
@@ -129,47 +96,31 @@ const ListadoObjetosPerdidos: React.FC = () => {
               <div className="card-contenido">
                 <h2>
                   {pub.titulo}
-                  <span 
-                    className="categoria"
-                    style={{
-                      backgroundColor: colorCategoria.bg,
-                      color: colorCategoria.text,
-                      padding: '4px 8px',
-                      borderRadius: '12px',
-                      fontSize: '12px',
-                      fontWeight: 'bold',
-                      marginLeft: '10px'
-                    }}
+                  <span
+                    className={`categoria ${
+                      pub.categoria === 'Electrónicos' ? 'electronicos' :
+                      pub.categoria === 'Ropa' ? 'ropa' :
+                      pub.categoria === 'Documentos' ? 'documentos' :
+                      pub.categoria === 'Accesorios' ? 'accesorios' :
+                      pub.categoria === 'Deportes' ? 'deportes' :
+                      pub.categoria === 'Útiles' ? 'utiles' : 'otros'
+                    }`}
                   >
                     {pub.categoria}
                   </span>
                 </h2>
-                <p style={{ color: '#666', fontSize: '14px', margin: '5px 0' }}>
+                <p className="fecha-amigable">
                   {pub.fecha_creacion ? formatearFechaAmigable(pub.fecha_creacion) : 'Fecha no disponible'}
                 </p>
                 <p>{pub.descripcion}</p>
-                <div style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between', 
-                  alignItems: 'center',
-                  marginTop: '10px'
-                }}>
-                  {/* Botón Ver detalles ahora a la izquierda */}
+                <div className="card-acciones">
                   <button
                     className="boton-detalles"
                     onClick={() => navigate(`/publicacion/${pub.id}`)}
                   >
                     Ver detalles
                   </button>
-                  {/* Estado ahora a la derecha */}
-                  <span style={{
-                    color: pub.estado === 'Resuelto' ? '#4caf50' : '#ff9800',
-                    backgroundColor: pub.estado === 'Resuelto' ? '#4caf5020' : '#ff980020',
-                    fontWeight: 'bold',
-                    fontSize: '14px',
-                    padding: '4px 8px',
-                    borderRadius: '4px'
-                  }}>
+                  <span className={`estado-publicacion${pub.estado === 'Resuelto' ? ' resuelto' : ''}`}>
                     {pub.estado}
                   </span>
                 </div>

@@ -60,14 +60,14 @@ const PublicacionDetalle: React.FC = () => {
     const diferenciaDias = Math.floor(diferenciaMilisegundos / (1000 * 60 * 60 * 24));
 
     if (diferenciaDias === 0) {
-      return `Hoy a las ${fecha.toLocaleTimeString('es-ES', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
+      return `Hoy a las ${fecha.toLocaleTimeString('es-ES', {
+        hour: '2-digit',
+        minute: '2-digit'
       })}`;
     } else if (diferenciaDias === 1) {
-      return `Ayer a las ${fecha.toLocaleTimeString('es-ES', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
+      return `Ayer a las ${fecha.toLocaleTimeString('es-ES', {
+        hour: '2-digit',
+        minute: '2-digit'
       })}`;
     } else if (diferenciaDias <= 7) {
       return `Hace ${diferenciaDias} días`;
@@ -83,7 +83,7 @@ const PublicacionDetalle: React.FC = () => {
   // Switch según tipo de publicación
   const obtenerTextoSegunTipo = () => {
     if (!publicacion) return { accion: '', icono: '' };
-    
+
     if (publicacion.tipo === 'Perdido') {
       return {
         accion: 'Perdido en:'
@@ -99,7 +99,7 @@ const PublicacionDetalle: React.FC = () => {
     return (
       <div className="detalle-container">
         <div>No se encontró la publicación.</div>
-        <button 
+        <button
           className="boton-cerrar"
           onClick={() => navigate('/listado')}
         >
@@ -121,31 +121,20 @@ const PublicacionDetalle: React.FC = () => {
         <div className="detalle-contenido">
           <h3>
             {publicacion.titulo}
-            <span 
-              className="categoria"
-              style={{
-                backgroundColor: colorCategoria.bg,
-                color: colorCategoria.text,
-                padding: '4px 12px',
-                borderRadius: '16px',
-                fontSize: '12px',
-                fontWeight: 'bold',
-                marginLeft: '12px'
-              }}
+            <span
+              className={`categoria ${
+                publicacion.categoria === 'Electrónicos' ? 'electronicos' :
+                publicacion.categoria === 'Ropa' ? 'ropa' :
+                publicacion.categoria === 'Documentos' ? 'documentos' :
+                publicacion.categoria === 'Accesorios' ? 'accesorios' :
+                publicacion.categoria === 'Deportes' ? 'deportes' :
+                publicacion.categoria === 'Útiles' ? 'utiles' : 'otros'
+              }`}
             >
               {publicacion.categoria}
             </span>
-            <span 
-              className="estado"
-              style={{
-                backgroundColor: colorEstado.backgroundColor,
-                color: 'white',
-                padding: '4px 12px',
-                borderRadius: '16px',
-                fontSize: '12px',
-                fontWeight: 'bold',
-                marginLeft: '8px'
-              }}
+            <span
+              className={`estado ${publicacion.estado === 'Resuelto' ? 'resuelto' : 'pendiente'}`}
             >
               {publicacion.estado}
             </span>
@@ -157,13 +146,13 @@ const PublicacionDetalle: React.FC = () => {
           <p><strong>Tipo:</strong> {publicacion.tipo}</p>
           <p><strong>Fecha del suceso:</strong> {new Date(publicacion.fecha).toLocaleDateString('es-ES', {
             day: '2-digit',
-            month: '2-digit', 
+            month: '2-digit',
             year: 'numeric'
           })}</p>
           <p><strong>Descripción:</strong> {publicacion.descripcion}</p>
 
           <div style={{ marginTop: '20px' }}>
-            <button 
+            <button
               className="boton-cerrar"
               onClick={() => navigate('/listado')}
             >
