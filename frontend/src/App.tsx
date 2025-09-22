@@ -1,4 +1,4 @@
-import React from "react";
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Inicio from "./pages/Inicio";
 import ListadoObjetosPerdidos from "./pages/ListadoObjetosPerdidos";
@@ -12,6 +12,7 @@ function App() {
         <Route path="/" element={<Inicio />} />
         <Route path="/listado" element={<ListadoObjetosPerdidos />} />
         <Route path="/formulario" element={<FormularioPublicacion />} />
+
         <Route path="/publicacion/:id" element={
           <React.Suspense fallback={<div>Cargando...</div>}>
             <PublicacionDetalle />

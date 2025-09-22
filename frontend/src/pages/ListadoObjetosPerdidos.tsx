@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { publicacionesApi } from '../services/api';
@@ -189,3 +190,4 @@ const ListadoObjetosPerdidos: React.FC = () => {
 };
 
 export default ListadoObjetosPerdidos;
+
