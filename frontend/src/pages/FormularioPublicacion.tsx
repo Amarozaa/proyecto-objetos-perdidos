@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./FormularioPublicacion.css";
+import "../styles/FormularioPublicacion.css";
 
 const FormularioPublicacion: React.FC = () => {
   const navigate = useNavigate();
