@@ -148,5 +148,4 @@ const FormularioPublicacion: React.FC = () => {
     </div>
   );
 };
-
 export default FormularioPublicacion;
