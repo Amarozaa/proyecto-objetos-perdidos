@@ -1,21 +1,21 @@
 {
   "usuarios": [
     {
-      "id": "1",
+      "id": 1,
       "nombre": "Juan Pérez",
       "password": "123456",
       "email": "juan@email.com",
       "telefono": "555-0101"
     },
     {
-      "id": "2",
+      "id": 2,
       "nombre": "María García",
       "password": "123456",
       "email": "maria@email.com",
       "telefono": "555-0102"
     },
     {
-      "id": "3",
+      "id": 3,
       "nombre": "Carlos López",
       "password": "123456",
       "email": "carlos@email.com",
@@ -24,7 +24,7 @@
   ],
   "publicaciones": [
     {
-      "id": "1",
+      "id": 1,
       "titulo": "iPhone 13 Pro perdido en biblioteca",
       "descripcion": "iPhone 13 Pro color azul con funda negra, tiene protector de pantalla y una calcomanía de una estrella en la parte trasera",
       "lugar": "Biblioteca Central - Segundo piso",
@@ -32,18 +32,12 @@
       "estado": "No resuelto",
       "tipo": "Perdido",
       "categoria": "Electrónicos",
-      "imagen_url": "",
+      "imagen_url": "/images/publicaciones/iPhone.jpg",
       "fecha_creacion": "2024-03-15T10:30:00.000Z",
-      "usuario": {
-        "id": 1,
-        "nombre": "Juan Pérez",
-        "password": "123456",
-        "email": "juan@email.com",
-        "telefono": "555-0101"
-      }
+      "usuario_id": 1
     },
     {
-      "id": "2",
+      "id": 2,
       "titulo": "Chaqueta de cuero encontrada",
       "descripcion": "Chaqueta de cuero marrón talla M, marca Zara, encontrada en una mesa de la cafetería",
       "lugar": "Cafetería del campus - Mesa junto a la ventana",
@@ -51,18 +45,12 @@
       "estado": "No resuelto",
       "tipo": "Encontrado",
       "categoria": "Ropa",
-      "imagen_url": "",
+      "imagen_url": "/images/publicaciones/Chaqueta.jpg",
       "fecha_creacion": "2024-03-14T15:45:00.000Z",
-      "usuario": {
-        "id": 2,
-        "nombre": "María García",
-        "password": "123456",
-        "email": "maria@email.com",
-        "telefono": "555-0102"
-      }
+      "usuario_id": 2
     },
     {
-      "id": "3",
+      "id": 3,
       "titulo": "Llaves con llavero perdidas",
       "descripcion": "Juego de llaves con llavero de metal plateado en forma de estrella, incluye llaves de casa y auto",
       "lugar": "Estacionamiento Bloque A - Nivel 2",
@@ -70,18 +58,12 @@
       "estado": "Resuelto",
       "tipo": "Perdido",
       "categoria": "Accesorios",
-      "imagen_url": "",
+      "imagen_url": "/images/publicaciones/Llaves.jpg",
       "fecha_creacion": "2024-03-13T09:15:00.000Z",
-      "usuario": {
-        "id": 3,
-        "nombre": "Carlos López",
-        "password": "123456",
-        "email": "carlos@email.com",
-        "telefono": "555-0103"
-      }
+      "usuario_id": 3
     },
     {
-      "id": "4",
+      "id": 4,
       "titulo": "Cédula de identidad encontrada",
       "descripcion": "Documento de identidad a nombre de Ana Rodríguez, encontrado en el pasillo del edificio principal",
       "lugar": "Edificio Principal - Primer piso, pasillo central",
@@ -89,18 +71,12 @@
       "estado": "No resuelto",
       "tipo": "Encontrado",
       "categoria": "Documentos",
-      "imagen_url": "",
+      "imagen_url": "/images/publicaciones/Cedula.jpg",
       "fecha_creacion": "2024-03-12T14:20:00.000Z",
-      "usuario": {
-        "id": 1,
-        "nombre": "Juan Pérez",
-        "password": "123456",
-        "email": "juan@email.com",
-        "telefono": "555-0101"
-      }
+      "usuario_id": 1
     },
     {
-      "id": "5",
+      "id": 5,
       "titulo": "Auriculares Bluetooth perdidos",
       "descripcion": "Auriculares inalámbricos marca Sony, color negro, en su estuche de carga",
       "lugar": "Aula 205 - Edificio de Ingeniería",
@@ -108,33 +84,9 @@
       "estado": "No resuelto",
       "tipo": "Perdido",
       "categoria": "Electrónicos",
-      "imagen_url": "",
+      "imagen_url": "/images/publicaciones/Audifonos.jpeg",
       "fecha_creacion": "2024-03-11T16:30:00.000Z",
-      "usuario": {
-        "id": 2,
-        "nombre": "María García",
-        "password": "123456",
-        "email": "maria@email.com",
-        "telefono": "555-0102"
-      }
-    },
-    {
-      "id": "ff22",
-      "titulo": "asdad",
-      "descripcion": "asdad",
-      "lugar": "asdadsa",
-      "fecha": "2025-09-17",
-      "tipo": "Perdido",
-      "categoria": "Ropa",
-      "imagen_url": "/images/publicaciones/Asterion.png",
-      "estado": "No resuelto",
-      "usuario": {
-        "id": 1,
-        "nombre": "Amaro Zurita",
-        "email": "amaro@uc.cl",
-        "password": "1234"
-      },
-      "fecha_creacion": "2025-09-17T23:39:50.461Z"
+      "usuario_id": 2
     }
   ]
 }
