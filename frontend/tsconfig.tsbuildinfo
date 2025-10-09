@@ -1,0 +1,1 @@
+{"root":["./src/App.tsx","./src/main.tsx","./src/components/PostListado.tsx","./src/pages/FormularioPublicacion.tsx","./src/pages/Inicio.tsx","./src/pages/ListadoObjetosPerdidos.tsx","./src/pages/Navbar.tsx","./src/pages/Perfil.tsx","./src/pages/PublicacionDetalle.tsx","./src/services/api.ts","./src/types/types.ts"],"errors":true,"version":"5.9.2"}
