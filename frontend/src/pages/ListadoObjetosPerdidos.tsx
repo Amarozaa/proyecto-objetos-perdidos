@@ -1,63 +1,53 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { publicacionesApi } from '../services/api';
-import type { Publicacion } from '../types/types';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { publicacionesApi } from "../services/api";
+import type { Publicacion } from "../types/types";
 import "../styles/Listado.css";
 
 const ListadoObjetosPerdidos: React.FC = () => {
   const [publicaciones, setPublicaciones] = useState<Publicacion[]>([]);
-  const [filtroTipo, setFiltroTipo] = useState<'Todos' | 'Perdido' | 'Encontrado'>('Todos');
+  const [filtroTipo, setFiltroTipo] = useState<
+    "Todos" | "Perdido" | "Encontrado"
+  >("Todos");
   const navigate = useNavigate();
 
   useEffect(() => {
     publicacionesApi.obtenerTodas().then(setPublicaciones);
   }, []);
 
-  // Función para obtener colores por categoría
-  const obtenerColorCategoria = (categoria: string) => {
-    const colores: { [key: string]: { bg: string; text: string } } = {
-      'Electrónicos': { bg: '#e3f2fd', text: '#1565c0' },
-      'Ropa': { bg: '#f3e5f5', text: '#7b1fa2' },
-      'Documentos': { bg: '#fff3e0', text: '#ef6c00' },
-      'Accesorios': { bg: '#e8f5e8', text: '#2e7d32' },
-      'Deportes': { bg: '#ffebee', text: '#c62828' },
-      'Útiles': { bg: '#f1f8e9', text: '#558b2f' },
-      'Otros': { bg: '#fafafa', text: '#616161' }
-    };
-    return colores[categoria] || colores['Otros'];
-  };
-
   // Función para formatear fecha de manera amigable
   const formatearFechaAmigable = (fechaString: string) => {
     const fecha = new Date(fechaString);
     const ahora = new Date();
     const diferenciaMilisegundos = ahora.getTime() - fecha.getTime();
-    const diferenciaDias = Math.floor(diferenciaMilisegundos / (1000 * 60 * 60 * 24));
+    const diferenciaDias = Math.floor(
+      diferenciaMilisegundos / (1000 * 60 * 60 * 24)
+    );
 
     if (diferenciaDias === 0) {
-      return `Hoy a las ${fecha.toLocaleTimeString('es-ES', {
-        hour: '2-digit',
-        minute: '2-digit'
+      return `Hoy a las ${fecha.toLocaleTimeString("es-ES", {
+        hour: "2-digit",
+        minute: "2-digit",
       })}`;
     } else if (diferenciaDias === 1) {
-      return `Ayer a las ${fecha.toLocaleTimeString('es-ES', {
-        hour: '2-digit',
-        minute: '2-digit'
+      return `Ayer a las ${fecha.toLocaleTimeString("es-ES", {
+        hour: "2-digit",
+        minute: "2-digit",
       })}`;
     } else if (diferenciaDias <= 7) {
       return `Hace ${diferenciaDias} días`;
     } else {
-      return fecha.toLocaleDateString('es-ES', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric'
+      return fecha.toLocaleDateString("es-ES", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
       });
     }
   };
 
   // Filtrar publicaciones según el tipo seleccionado
-  const publicacionesFiltradas = publicaciones.filter(pub => {
-    if (filtroTipo === 'Todos') return true;
+  const publicacionesFiltradas = publicaciones.filter((pub) => {
+    if (filtroTipo === "Todos") return true;
     return pub.tipo === filtroTipo;
   });
 
@@ -67,30 +57,35 @@ const ListadoObjetosPerdidos: React.FC = () => {
 
       <div className="filtros-switch">
         <button
-          onClick={() => setFiltroTipo('Todos')}
-          className={`filtro-btn${filtroTipo === 'Todos' ? ' selected' : ''}`}
+          onClick={() => setFiltroTipo("Todos")}
+          className={`filtro-btn${filtroTipo === "Todos" ? " selected" : ""}`}
         >
           Todos ({publicaciones.length})
         </button>
         <button
-          onClick={() => setFiltroTipo('Perdido')}
-          className={`filtro-btn${filtroTipo === 'Perdido' ? ' selected' : ''}`}
+          onClick={() => setFiltroTipo("Perdido")}
+          className={`filtro-btn${filtroTipo === "Perdido" ? " selected" : ""}`}
         >
-        Perdidos ({publicaciones.filter(p => p.tipo === 'Perdido').length})
+          Perdidos ({publicaciones.filter((p) => p.tipo === "Perdido").length})
         </button>
         <button
-          onClick={() => setFiltroTipo('Encontrado')}
-          className={`filtro-btn${filtroTipo === 'Encontrado' ? ' selected' : ''}`}
+          onClick={() => setFiltroTipo("Encontrado")}
+          className={`filtro-btn${
+            filtroTipo === "Encontrado" ? " selected" : ""
+          }`}
         >
-        Encontrados ({publicaciones.filter(p => p.tipo === 'Encontrado').length})
+          Encontrados (
+          {publicaciones.filter((p) => p.tipo === "Encontrado").length})
         </button>
       </div>
 
       {publicacionesFiltradas.length === 0 ? (
-        <p>No hay publicaciones{filtroTipo !== 'Todos' ? ` de tipo "${filtroTipo}"` : ''}.</p>
+        <p>
+          No hay publicaciones
+          {filtroTipo !== "Todos" ? ` de tipo "${filtroTipo}"` : ""}.
+        </p>
       ) : (
         publicacionesFiltradas.map((pub) => {
-          const colorCategoria = obtenerColorCategoria(pub.categoria);
           return (
             <div key={pub.id} className="card-publicacion">
               <div className="card-contenido">
@@ -98,19 +93,28 @@ const ListadoObjetosPerdidos: React.FC = () => {
                   {pub.titulo}
                   <span
                     className={`categoria ${
-                      pub.categoria === 'Electrónicos' ? 'electronicos' :
-                      pub.categoria === 'Ropa' ? 'ropa' :
-                      pub.categoria === 'Documentos' ? 'documentos' :
-                      pub.categoria === 'Accesorios' ? 'accesorios' :
-                      pub.categoria === 'Deportes' ? 'deportes' :
-                      pub.categoria === 'Útiles' ? 'utiles' : 'otros'
+                      pub.categoria === "Electrónicos"
+                        ? "electronicos"
+                        : pub.categoria === "Ropa"
+                        ? "ropa"
+                        : pub.categoria === "Documentos"
+                        ? "documentos"
+                        : pub.categoria === "Accesorios"
+                        ? "accesorios"
+                        : pub.categoria === "Deportes"
+                        ? "deportes"
+                        : pub.categoria === "Útiles"
+                        ? "utiles"
+                        : "otros"
                     }`}
                   >
                     {pub.categoria}
                   </span>
                 </h2>
                 <p className="fecha-amigable">
-                  {pub.fecha_creacion ? formatearFechaAmigable(pub.fecha_creacion) : 'Fecha no disponible'}
+                  {pub.fecha_creacion
+                    ? formatearFechaAmigable(pub.fecha_creacion)
+                    : "Fecha no disponible"}
                 </p>
                 <p>{pub.descripcion}</p>
                 <div className="card-acciones">
@@ -120,7 +124,11 @@ const ListadoObjetosPerdidos: React.FC = () => {
                   >
                     Ver detalles
                   </button>
-                  <span className={`estado-publicacion${pub.estado === 'Resuelto' ? ' resuelto' : ''}`}>
+                  <span
+                    className={`estado-publicacion${
+                      pub.estado === "Resuelto" ? " resuelto" : ""
+                    }`}
+                  >
                     {pub.estado}
                   </span>
                 </div>
@@ -141,4 +149,3 @@ const ListadoObjetosPerdidos: React.FC = () => {
 };
 
 export default ListadoObjetosPerdidos;
-

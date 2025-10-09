@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Publicacion, CrearPublicacion, Usuario } from '../types/types';
+import type { Publicacion, CrearPublicacion, Usuario } from '../types/types';
 
 const API_BASE_URL = 'http://localhost:3001';
 
@@ -18,12 +18,12 @@ export const publicacionesApi = {
       api.get('/publicaciones'),
       api.get('/usuarios')
     ]);
-    
+
     const publicaciones = publicacionesResponse.data;
     const usuarios = usuariosResponse.data;
-    
+
     // Expandir los datos del usuario
-    return publicaciones.map((pub: any) => ({
+    return publicaciones.map((pub: Publicacion) => ({
       ...pub,
       usuario: usuarios.find((u: Usuario) => u.id === pub.usuario_id) || {
         id: pub.usuario_id,
@@ -41,10 +41,10 @@ export const publicacionesApi = {
       api.get(`/publicaciones/${id}`),
       api.get('/usuarios')
     ]);
-    
+
     const publicacion = publicacionResponse.data;
     const usuarios = usuariosResponse.data;
-    
+
     return {
       ...publicacion,
       usuario: usuarios.find((u: Usuario) => u.id === publicacion.usuario_id) || {
@@ -57,19 +57,19 @@ export const publicacionesApi = {
     };
   },
 
-  // Obtener todas las publicaciones de un usuario 
+  // Obtener todas las publicaciones de un usuario
   obtenerTodasUsuario: async (user_id: number): Promise<Publicacion[]> => {
       const [publicacionesResponse, usuariosResponse] = await Promise.all([
         api.get('/publicaciones'),
         api.get('/usuarios')
       ]);
-      
+
       const publicaciones = publicacionesResponse.data;
       const usuarios = usuariosResponse.data;
 
       return publicaciones
-        .filter((pub: any) => pub.usuario_id === user_id)
-        .map((pub: any) => ({
+        .filter((pub: Publicacion) => pub.usuario_id === user_id)
+        .map((pub: Publicacion) => ({
         ...pub,
         usuario: usuarios.find((u: Usuario) => u.id === pub.usuario_id) || {
           id: pub.usuario_id,
@@ -88,12 +88,12 @@ export const publicacionesApi = {
       estado: 'No resuelto' as const,
       fecha_creacion: new Date().toISOString(),
     };
-    
+
     const response = await api.post('/publicaciones', nuevaPublicacion);
-    
+
     // Obtener datos del usuario para la respuesta
     const usuarioResponse = await api.get(`/usuarios/${publicacion.usuario_id}`);
-    
+
     return {
       ...response.data,
       usuario: usuarioResponse.data
@@ -122,7 +122,7 @@ export const publicacionesApi = {
     Object.entries(filtros).forEach(([key, value]) => {
       if (value) params.append(key, value);
     });
-    
+
     const response = await api.get(`/publicaciones?${params.toString()}`);
     return response.data;
   },
@@ -178,14 +178,14 @@ export const displayApi = {
     const diferenciaDias = Math.floor(diferenciaMilisegundos / (1000 * 60 * 60 * 24));
 
     if (diferenciaDias === 0) {
-      return `Hoy a las ${fecha.toLocaleTimeString('es-ES', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
+      return `Hoy a las ${fecha.toLocaleTimeString('es-ES', {
+        hour: '2-digit',
+        minute: '2-digit'
       })}`;
     } else if (diferenciaDias === 1) {
-      return `Ayer a las ${fecha.toLocaleTimeString('es-ES', { 
-        hour: '2-digit', 
-        minute: '2-digit' 
+      return `Ayer a las ${fecha.toLocaleTimeString('es-ES', {
+        hour: '2-digit',
+        minute: '2-digit'
       })}`;
     } else if (diferenciaDias <= 7) {
       return `Hace ${diferenciaDias} días`;
