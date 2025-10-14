@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import UsuarioModel from '../models/users';
 import bcrypt from 'bcrypt';
+import mongoose from 'mongoose';
 
 // Obtener todos los usuarios
 export const getUsuarios = async (_req: Request, res: Response) => {
@@ -9,6 +10,23 @@ export const getUsuarios = async (_req: Request, res: Response) => {
 		res.json(usuarios);
 	} catch (error) {
 		res.status(500).json({ error: 'Error al obtener usuarios' });
+	}
+};
+
+// Obtener un usuario por ID
+export const getUsuarioPorId = async (req: Request, res: Response) => {
+	try {
+		const { id } = req.params;
+		if (!mongoose.Types.ObjectId.isValid(id)) {
+			return res.status(400).json({ error: 'ID inválido' });
+		}
+		const usuario = await UsuarioModel.findById(id);
+		if (!usuario) {
+			return res.status(404).json({ error: 'Usuario no encontrado' });
+		}
+		res.json(usuario);
+	} catch (error) {
+		res.status(500).json({ error: 'Error al obtener usuario' });
 	}
 };
 
