@@ -1,17 +1,4 @@
-import dotenv from 'dotenv'
-dotenv.config()
-
 import mongoose, { Schema } from 'mongoose';
-
-const url = process.env.MONGODB_URI;
-const dbName = process.env.MONGODB_DBNAME;
-
-mongoose.set("strictQuery", false);
-if (url) {
-  mongoose.connect(url, { dbName }).catch((error) => {
-    console.log("error connecting to MongoDB:", error.message);
-  });
-}
 
 export type Tipo = "Perdido" | "Encontrado";
 
@@ -36,7 +23,7 @@ export interface Publicacion {
   categoria: Categoria;
   imagen_url?: string;
   fecha_creacion?: string;
-  usuario_id: number;
+  usuario_id: mongoose.Types.ObjectId;
 }
 
 export interface CrearPublicacion {
@@ -67,7 +54,7 @@ const publicacionSchema = new Schema<Publicacion>({
   ], required: true },
   imagen_url: { type: String },
   fecha_creacion: { type: String },
-  usuario_id: { type: Number, required: true }
+  usuario_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario', required: true }
 });
 
 publicacionSchema.set('toJSON', {
