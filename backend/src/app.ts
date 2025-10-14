@@ -24,8 +24,8 @@ app.use(express.json());
 app.use(requestLogger);
 
 // añadir rutas aquí
-app.use('/api/users', usersRouter);
-app.use('/api/posts', postsRouter);
+app.use('/api/usuarios', usersRouter);
+app.use('/api/publicaciones', postsRouter);
 
 app.use(errorHandler);
 app.use(unknownEndpoint);
