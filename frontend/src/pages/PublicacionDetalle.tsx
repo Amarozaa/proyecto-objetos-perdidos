@@ -13,12 +13,12 @@ const PublicacionDetalle: React.FC = () => {
   useEffect(() => {
     if (id) {
       publicacionesApi
-        .obtenerPorId(Number(id))
+        .obtenerPorId(id)
         .then((data) => {
           setPublicacion(data);
           if (data.usuario_id) {
             usuariosApi
-              .obtenerPorId(Number(data.usuario_id))
+              .obtenerPorId(data.usuario_id)
               .then(setUsuario)
               .catch(() => setUsuario(null));
           } else {

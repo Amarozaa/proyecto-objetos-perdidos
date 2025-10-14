@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { Publicacion, CrearPublicacion, Usuario } from '../types/types';
 
-const API_BASE_URL = 'http://localhost:3001';
+const API_BASE_URL = '/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -36,7 +36,7 @@ export const publicacionesApi = {
   },
 
   // Obtener publicación por ID con datos de usuario expandidos
-  obtenerPorId: async (id: number): Promise<Publicacion> => {
+  obtenerPorId: async (id: string): Promise<Publicacion> => {
     const [publicacionResponse, usuariosResponse] = await Promise.all([
       api.get(`/publicaciones/${id}`),
       api.get('/usuarios')
