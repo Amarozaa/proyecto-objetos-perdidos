@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { publicacionesApi } from "../services/api";
 import "../styles/FormularioPublicacion.css";
 
 const FormularioPublicacion: React.FC = () => {
@@ -16,7 +17,9 @@ const FormularioPublicacion: React.FC = () => {
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -34,11 +37,35 @@ const FormularioPublicacion: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    alert("Formulario enviado (solo estático)");
-    navigate("/"); // redirige al home
+    // ESTO HAY QUE CAMBIARLO CUANDO SE IMPLEMENTE EL LOGIN
+    const usuarioStr = localStorage.getItem("usuario");
+    if (!usuarioStr) {
+      alert("Debes iniciar sesión para publicar.");
+      return;
+    }
+    const usuario = JSON.parse(usuarioStr);
+    try {
+      await publicacionesApi.crear({
+        ...formData,
+        tipo: formData.tipo as "Perdido" | "Encontrado",
+        categoria: formData.categoria as
+          | "Electrónicos"
+          | "Ropa"
+          | "Documentos"
+          | "Accesorios"
+          | "Deportes"
+          | "Útiles"
+          | "Otros",
+        usuario_id: usuario.id,
+      });
+      alert("¡Publicación creada exitosamente!");
+      navigate("/");
+    } catch {
+      alert("Error al crear la publicación. Intenta nuevamente.");
+    }
   };
 
   return (
@@ -153,8 +180,14 @@ const FormularioPublicacion: React.FC = () => {
       <div className="formulario-publicacion-box" style={{ marginTop: "2rem" }}>
         <strong>¿Qué significa el tipo?</strong>
         <ul style={{ marginTop: "0.5rem", paddingLeft: "1.2rem" }}>
-          <li><strong>Perdido:</strong> significa que perdiste un objeto y quieres recuperarlo</li>
-          <li><strong>Encontrado:</strong> significa que encontraste un objeto y quieres devolverlo</li>
+          <li>
+            <strong>Perdido:</strong> significa que perdiste un objeto y quieres
+            recuperarlo
+          </li>
+          <li>
+            <strong>Encontrado:</strong> significa que encontraste un objeto y
+            quieres devolverlo
+          </li>
         </ul>
       </div>
     </div>
