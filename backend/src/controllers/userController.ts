@@ -47,7 +47,7 @@ const validarDatosUsuario = (datos: DatosUsuario): string[] => {
 // Obtener todos los usuarios
 export const getUsuarios = async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const usuarios = await UsuarioModel.find({}).select('-password');
+    const usuarios = await UsuarioModel.find({}).select('-passwordHash');
     res.json(usuarios);
   } catch (error) {
     next(error); // Pasar al errorHandler
@@ -64,7 +64,7 @@ export const getUsuarioPorId = async (req: Request, res: Response, next: NextFun
       return;
     }
     
-    const usuario = await UsuarioModel.findById(id).select('-password');
+    const usuario = await UsuarioModel.findById(id).select('-passwordHash');
     
     if (!usuario) {
       res.status(404).json({ error: 'Usuario no encontrado' });
@@ -124,7 +124,7 @@ export const createUsuario = async (req: MulterRequest, res: Response, next: Nex
     // Preparar datos del usuario
     const datosUsuario = {
       nombre: nombre.trim(),
-      password: passwordHash,
+      passwordHash: passwordHash,
       email: email.toLowerCase().trim(),
       telefono: telefono?.trim(),
       imagen_url: req.file ? `/api/images/usuarios/${req.file.filename}` : undefined
@@ -191,14 +191,15 @@ export const updateUsuario = async (req: MulterRequest, res: Response, next: Nex
     // Si se actualiza la contraseña, encriptarla
     if (datosActualizacion.password) {
       const saltRounds = 12;
-      datosActualizacion.password = await bcrypt.hash(datosActualizacion.password, saltRounds);
+      datosActualizacion.passwordHash = await bcrypt.hash(datosActualizacion.password, saltRounds);
+      delete datosActualizacion.password; // evitar guardar el campo en claro
     }
     
     const usuarioActualizado = await UsuarioModel.findByIdAndUpdate(
       id,
       { ...datosActualizacion, updatedAt: new Date() },
       { new: true, runValidators: true }
-    ).select('-password');
+    ).select('-passwordHash');
     
     if (!usuarioActualizado) {
       res.status(404).json({ error: 'Usuario no encontrado' });

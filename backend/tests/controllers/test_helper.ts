@@ -5,13 +5,13 @@ const initialUsuarios = [
   {
     nombre: 'Juan Pérez',
     email: 'juan@test.com',
-    password: 'password123',
+    passwordHash: 'password123',
     telefono: '+56912345678'
   },
   {
     nombre: 'María García', 
     email: 'maria@test.com',
-    password: 'password456',
+    passwordHash: 'password456',
     telefono: '+56987654321'
   }
 ];
@@ -43,7 +43,7 @@ const nonExistingUserId = async (): Promise<string> => {
   const usuario = new UsuarioModel({
     nombre: 'Temporal',
     email: `temp${timestamp}@test.com`, 
-    password: 'temp123',
+    passwordHash: 'temp123',
     telefono: `+569${timestamp.toString().slice(-8)}` // Usar últimos 8 dígitos del timestamp
   });
   await usuario.save();
@@ -67,12 +67,12 @@ const nonExistingPublicacionId = async (): Promise<string> => {
   return publicacion._id.toString();
 };
 
-const usuariosInDb = async () => {
+const usuariosInDb = async (): Promise<Array<any>> => {
   const usuarios = await UsuarioModel.find({});
   return usuarios.map(usuario => usuario.toJSON());
 };
 
-const publicacionesInDb = async () => {
+const publicacionesInDb = async (): Promise<Array<any>> => {
   const publicaciones = await PublicacionModel.find({});
   return publicaciones.map(publicacion => publicacion.toJSON());
 };
