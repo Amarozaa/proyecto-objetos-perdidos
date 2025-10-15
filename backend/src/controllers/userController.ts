@@ -77,6 +77,27 @@ export const getUsuarioPorId = async (req: Request, res: Response, next: NextFun
   }
 };
 
+// Obtener mi perfil (usuario autenticado)
+export const getMiPerfil = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    if (!req.userId) {
+      res.status(401).json({ error: 'Usuario no autenticado' });
+      return;
+    }
+    
+    const usuario = await UsuarioModel.findById(req.userId).select('-passwordHash');
+    
+    if (!usuario) {
+      res.status(404).json({ error: 'Usuario no encontrado' });
+      return;
+    }
+    
+    res.json(usuario);
+  } catch (error) {
+    next(error);
+  }
+};
+
 // Crear un nuevo usuario
 export const createUsuario = async (req: MulterRequest, res: Response, next: NextFunction): Promise<void> => {
   try {
@@ -149,6 +170,12 @@ export const updateUsuario = async (req: MulterRequest, res: Response, next: Nex
     
     if (!mongoose.Types.ObjectId.isValid(id)) {
       res.status(400).json({ error: 'El ID proporcionado no es válido' });
+      return;
+    }
+    
+    // Verificar que el usuario autenticado solo puede editar su propio perfil
+    if (req.userId !== id) {
+      res.status(403).json({ error: 'No tienes permiso para editar este perfil' });
       return;
     }
     
