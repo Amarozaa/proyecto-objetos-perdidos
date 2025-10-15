@@ -67,12 +67,12 @@ const nonExistingPublicacionId = async (): Promise<string> => {
   return publicacion._id.toString();
 };
 
-const usuariosInDb = async () => {
+const usuariosInDb = async (): Promise<Array<any>> => {
   const usuarios = await UsuarioModel.find({});
   return usuarios.map(usuario => usuario.toJSON());
 };
 
-const publicacionesInDb = async () => {
+const publicacionesInDb = async (): Promise<Array<any>> => {
   const publicaciones = await PublicacionModel.find({});
   return publicaciones.map(publicacion => publicacion.toJSON());
 };
