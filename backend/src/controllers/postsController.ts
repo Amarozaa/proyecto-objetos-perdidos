@@ -63,11 +63,7 @@ const validarDatosPublicacion = (datos: DatosPublicacion): string[] => {
     errores.push('La categoría debe ser una de las opciones válidas');
   }
   
-  if (!datos.usuario_id) {
-    errores.push('El ID del usuario es requerido');
-  } else if (!mongoose.Types.ObjectId.isValid(datos.usuario_id)) {
-    errores.push('El ID del usuario no es válido');
-  }
+  // Ya no validamos usuario_id aquí, viene del JWT
   
   return errores;
 };
@@ -142,6 +138,12 @@ export const createPublicacion = async (req: MulterRequest, res: Response, next:
   try {
     const datosPublicacion = req.body;
     
+    // El usuario_id viene del JWT (req.userId), no del body
+    if (!req.userId) {
+      res.status(401).json({ error: 'Usuario no autenticado' });
+      return;
+    }
+    
     // Validar datos de entrada
     const erroresValidacion = validarDatosPublicacion(datosPublicacion);
     if (erroresValidacion.length > 0) {
@@ -149,13 +151,6 @@ export const createPublicacion = async (req: MulterRequest, res: Response, next:
         error: 'Datos de entrada inválidos', 
         detalles: erroresValidacion 
       });
-      return;
-    }
-    
-    // Verificar que el usuario existe
-    const usuarioExiste = await UsuarioModel.findById(datosPublicacion.usuario_id);
-    if (!usuarioExiste) {
-      res.status(404).json({ error: 'El usuario especificado no existe' });
       return;
     }
     
@@ -171,13 +166,16 @@ export const createPublicacion = async (req: MulterRequest, res: Response, next:
       return;
     }
     
-    // Crear nueva publicación
+    // Crear nueva publicación usando el usuario_id del JWT
     const nuevaPublicacion = new PublicacionModel({
-      ...datosPublicacion,
       titulo: datosPublicacion.titulo.trim(),
       descripcion: datosPublicacion.descripcion.trim(),
       lugar: datosPublicacion.lugar.trim(),
-      estado: datosPublicacion.estado || "No resuelto",
+      fecha: datosPublicacion.fecha,
+      tipo: datosPublicacion.tipo,
+      categoria: datosPublicacion.categoria,
+      estado: "No resuelto", // Siempre inicia como no resuelto
+      usuario_id: req.userId, // Viene del JWT, no del body
       imagen_url: req.file ? `/api/images/publicaciones/${req.file.filename}` : datosPublicacion.imagen_url,
       fecha_creacion: new Date().toISOString()
     });
@@ -205,10 +203,27 @@ export const updatePublicacion = async (req: MulterRequest, res: Response, next:
       return;
     }
     
+    // Verificar que la publicación existe
+    const publicacionExistente = await PublicacionModel.findById(id);
+    
+    if (!publicacionExistente) {
+      res.status(404).json({ error: 'Publicación no encontrada' });
+      return;
+    }
+    
+    // Verificar que el usuario autenticado es el dueño de la publicación
+    if (publicacionExistente.usuario_id.toString() !== req.userId) {
+      res.status(403).json({ error: 'No tienes permiso para editar esta publicación' });
+      return;
+    }
+    
     // Si se subió una imagen, añadir la URL al objeto de actualización
     if (req.file) {
       datosActualizacion.imagen_url = `/api/images/publicaciones/${req.file.filename}`;
     }
+    
+    // No permitir cambiar el usuario_id
+    delete datosActualizacion.usuario_id;
     
     const publicacionActualizada = await PublicacionModel
       .findByIdAndUpdate(
@@ -217,11 +232,6 @@ export const updatePublicacion = async (req: MulterRequest, res: Response, next:
         { new: true, runValidators: true }
       )
       .populate('usuario_id', 'nombre email');
-    
-    if (!publicacionActualizada) {
-      res.status(404).json({ error: 'Publicación no encontrada' });
-      return;
-    }
     
     res.json(publicacionActualizada);
     

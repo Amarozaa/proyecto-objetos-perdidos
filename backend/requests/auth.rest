@@ -1,0 +1,166 @@
+### Variables
+@baseUrl = http://localhost:3000/api
+@token = 
+@csrfToken = 3ed3f1e9-d313-4452-baee-1aaf87e2e876
+
+### 1. Crear un usuario de prueba (si no existe)
+POST {{baseUrl}}/usuarios
+Content-Type: application/json
+
+{
+  "nombre": "Usuario Test",
+  "email": "test@example.com",
+  "telefono": "123456789",
+  "password": "password123"
+}
+
+### 2. Login - Obtener token JWT y CSRF
+# IMPORTANTE: Después de ejecutar esto, copia el valor de csrfToken de la respuesta
+# y pégalo en la variable @csrfToken arriba
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### 3. Obtener información del usuario autenticado
+# IMPORTANTE: Antes de ejecutar, debes:
+# 1. Copiar el csrfToken de la respuesta del login a la variable @csrfToken arriba
+# 2. La cookie se guarda automáticamente en VS Code REST Client
+GET {{baseUrl}}/login/me
+X-CSRF-Token: {{csrfToken}}
+
+### 4. Obtener mi perfil de usuario
+GET {{baseUrl}}/usuarios/me
+X-CSRF-Token: {{csrfToken}}
+
+### 5. Crear una publicación (requiere autenticación)
+# El usuario_id se toma automáticamente del JWT, no lo envíes en el body
+POST {{baseUrl}}/publicaciones
+Content-Type: application/json
+X-CSRF-Token: {{csrfToken}}
+
+{
+  "titulo": "iPhone perdido en biblioteca",
+  "descripcion": "iPhone 13 Pro de color azul, perdido en la segunda planta de la biblioteca",
+  "categoria": "Electrónicos",
+  "lugar": "Biblioteca Central",
+  "fecha": "2024-10-15",
+  "tipo": "Perdido",
+  "imagen": "iPhone.jpg"
+}
+
+### 6. Obtener todas las publicaciones (no requiere autenticación)
+GET {{baseUrl}}/publicaciones
+
+### 7. Actualizar una publicación propia (requiere autenticación)
+# Tu publicación ID: 68f1a79068e5bc094849b27f
+PUT {{baseUrl}}/publicaciones/68f1a79068e5bc094849b27f
+Content-Type: application/json
+X-CSRF-Token: {{csrfToken}}
+
+{
+  "tipo": "Encontrado",
+  "descripcion": "iPhone 13 Pro de color azul - YA ENCONTRADO, contactar por email"
+}
+
+### 8. PREPARAR PRUEBA: Crear segundo usuario
+POST {{baseUrl}}/usuarios
+Content-Type: application/json
+
+{
+  "nombre": "Otro Usuario",
+  "email": "otro@example.com",
+  "telefono": "555555555",
+  "password": "password456"
+}
+
+### 8b. PREPARAR PRUEBA: Login con segundo usuario
+# IMPORTANTE: Guarda el nuevo csrfToken en una variable temporal
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "otro@example.com",
+  "password": "password456"
+}
+
+### 8c. PREPARAR PRUEBA: Segundo usuario crea una publicación
+# Usa el CSRF token del segundo usuario
+POST {{baseUrl}}/publicaciones
+Content-Type: application/json
+X-CSRF-Token: ffa738d2-e6d6-449b-a0ef-42a73585e674
+
+{
+  "titulo": "Llaves encontradas en cafetería",
+  "descripcion": "Llaves con llavero rojo encontradas en la cafetería del campus",
+  "categoria": "Accesorios",
+  "lugar": "Cafetería Central",
+  "fecha": "2024-10-16",
+  "tipo": "Encontrado"
+}
+
+### 8d. VOLVER AL PRIMER USUARIO: Login nuevamente
+# Vuelve a hacer login con el primer usuario para recuperar tu sesión
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### 8e. PRUEBA DE SEGURIDAD: Intentar actualizar publicación del segundo usuario (debe fallar con 403)
+# Reemplaza {id-otro-usuario} con el ID de la publicación creada en 8c
+# IMPORTANTE: Debes estar logueado como test@example.com (primer usuario)
+PUT {{baseUrl}}/publicaciones/{id-otro-usuario}
+Content-Type: application/json
+X-CSRF-Token: {{csrfToken}}
+
+{
+  "tipo": "Perdido",
+  "descripcion": "Intento de modificar publicación de otro usuario"
+}
+
+### 9. Actualizar mi perfil (requiere autenticación)
+# Tu usuario ID: 68f1a4ac68e5bc094849b275
+PUT {{baseUrl}}/usuarios/68f1a4ac68e5bc094849b275
+Content-Type: application/json
+X-CSRF-Token: {{csrfToken}}
+
+{
+  "nombre": "Usuario Test Actualizado",
+  "telefono": "987654321"
+}
+
+### 10. Intentar actualizar perfil de otro usuario (debe fallar con 403)
+# Reemplaza {id} con el ID de otro usuario
+PUT {{baseUrl}}/usuarios/{id-de-otro-usuario}
+Content-Type: application/json
+X-CSRF-Token: {{csrfToken}}
+
+{
+  "nombre": "Intento de hackeo"
+}
+
+### 11. Logout - Eliminar el token
+POST {{baseUrl}}/login/logout
+X-CSRF-Token: {{csrfToken}}
+
+### 12. Intentar acceder a ruta protegida después del logout (debe fallar con 401)
+GET {{baseUrl}}/login/me
+X-CSRF-Token: {{csrfToken}}
+
+### 13. Intentar login con credenciales incorrectas (debe fallar con 401)
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "passwordIncorrecta"
+}
+
+### 14. Intentar acceder sin CSRF token (debe fallar con 401)
+GET {{baseUrl}}/login/me
