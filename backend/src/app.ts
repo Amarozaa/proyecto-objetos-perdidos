@@ -41,12 +41,14 @@ app.use('/api/usuarios', usersRouter);
 app.use('/api/publicaciones', postsRouter);
 app.use('/api/images', imagesRouter);
 
-// SPA fallback: servir index.html para rutas no-API
 app.use((req: Request, res: Response, next: NextFunction) => {
-  const reqPath = req.path || '';
-  if (!reqPath.startsWith('/api') && !reqPath.startsWith('/uploads') && !reqPath.startsWith('/images')) {
-    // Usar ruta relativa correcta desde out/src hacia dist
-    res.sendFile(path.join(__dirname, '../../dist/index.html'));
+  const reqPath = req.path || "";
+  if (
+    !reqPath.startsWith("/api") &&
+    !reqPath.startsWith("/uploads") &&
+    !reqPath.startsWith("/images")
+  ) {
+    res.sendFile(path.join(__dirname, "../../dist/index.html"));
   } else {
     next();
   }
