@@ -28,7 +28,7 @@ function MainRoutes() {
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/listado" element={<ListadoObjetosPerdidos />} />
+        <Route path="/publicaciones" element={<ListadoObjetosPerdidos />} />
         <Route path="/formulario" element={<FormularioPublicacion />} />
         <Route
           path="/publicacion/:id"

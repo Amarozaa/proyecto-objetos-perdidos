@@ -1,37 +1,56 @@
 import React from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { authApi } from "../services/api";
 import "../styles/Navbar.css";
 
 const Navbar: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await authApi.logout();
+      navigate('/');
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+      // Limpiar localStorage de todas formas
+      localStorage.removeItem('user');
+      navigate('/');
+    }
+  };
+
   return (
     <div style={{ textAlign: "center", margin: "1rem" }}>
       <div className="navbar">
         <img id="logo-id" src="/images/local/buscar.png" alt="Logo" />
         <h1>ObjetosUni</h1>
-        <a
+        <Link
           className={`navbar-page${
-            window.location.pathname === "/listado" ? " active" : ""
+            location.pathname === "/publicaciones" ? " active" : ""
           }`}
-          href="/listado"
+          to="/publicaciones"
         >
           Buscar
-        </a>
-        <a
+        </Link>
+        <Link
           className={`navbar-page${
-            window.location.pathname === "/formulario" ? " active" : ""
+            location.pathname === "/formulario" ? " active" : ""
           }`}
-          href="/formulario"
+          to="/formulario"
         >
           Publicar
-        </a>
-        <a
+        </Link>
+        <Link
           className={`navbar-page${
-            window.location.pathname.startsWith("/perfil") ? " active" : ""
+            location.pathname.startsWith("/perfil") ? " active" : ""
           }`}
-          href={`/perfil/${1}`}
+          to={`/perfil/${1}`}
         >
           Perfil
-        </a>
-        <button className="big-btn"> Cerrar sesión</button>
+        </Link>
+        <button className="big-btn" onClick={handleLogout}>
+          Cerrar sesión
+        </button>
       </div>
     </div>
   );

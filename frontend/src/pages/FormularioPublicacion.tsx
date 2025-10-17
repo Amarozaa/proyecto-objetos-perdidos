@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { publicacionesApi } from "../services/api";
+import { publicacionesApi, authApi } from "../services/api";
 import "../styles/FormularioPublicacion.css";
 
 const FormularioPublicacion: React.FC = () => {
@@ -40,13 +40,12 @@ const FormularioPublicacion: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // ESTO HAY QUE CAMBIARLO CUANDO SE IMPLEMENTE EL LOGIN
-    const usuarioStr = localStorage.getItem("usuario");
-    if (!usuarioStr) {
+    // Verificar autenticación usando authApi
+    if (!authApi.isAuthenticated()) {
       alert("Debes iniciar sesión para publicar.");
       return;
     }
-    const usuario = JSON.parse(usuarioStr);
+
     try {
       await publicacionesApi.crear({
         ...formData,
@@ -59,7 +58,7 @@ const FormularioPublicacion: React.FC = () => {
           | "Deportes"
           | "Útiles"
           | "Otros",
-        usuario_id: usuario.id,
+        // usuario_id se obtiene automáticamente del JWT en el backend
       });
       alert("¡Publicación creada exitosamente!");
       navigate("/");
