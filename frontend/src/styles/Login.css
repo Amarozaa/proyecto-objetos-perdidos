@@ -74,6 +74,8 @@ body {
 }
 
 .form-box input[type="text"],
+.form-box input[type="email"],
+.form-box input[type="tel"],
 .form-box input[type="password"] {
   width: 100%;
   padding: 0.5rem 0.8rem;

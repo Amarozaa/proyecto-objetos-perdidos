@@ -7,10 +7,11 @@ const Register: React.FC = () => {
   const navigate = useNavigate();
 
   const [registerData, setRegisterData] = useState({
-    usuario : "",
+    nombre: "",
     email: "",
-    password : "",
-    confirm_password : "",
+    telefono: "",
+    password: "",
+    confirm_password: "",
   });
 
   const handleChange = (
@@ -27,12 +28,25 @@ const Register: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validar que las contraseñas coincidan
+    if (registerData.password !== registerData.confirm_password) {
+      alert("Las contraseñas no coinciden");
+      return;
+    }
+    
     try {
-      await usuariosApi.crear();
+      await usuariosApi.crear({
+        nombre: registerData.nombre,
+        email: registerData.email,
+        password: registerData.password,
+        telefono: registerData.telefono,
+      });
       alert("¡Se ha creado la cuenta exitosamente!");
-      navigate("/");
-    } catch {
-      alert("Error al crear registrarse. Intenta nuevamente.");
+      navigate("/login");
+    } catch (error: any) {
+      const errorMsg = error.response?.data?.error || "Error al registrarse. Intenta nuevamente.";
+      alert(errorMsg);
     }
   };
 
@@ -45,12 +59,12 @@ const Register: React.FC = () => {
             <div className="form-box">
                 <hr></hr>
                 <div>
-                    <label htmlFor="usuario">Usuario</label>
+                    <label htmlFor="nombre">Nombre</label>
                     <input
                     type="text"
-                    id="usuario"
-                    name="usuario"
-                    value={registerData.usuario}
+                    id="nombre"
+                    name="nombre"
+                    value={registerData.nombre}
                     onChange={handleChange}
                     required
                     />
@@ -59,12 +73,23 @@ const Register: React.FC = () => {
                 <div>
                     <label htmlFor="email">Correo</label>
                     <input
-                    type="text"
+                    type="email"
                     id="email"
                     name="email"
                     value={registerData.email}
                     onChange={handleChange}
                     required
+                    />
+                </div>
+
+                <div>
+                    <label htmlFor="telefono">Teléfono (opcional)</label>
+                    <input
+                    type="tel"
+                    id="telefono"
+                    name="telefono"
+                    value={registerData.telefono}
+                    onChange={handleChange}
                     />
                 </div>
 

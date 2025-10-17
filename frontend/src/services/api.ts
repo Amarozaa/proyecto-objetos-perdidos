@@ -8,6 +8,16 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true, // Necesario para enviar cookies (JWT) en cada request
+});
+
+// Interceptor para agregar CSRF token automáticamente a cada request
+api.interceptors.request.use((config) => {
+  const csrfToken = localStorage.getItem('csrfToken');
+  if (csrfToken) {
+    config.headers['X-CSRF-Token'] = csrfToken;
+  }
+  return config;
 });
 
 // Servicios para publicaciones
@@ -149,16 +159,53 @@ export const usuariosApi = {
   },
 
   // Crear nuevo usuario
-  crear: async (): Promise<Usuario> => {
-    const response = await api.post('/usuarios');
+  crear: async (userData: { nombre: string; email: string; password: string; telefono?: string }): Promise<Usuario> => {
+    const response = await api.post('/usuarios', userData);
     return response.data;
   },
 
   // Autenticar usuario
-  auth: async (usuario: string, password: string): Promise<Usuario> => {
-    const response = await api.post('/login', { usuario, password });
-    // conectar a backend
+  auth: async (email: string, password: string): Promise<Usuario> => {
+    const response = await api.post('/login', { email, password });
+    
+    // Guardar CSRF token en localStorage (Flujo 4.0 del PPT)
+    const csrfToken = response.headers['x-csrf-token'];
+    if (csrfToken) {
+      localStorage.setItem('csrfToken', csrfToken);
+    }
+    
+    // Configurar axios para enviar CSRF en todas las peticiones futuras
+    api.defaults.headers.common['X-CSRF-Token'] = csrfToken;
+    
     return response.data;
+  },
+
+  // Cerrar sesión
+  logout: async (): Promise<void> => {
+    await api.post('/login/logout', {}, {
+      headers: {
+        'X-CSRF-Token': localStorage.getItem('csrfToken')
+      }
+    });
+    localStorage.removeItem('csrfToken');
+    delete api.defaults.headers.common['X-CSRF-Token'];
+  },
+
+  // Obtener usuario actual (para restablecer sesión)
+  me: async (): Promise<Usuario | null> => {
+    try {
+      const csrfToken = localStorage.getItem('csrfToken');
+      if (!csrfToken) return null;
+      
+      const response = await api.get('/login/me', {
+        headers: {
+          'X-CSRF-Token': csrfToken
+        }
+      });
+      return response.data;
+    } catch {
+      return null;
+    }
   }
 };
 

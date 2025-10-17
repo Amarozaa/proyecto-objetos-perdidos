@@ -7,8 +7,8 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
 
   const [loginData, setLoginData] = useState({
-    usuario : "",
-    password : "",
+    email: "",
+    password: "",
   });
 
   const handleChange = (
@@ -26,13 +26,13 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const { usuario, password } = loginData;
-      const data = await usuariosApi.auth(usuario, password);
+      const { email, password } = loginData;
+      const data = await usuariosApi.auth(email, password);
       alert("¡Se ha ingresado a la cuenta exitosamente!");
       console.log("Usuario autenticado:", data.nombre);
       navigate("/");
     } catch {
-      alert("Error al crear iniciar sesión. Intenta nuevamente.");
+      alert("Error al iniciar sesión. Verifica tus credenciales.");
     }
   };
 
@@ -46,12 +46,12 @@ const Login: React.FC = () => {
             <div className="form-box">
                 <hr></hr>
                 <div>
-                    <label htmlFor="usuario">Usuario</label>
+                    <label htmlFor="email">Email</label>
                     <input
-                    type="text"
-                    id="usuario"
-                    name="usuario"
-                    value={loginData.usuario}
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={loginData.email}
                     onChange={handleChange}
                     required
                     />
