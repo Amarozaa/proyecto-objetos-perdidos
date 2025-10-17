@@ -153,6 +153,13 @@ export const usuariosApi = {
     const response = await api.post('/usuarios', usuario);
     return response.data;
   },
+
+  // Autenticar usuario
+  auth: async (usuario: string, password: string): Promise<Usuario> => {
+    const response = await api.post('/login', { usuario, password });
+    // conectar a backend
+    return response.data;
+  }
 };
 
 export const displayApi = {

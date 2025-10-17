@@ -1,30 +1,43 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Inicio from "./pages/Inicio";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import ListadoObjetosPerdidos from "./pages/ListadoObjetosPerdidos";
 import FormularioPublicacion from "./pages/FormularioPublicacion";
 import Navbar from "./pages/Navbar";
 import Perfil from "./pages/Perfil";
+import Login from "./pages/Login";
 
 const PublicacionDetalle = React.lazy(() => import("./pages/PublicacionDetalle"));
 
 function App() {
   return (
     <BrowserRouter>
-      <Navbar /> 
+      <MainRoutes />
+    </BrowserRouter>
+  );
+}
+
+function MainRoutes() {
+  const location = useLocation();
+  const hideNavbar = location.pathname === "/";
+
+  return (
+    <>
+      {!hideNavbar && <Navbar />}
       <Routes>
-        <Route path="/" element={<Inicio />} />
+        <Route path="/" element={<Login />} />
         <Route path="/listado" element={<ListadoObjetosPerdidos />} />
         <Route path="/formulario" element={<FormularioPublicacion />} />
-
-        <Route path="/publicacion/:id" element={
-          <React.Suspense fallback={<div>Cargando...</div>}>
-            <PublicacionDetalle />
-          </React.Suspense>
-        } />
+        <Route
+          path="/publicacion/:id"
+          element={
+            <React.Suspense fallback={<div>Cargando...</div>}>
+              <PublicacionDetalle />
+            </React.Suspense>
+          }
+        />
         <Route path="/perfil/:id" element={<Perfil />} />
       </Routes>
-    </BrowserRouter>
+    </>
   );
 }
 
