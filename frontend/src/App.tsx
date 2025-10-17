@@ -14,7 +14,7 @@ function App() {
       <Navbar /> 
       <Routes>
         <Route path="/" element={<Inicio />} />
-        <Route path="/listado" element={<ListadoObjetosPerdidos />} />
+        <Route path="/publicaciones" element={<ListadoObjetosPerdidos />} />
         <Route path="/formulario" element={<FormularioPublicacion />} />
 
         <Route path="/publicacion/:id" element={

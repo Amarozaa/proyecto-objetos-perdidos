@@ -17,11 +17,11 @@ const Perfil: React.FC = () => {
     const fetchData = async () => {
       if (!id) return;
       try {
-        const userData = await usuariosApi.obtenerPorId(Number(id));
+        const userData = await usuariosApi.obtenerPorId(id);
         setUsuario(userData);
 
         const publicacionesData = await publicacionesApi.obtenerTodasUsuario(
-          Number(id)
+          id
         );
         setPublicaciones(publicacionesData);
       } catch (error) {

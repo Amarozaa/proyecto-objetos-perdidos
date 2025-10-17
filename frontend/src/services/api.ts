@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Publicacion, CrearPublicacion, Usuario } from '../types/types';
+import type { Publicacion, CrearPublicacion, Usuario, UsuarioFormData } from '../types/types';
 
 const API_BASE_URL = '/api';
 
@@ -8,81 +8,63 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true, // Para cookies de autenticación
 });
+
+// Interceptor para añadir token JWT a las peticiones
+api.interceptors.request.use(
+  (config) => {
+    // El token se enviará automáticamente como cookie httpOnly
+    // No necesitamos añadirlo manualmente al Authorization header
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Interceptor para manejar respuestas y errores
+api.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    if (error.response?.status === 401) {
+      // Token expirado o inválido
+      localStorage.removeItem('user');
+      // Redirigir al login si es necesario
+      if (window.location.pathname !== '/login') {
+        window.location.href = '/login';
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 
 // Servicios para publicaciones
 export const publicacionesApi = {
   // Obtener todas las publicaciones con datos de usuario expandidos
   obtenerTodas: async (): Promise<Publicacion[]> => {
-    const [publicacionesResponse, usuariosResponse] = await Promise.all([
-      api.get('/publicaciones'),
-      api.get('/usuarios')
-    ]);
-
-    const publicaciones = publicacionesResponse.data;
-    const usuarios = usuariosResponse.data;
-
-    // Expandir los datos del usuario
-    return publicaciones.map((pub: Publicacion) => ({
-      ...pub,
-      usuario: usuarios.find((u: Usuario) => u.id === pub.usuario_id) || {
-        id: pub.usuario_id,
-        nombre: 'Usuario desconocido',
-        email: '',
-        password: '',
-        telefono: ''
-      }
-    }));
+    const response = await api.get('/publicaciones');
+    
+    // El backend devuelve { publicaciones: [...], pagination: {...} }
+    return response.data.publicaciones || [];
   },
 
   // Obtener publicación por ID con datos de usuario expandidos
   obtenerPorId: async (id: string): Promise<Publicacion> => {
-    const [publicacionResponse, usuariosResponse] = await Promise.all([
-      api.get(`/publicaciones/${id}`),
-      api.get('/usuarios')
-    ]);
-
-    const publicacion = publicacionResponse.data;
-    const usuarios = usuariosResponse.data;
-
-    return {
-      ...publicacion,
-      usuario: usuarios.find((u: Usuario) => u.id === publicacion.usuario_id) || {
-        id: publicacion.usuario_id,
-        nombre: 'Usuario desconocido',
-        email: '',
-        password: '',
-        telefono: ''
-      }
-    };
+    const response = await api.get(`/publicaciones/${id}`);
+    return response.data;
   },
 
   // Obtener todas las publicaciones de un usuario
-  obtenerTodasUsuario: async (user_id: number): Promise<Publicacion[]> => {
-      const [publicacionesResponse, usuariosResponse] = await Promise.all([
-        api.get('/publicaciones'),
-        api.get('/usuarios')
-      ]);
-
-      const publicaciones = publicacionesResponse.data;
-      const usuarios = usuariosResponse.data;
-
-      return publicaciones
-        .filter((pub: Publicacion) => pub.usuario_id === user_id)
-        .map((pub: Publicacion) => ({
-        ...pub,
-        usuario: usuarios.find((u: Usuario) => u.id === pub.usuario_id) || {
-          id: pub.usuario_id,
-          nombre: 'Usuario desconocido',
-          email: '',
-          password: '',
-          telefono: ''
-      }
-    }));
+  obtenerTodasUsuario: async (user_id: string): Promise<Publicacion[]> => {
+      const response = await api.get(`/publicaciones?usuario_id=${user_id}`);
+      return response.data.publicaciones || [];
   },
 
   // Crear nueva publicación
-  crear: async (publicacion: CrearPublicacion & { usuario_id: number }): Promise<Publicacion> => {
+  crear: async (publicacion: CrearPublicacion): Promise<Publicacion> => {
     const nuevaPublicacion = {
       ...publicacion,
       estado: 'No resuelto' as const,
@@ -90,24 +72,17 @@ export const publicacionesApi = {
     };
 
     const response = await api.post('/publicaciones', nuevaPublicacion);
-
-    // Obtener datos del usuario para la respuesta
-    const usuarioResponse = await api.get(`/usuarios/${publicacion.usuario_id}`);
-
-    return {
-      ...response.data,
-      usuario: usuarioResponse.data
-    };
+    return response.data;
   },
 
   // Actualizar publicación
-  actualizar: async (id: number, publicacion: Partial<Publicacion>): Promise<Publicacion> => {
+  actualizar: async (id: string, publicacion: Partial<Publicacion>): Promise<Publicacion> => {
     const response = await api.put(`/publicaciones/${id}`, publicacion);
     return response.data;
   },
 
   // Eliminar publicación
-  eliminar: async (id: number): Promise<void> => {
+  eliminar: async (id: string): Promise<void> => {
     await api.delete(`/publicaciones/${id}`);
   },
 
@@ -124,13 +99,13 @@ export const publicacionesApi = {
     });
 
     const response = await api.get(`/publicaciones?${params.toString()}`);
-    return response.data;
+    return response.data.publicaciones || [];
   },
 
   // Buscar publicaciones por texto
   buscar: async (query: string): Promise<Publicacion[]> => {
     const response = await api.get(`/publicaciones?q=${encodeURIComponent(query)}`);
-    return response.data;
+    return response.data.publicaciones || [];
   },
 };
 
@@ -143,13 +118,13 @@ export const usuariosApi = {
   },
 
   // Obtener usuario por ID
-  obtenerPorId: async (id: number): Promise<Usuario> => {
+  obtenerPorId: async (id: string): Promise<Usuario> => {
     const response = await api.get(`/usuarios/${id}`);
     return response.data;
   },
 
   // Crear nuevo usuario
-  crear: async (usuario: Omit<Usuario, 'id'>): Promise<Usuario> => {
+  crear: async (usuario: UsuarioFormData): Promise<Usuario> => {
     const response = await api.post('/usuarios', usuario);
     return response.data;
   },
@@ -198,6 +173,43 @@ export const displayApi = {
     }
   },
 
+};
+
+// Servicios para autenticación
+export const authApi = {
+  // Login
+  login: async (credentials: { email: string; password: string }): Promise<Usuario> => {
+    const response = await api.post('/login', credentials);
+    return response.data;
+  },
+
+  // Logout
+  logout: async (): Promise<void> => {
+    await api.post('/login/logout');
+    localStorage.removeItem('user');
+  },
+
+  // Obtener usuario actual
+  getCurrentUser: async (): Promise<Usuario> => {
+    const response = await api.get('/login/me');
+    return response.data;
+  },
+
+  // Verificar si el usuario está autenticado
+  isAuthenticated: (): boolean => {
+    return localStorage.getItem('user') !== null;
+  },
+
+  // Guardar usuario en localStorage (llamar después del login exitoso)
+  setCurrentUser: (user: Usuario): void => {
+    localStorage.setItem('user', JSON.stringify(user));
+  },
+
+  // Obtener usuario desde localStorage
+  getStoredUser: (): Usuario | null => {
+    const userStr = localStorage.getItem('user');
+    return userStr ? JSON.parse(userStr) : null;
+  },
 };
 
 

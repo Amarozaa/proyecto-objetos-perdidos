@@ -1,8 +1,16 @@
 export interface Usuario {
-  id: number;
+  id: string;
   nombre: string;
-  password: string;
   email: string;
+  telefono?: string;
+  imagen_url?: string;
+}
+
+// Interface para crear/actualizar usuario (incluye password)
+export interface UsuarioFormData {
+  nombre: string;
+  email: string;
+  password?: string;
   telefono?: string;
   imagen_url?: string;
 }
@@ -17,7 +25,7 @@ export type Estado = "Resuelto" | "No resuelto";
 export type Categoria = "Electrónicos" | "Ropa" | "Documentos" | "Accesorios" | "Deportes" | "Útiles" | "Otros";
 
 export interface Publicacion {
-  id: number;
+  id: string;
   titulo: string;
   descripcion: string;
   lugar: string;
@@ -27,7 +35,8 @@ export interface Publicacion {
   categoria: Categoria;
   imagen_url?: string;
   fecha_creacion?: string;
-  usuario_id: number;
+  usuario_id: string;
+  usuario?: Usuario;
 }
 
 // Interface para crear nuevas publicaciones
