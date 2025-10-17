@@ -126,9 +126,12 @@ export const createUsuario = async (req: MulterRequest, res: Response, next: Nex
       return;
     }
     
+    // Normalizar teléfono: convertir string vacío a undefined
+    const telefonoNormalizado = telefono?.trim() || undefined;
+    
     // Verificar teléfono si se proporciona
-    if (telefono) {
-      const telefonoExistente = await UsuarioModel.findOne({ telefono });
+    if (telefonoNormalizado) {
+      const telefonoExistente = await UsuarioModel.findOne({ telefono: telefonoNormalizado });
       if (telefonoExistente) {
         res.status(409).json({ 
           error: 'Ya existe un usuario registrado con este teléfono',
@@ -147,7 +150,7 @@ export const createUsuario = async (req: MulterRequest, res: Response, next: Nex
       nombre: nombre.trim(),
       passwordHash: passwordHash,
       email: email.toLowerCase().trim(),
-      telefono: telefono?.trim(),
+      telefono: telefonoNormalizado,  // Usa undefined si está vacío
       imagen_url: req.file ? `/api/images/usuarios/${req.file.filename}` : undefined
     };
     
@@ -200,18 +203,27 @@ export const updateUsuario = async (req: MulterRequest, res: Response, next: Nex
       }
     }
     
-    if (datosActualizacion.telefono) {
-      const telefonoExistente = await UsuarioModel.findOne({ 
-        telefono: datosActualizacion.telefono.trim(),
-        _id: { $ne: id }
-      });
+    // Normalizar teléfono si se proporciona (convertir string vacío a undefined)
+    if ('telefono' in datosActualizacion) {
+      const telefonoNormalizado = datosActualizacion.telefono?.trim() || undefined;
       
-      if (telefonoExistente) {
-        res.status(409).json({ 
-          error: 'Ya existe otro usuario registrado con este teléfono',
-          campo: 'telefono'
+      if (telefonoNormalizado) {
+        const telefonoExistente = await UsuarioModel.findOne({ 
+          telefono: telefonoNormalizado,
+          _id: { $ne: id }
         });
-        return;
+        
+        if (telefonoExistente) {
+          res.status(409).json({ 
+            error: 'Ya existe otro usuario registrado con este teléfono',
+            campo: 'telefono'
+          });
+          return;
+        }
+        datosActualizacion.telefono = telefonoNormalizado;
+      } else {
+        // Si el teléfono es vacío, removerlo (undefined)
+        datosActualizacion.telefono = undefined;
       }
     }
     
