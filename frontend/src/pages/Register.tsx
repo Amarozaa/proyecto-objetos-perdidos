@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { usuariosApi } from "../services/api";
 import "../styles/Login.css";
 
@@ -44,8 +44,12 @@ const Register: React.FC = () => {
       });
       alert("¡Se ha creado la cuenta exitosamente!");
       navigate("/login");
-    } catch (error: any) {
-      const errorMsg = error.response?.data?.error || "Error al registrarse. Intenta nuevamente.";
+    } catch (error: unknown) {
+      let errorMsg = "Error al registrarse. Intenta nuevamente.";
+      if (error && typeof error === 'object' && 'response' in error) {
+        const axiosError = error as { response?: { data?: { error?: string } } };
+        errorMsg = axiosError.response?.data?.error || errorMsg;
+      }
       alert(errorMsg);
     }
   };
@@ -120,8 +124,7 @@ const Register: React.FC = () => {
                 <button type="submit">Crear cuenta</button>
                 <div className="register-text">
                   <p>¿Ya tienes cuenta?</p> 
-                  <a className={`login-page${window.location.pathname === "/login" ? " active" : ""}`} 
-                    href="/login">Ingresar</a>
+                  <Link to="/login" className="login-page">Ingresar</Link>
                 </div>
                 <hr></hr>
             </div>

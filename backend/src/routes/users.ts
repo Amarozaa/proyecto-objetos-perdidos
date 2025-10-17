@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get('/', getUsuarios);
 router.post('/', upload.single('imagen'), createUsuario);
-router.get('/me', withUser, getMiPerfil); // Debe ir ANTES de /:id
+router.get('/me', withUser, getMiPerfil); 
 router.get('/:id', getUsuarioPorId);
 router.put('/:id', withUser, upload.single('imagen'), updateUsuario);
 

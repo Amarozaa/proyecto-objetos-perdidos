@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { usuariosApi } from "../services/api";
+import { useNavigate, Link } from "react-router-dom";
+import { authApi } from "../services/api";
 import "../styles/Login.css";
 
 const Login: React.FC = () => {
@@ -27,10 +27,14 @@ const Login: React.FC = () => {
     e.preventDefault();
     try {
       const { email, password } = loginData;
-      const data = await usuariosApi.auth(email, password);
+      const data = await authApi.login({ email, password });
+      
+      // Guardar usuario en localStorage
+      authApi.setCurrentUser(data);
+      
       alert("¡Se ha ingresado a la cuenta exitosamente!");
       console.log("Usuario autenticado:", data.nombre);
-      navigate("/");
+      navigate("/publicaciones");
     } catch {
       alert("Error al iniciar sesión. Verifica tus credenciales.");
     }
@@ -72,8 +76,7 @@ const Login: React.FC = () => {
                 <button type="submit">Ingresar</button>
                 <div className="register-text">
                   <p>¿No tienes cuenta?</p> 
-                  <a className={`login-page${window.location.pathname === "/register" ? " active" : ""}`} 
-                    href="/register">Regístrate</a>
+                  <Link to="/register" className="login-page">Regístrate</Link>
                 </div>
                 <hr></hr>
             </div>

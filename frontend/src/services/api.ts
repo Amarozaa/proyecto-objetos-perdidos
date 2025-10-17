@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Publicacion, CrearPublicacion, Usuario, UsuarioFormData } from '../types/types';
+import type { Publicacion, CrearPublicacion, Usuario } from '../types/types';
 
 const API_BASE_URL = '/api';
 
@@ -223,6 +223,15 @@ export const authApi = {
   // Login
   login: async (credentials: { email: string; password: string }): Promise<Usuario> => {
     const response = await api.post('/login', credentials);
+    
+    // Obtener CSRF token del header de respuesta
+    const csrfToken = response.headers['x-csrf-token'];
+    if (csrfToken) {
+      localStorage.setItem('csrfToken', csrfToken);
+      // Configurar axios para enviar CSRF en todas las peticiones futuras
+      api.defaults.headers.common['X-CSRF-Token'] = csrfToken;
+    }
+    
     return response.data;
   },
 

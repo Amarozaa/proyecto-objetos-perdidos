@@ -7,6 +7,10 @@ const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Obtener usuario actual desde localStorage
+  const currentUser = authApi.getStoredUser();
+  const userId = currentUser?.id; 
+
   const handleLogout = async () => {
     try {
       await authApi.logout();
@@ -44,7 +48,7 @@ const Navbar: React.FC = () => {
           className={`navbar-page${
             location.pathname.startsWith("/perfil") ? " active" : ""
           }`}
-          to={`/perfil/${1}`}
+          to={`/perfil/${userId}`}
         >
           Perfil
         </Link>

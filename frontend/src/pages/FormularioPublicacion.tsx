@@ -61,7 +61,7 @@ const FormularioPublicacion: React.FC = () => {
         // usuario_id se obtiene automáticamente del JWT en el backend
       });
       alert("¡Publicación creada exitosamente!");
-      navigate("/");
+      navigate("/publicaciones");
     } catch {
       alert("Error al crear la publicación. Intenta nuevamente.");
     }
