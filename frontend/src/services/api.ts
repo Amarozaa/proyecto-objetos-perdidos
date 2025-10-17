@@ -149,8 +149,8 @@ export const usuariosApi = {
   },
 
   // Crear nuevo usuario
-  crear: async (usuario: Omit<Usuario, 'id'>): Promise<Usuario> => {
-    const response = await api.post('/usuarios', usuario);
+  crear: async (): Promise<Usuario> => {
+    const response = await api.post('/usuarios');
     return response.data;
   },
 
