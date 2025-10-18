@@ -11,6 +11,8 @@ const Login: React.FC = () => {
     password: "",
   });
 
+  const [errorMsg, setErrorMsg] = useState<string>("");
+
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -25,17 +27,15 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMsg("");
     try {
       const { email, password } = loginData;
       const data = await authApi.login({ email, password });
 
       authApi.setCurrentUser(data);
-
-      alert("¡Se ha ingresado a la cuenta exitosamente!");
-      console.log("Usuario autenticado:", data.nombre);
       navigate("/publicaciones");
     } catch {
-      alert("Error al iniciar sesión. Verifica tus credenciales.");
+      setErrorMsg("Error al iniciar sesión. Verifica tus credenciales.");
     }
   };
 
@@ -48,44 +48,55 @@ const Login: React.FC = () => {
           encontrados dentro de la facultad{" "}
         </p>
         <h2>¡Ingresa a tu cuenta!</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="form-box">
-            <hr></hr>
-            <div>
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={loginData.email}
-                onChange={handleChange}
-                required
-                placeholder="ejemplo@correo.com"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="password">Contraseña</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={loginData.password}
-                onChange={handleChange}
-                required
-              />
-            </div>
-
-            <button type="submit">Ingresar</button>
-            <div className="register-text">
-              <p>¿No tienes cuenta?</p>
-              <Link to="/register" className="login-page">
-                Regístrate
-              </Link>
-            </div>
-            <hr></hr>
+        {errorMsg && (
+          <div
+            style={{
+              color: "#c62828",
+              marginBottom: "1rem",
+              fontWeight: "bold",
+            }}
+          >
+            {errorMsg}
           </div>
-        </form>
+        )}
+        <div className="form-box">
+          <hr></hr>
+          <div>
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={loginData.email}
+              onChange={handleChange}
+              required
+              placeholder="ejemplo@correo.com"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="password">Contraseña</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={loginData.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <button type="button" onClick={handleSubmit}>
+            Ingresar
+          </button>
+          <div className="register-text">
+            <p>¿No tienes cuenta?</p>
+            <Link to="/register" className="login-page">
+              Regístrate
+            </Link>
+          </div>
+          <hr></hr>
+        </div>
       </div>
     </div>
   );

@@ -79,7 +79,10 @@ const PublicacionDetalle: React.FC = () => {
     return (
       <div className="detalle-container">
         <div>No se encontró la publicación.</div>
-        <button className="boton-cerrar" onClick={() => navigate("/listado")}>
+        <button
+          className="boton-cerrar"
+          onClick={() => navigate("/publicaciones")}
+        >
           Volver al listado
         </button>
       </div>
@@ -155,7 +158,7 @@ const PublicacionDetalle: React.FC = () => {
           <div style={{ marginTop: "20px" }}>
             <button
               className="boton-cerrar"
-              onClick={() => navigate("/listado")}
+              onClick={() => navigate("/publicaciones")}
             >
               Volver al listado
             </button>

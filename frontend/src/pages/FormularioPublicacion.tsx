@@ -37,11 +37,16 @@ const FormularioPublicacion: React.FC = () => {
     }
   };
 
+  const [errorMsg, setErrorMsg] = useState<string>("");
+  const [errorDetails, setErrorDetails] = useState<string[]>([]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMsg("");
+    setErrorDetails([]);
 
     if (!authApi.isAuthenticated()) {
-      alert("Debes iniciar sesión para publicar.");
+      setErrorMsg("Debes iniciar sesión para publicar.");
       return;
     }
 
@@ -58,10 +63,33 @@ const FormularioPublicacion: React.FC = () => {
           | "Útiles"
           | "Otros",
       });
-      alert("¡Publicación creada exitosamente!");
+      setErrorMsg("");
+      setErrorDetails([]);
       navigate("/publicaciones");
-    } catch {
-      alert("Error al crear la publicación. Intenta nuevamente.");
+    } catch (error) {
+      let msg = "Error al crear la publicación. Intenta nuevamente.";
+      let detalles: string[] = [];
+      // Tipado explícito para error de Axios
+      interface AxiosError {
+        response?: {
+          data?: {
+            error?: string;
+            detalles?: string[];
+          };
+        };
+      }
+      const err = error as AxiosError;
+      if (err.response && err.response.data) {
+        msg = err.response.data.error || msg;
+        if (
+          err.response.data.detalles &&
+          Array.isArray(err.response.data.detalles)
+        ) {
+          detalles = err.response.data.detalles;
+        }
+      }
+      setErrorMsg(msg);
+      setErrorDetails(detalles);
     }
   };
 
@@ -69,6 +97,31 @@ const FormularioPublicacion: React.FC = () => {
     <div className="formulario-publicacion-container">
       <h2 style={{ marginBottom: "1.5rem" }}>Crea una publicación</h2>
       <div className="formulario-publicacion-box">
+        {errorMsg && (
+          <div
+            style={{
+              color: "#c62828",
+              marginBottom: "1rem",
+              fontWeight: "bold",
+            }}
+          >
+            {errorMsg}
+            {errorDetails.length > 0 && (
+              <ul
+                style={{
+                  marginTop: "0.5rem",
+                  paddingLeft: "1.2rem",
+                  color: "#c62828",
+                  fontWeight: "normal",
+                }}
+              >
+                {errorDetails.map((detalle, idx) => (
+                  <li key={idx}>{detalle}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
         <form onSubmit={handleSubmit}>
           <div>
             <label htmlFor="titulo">Título</label>
