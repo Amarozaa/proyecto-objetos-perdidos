@@ -29,15 +29,6 @@ const FormularioPublicacion: React.FC = () => {
     }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFormData((prev) => ({
-        ...prev,
-        imagen_url: `/images/publicaciones/${e.target.files![0].name}`,
-      }));
-    }
-  };
-
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [errorDetails, setErrorDetails] = useState<string[]>([]);
 
@@ -52,7 +43,6 @@ const FormularioPublicacion: React.FC = () => {
     }
 
     try {
-      // Validar campos requeridos antes de enviar
       if (
         !formData.titulo.trim() ||
         !formData.descripcion.trim() ||
@@ -65,7 +55,6 @@ const FormularioPublicacion: React.FC = () => {
         return;
       }
 
-      // Construir el objeto a enviar, omitiendo imagen_url si está vacío
       const publicacionBase: Omit<CrearPublicacion, "imagen_url"> = {
         titulo: formData.titulo.trim(),
         descripcion: formData.descripcion.trim(),
@@ -231,21 +220,11 @@ const FormularioPublicacion: React.FC = () => {
           </div>
 
           <div>
-            <label htmlFor="imagen">Imagen</label>
-            <input
-              id="imagen"
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              placeholder="Sube una imagen del objeto"
-            />
+            <label>Imagen</label>
+            <span style={{ color: "#888", marginLeft: "0.5rem" }}>
+              aún no disponible
+            </span>
           </div>
-
-          {formData.imagen_url && (
-            <p>
-              Imagen seleccionada: <strong>{formData.imagen_url}</strong>
-            </p>
-          )}
 
           <button type="submit">Publicar</button>
         </form>
