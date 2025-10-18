@@ -40,7 +40,6 @@ const FormularioPublicacion: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Verificar autenticación usando authApi
     if (!authApi.isAuthenticated()) {
       alert("Debes iniciar sesión para publicar.");
       return;
@@ -58,7 +57,6 @@ const FormularioPublicacion: React.FC = () => {
           | "Deportes"
           | "Útiles"
           | "Otros",
-        // usuario_id se obtiene automáticamente del JWT en el backend
       });
       alert("¡Publicación creada exitosamente!");
       navigate("/publicaciones");

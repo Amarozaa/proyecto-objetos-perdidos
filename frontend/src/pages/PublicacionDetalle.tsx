@@ -32,7 +32,6 @@ const PublicacionDetalle: React.FC = () => {
     }
   }, [id]);
 
-  // Función para formatear fecha de manera amigable
   const formatearFechaAmigable = (fechaString: string) => {
     const fecha = new Date(fechaString);
     const ahora = new Date();
@@ -62,7 +61,6 @@ const PublicacionDetalle: React.FC = () => {
     }
   };
 
-  // Switch según tipo de publicación
   const obtenerTextoSegunTipo = () => {
     if (!publicacion) return { accion: "", icono: "" };
 

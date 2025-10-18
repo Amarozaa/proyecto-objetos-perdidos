@@ -34,7 +34,6 @@ const Register: React.FC = () => {
     setErrorMsg("");
     setErrorDetails([]);
 
-    // Validar que las contraseñas coincidan
     if (registerData.password !== registerData.confirm_password) {
       setErrorMsg("Las contraseñas no coinciden");
       return;
@@ -52,7 +51,6 @@ const Register: React.FC = () => {
     } catch (error) {
       let msg = "Error al registrarse. Intenta nuevamente.";
       let detalles: string[] = [];
-      // Tipado explícito para error de Axios
       interface AxiosError {
         response?: {
           data?: {

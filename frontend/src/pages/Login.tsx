@@ -29,7 +29,6 @@ const Login: React.FC = () => {
       const { email, password } = loginData;
       const data = await authApi.login({ email, password });
 
-      // Guardar usuario en localStorage
       authApi.setCurrentUser(data);
 
       alert("¡Se ha ingresado a la cuenta exitosamente!");

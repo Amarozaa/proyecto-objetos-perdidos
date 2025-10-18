@@ -13,24 +13,21 @@ describe("when there are initially some publicaciones saved", () => {
   let usuarioId: string;
 
   beforeEach(async () => {
-    // Limpiar base de datos
     await PublicacionModel.deleteMany({});
     await UsuarioModel.deleteMany({});
 
-    // Crear un usuario para las publicaciones con email único
     const timestamp = Date.now();
     const usuario = new UsuarioModel({
       nombre: "Test User",
       email: `testuser${timestamp}@test.com`,
-      password: "password123"
+      password: "password123",
     });
     const savedUsuario = await usuario.save();
     usuarioId = savedUsuario._id.toString();
 
-    // Crear publicaciones con el usuario
-    const publicacionesWithUserId = helper.initialPublicaciones.map(pub => ({
+    const publicacionesWithUserId = helper.initialPublicaciones.map((pub) => ({
       ...pub,
-      usuario_id: usuarioId
+      usuario_id: usuarioId,
     }));
 
     await PublicacionModel.insertMany(publicacionesWithUserId);
@@ -45,32 +42,40 @@ describe("when there are initially some publicaciones saved", () => {
 
   test("all publicaciones are returned with pagination", async () => {
     const response = await api.get("/api/publicaciones");
-    
-    assert.strictEqual(response.body.publicaciones.length, helper.initialPublicaciones.length);
+
+    assert.strictEqual(
+      response.body.publicaciones.length,
+      helper.initialPublicaciones.length
+    );
     assert(response.body.pagination);
-    assert.strictEqual(response.body.pagination.total, helper.initialPublicaciones.length);
+    assert.strictEqual(
+      response.body.pagination.total,
+      helper.initialPublicaciones.length
+    );
   });
 
   test("a specific publicacion is within the returned publicaciones", async () => {
     const response = await api.get("/api/publicaciones");
-    const titulos = response.body.publicaciones.map((p: { titulo: string }) => p.titulo);
+    const titulos = response.body.publicaciones.map(
+      (p: { titulo: string }) => p.titulo
+    );
     assert(titulos.includes("iPhone perdido"));
   });
 
   test("publicaciones include populated usuario data", async () => {
     const response = await api.get("/api/publicaciones");
-    
+
     assert(response.body.publicaciones.length > 0);
     const publicacion = response.body.publicaciones[0];
-    
-    // Verificar que usuario_id existe y es un objeto poblado
+
     assert(publicacion.usuario_id);
-    assert(typeof publicacion.usuario_id === 'object');
-    assert(publicacion.usuario_id.nombre, 'Usuario should have nombre');
-    assert(publicacion.usuario_id.email, 'Usuario should have email');
-    
-    // Verificar que no incluye password
-    assert(!publicacion.usuario_id.password, 'Usuario should not have password');
+    assert(typeof publicacion.usuario_id === "object");
+    assert(publicacion.usuario_id.nombre, "Usuario should have nombre");
+    assert(publicacion.usuario_id.email, "Usuario should have email");
+    assert(
+      !publicacion.usuario_id.password,
+      "Usuario should not have password"
+    );
   });
 
   describe("filtering publicaciones", () => {
@@ -79,7 +84,9 @@ describe("when there are initially some publicaciones saved", () => {
         .get("/api/publicaciones?tipo=Perdido")
         .expect(200);
 
-      const perdidas = response.body.publicaciones.filter((p: { tipo: string }) => p.tipo === "Perdido");
+      const perdidas = response.body.publicaciones.filter(
+        (p: { tipo: string }) => p.tipo === "Perdido"
+      );
       assert.strictEqual(perdidas.length, response.body.publicaciones.length);
     });
 
@@ -88,8 +95,13 @@ describe("when there are initially some publicaciones saved", () => {
         .get("/api/publicaciones?categoria=Electrónicos")
         .expect(200);
 
-      const electronicas = response.body.publicaciones.filter((p: { categoria: string }) => p.categoria === "Electrónicos");
-      assert.strictEqual(electronicas.length, response.body.publicaciones.length);
+      const electronicas = response.body.publicaciones.filter(
+        (p: { categoria: string }) => p.categoria === "Electrónicos"
+      );
+      assert.strictEqual(
+        electronicas.length,
+        response.body.publicaciones.length
+      );
     });
 
     test("can filter by estado", async () => {
@@ -97,8 +109,13 @@ describe("when there are initially some publicaciones saved", () => {
         .get("/api/publicaciones?estado=No resuelto")
         .expect(200);
 
-      const noResueltas = response.body.publicaciones.filter((p: { estado: string }) => p.estado === "No resuelto");
-      assert.strictEqual(noResueltas.length, response.body.publicaciones.length);
+      const noResueltas = response.body.publicaciones.filter(
+        (p: { estado: string }) => p.estado === "No resuelto"
+      );
+      assert.strictEqual(
+        noResueltas.length,
+        response.body.publicaciones.length
+      );
     });
   });
 
@@ -112,13 +129,21 @@ describe("when there are initially some publicaciones saved", () => {
         .expect(200)
         .expect("Content-Type", /application\/json/);
 
-      assert.strictEqual(resultPublicacion.body.titulo, publicacionToView.titulo);
-      assert.strictEqual(resultPublicacion.body.descripcion, publicacionToView.descripcion);
-      
-      // Verificar que usuario_id está poblado correctamente
+      assert.strictEqual(
+        resultPublicacion.body.titulo,
+        publicacionToView.titulo
+      );
+      assert.strictEqual(
+        resultPublicacion.body.descripcion,
+        publicacionToView.descripcion
+      );
+
       assert(resultPublicacion.body.usuario_id);
-      assert(typeof resultPublicacion.body.usuario_id === 'object');
-      if (resultPublicacion.body.usuario_id && typeof resultPublicacion.body.usuario_id === 'object') {
+      assert(typeof resultPublicacion.body.usuario_id === "object");
+      if (
+        resultPublicacion.body.usuario_id &&
+        typeof resultPublicacion.body.usuario_id === "object"
+      ) {
         assert(resultPublicacion.body.usuario_id.nombre);
       }
     });
@@ -126,17 +151,13 @@ describe("when there are initially some publicaciones saved", () => {
     test("fails with statuscode 404 if publicacion does not exist", async () => {
       const validNonexistingId = await helper.nonExistingPublicacionId();
 
-      await api
-        .get(`/api/publicaciones/${validNonexistingId}`)
-        .expect(404);
+      await api.get(`/api/publicaciones/${validNonexistingId}`).expect(404);
     });
 
     test("fails with statuscode 400 if id is invalid", async () => {
       const invalidId = "5a3d5da59070081a82a3445";
 
-      await api
-        .get(`/api/publicaciones/${invalidId}`)
-        .expect(400);
+      await api.get(`/api/publicaciones/${invalidId}`).expect(400);
     });
   });
 
@@ -151,7 +172,7 @@ describe("when there are initially some publicaciones saved", () => {
         fecha: "2024-01-20",
         tipo: "Perdido",
         categoria: "Documentos",
-        usuario_id: usuarioId
+        usuario_id: usuarioId,
       };
 
       const savedPublicacion = await api
@@ -161,12 +182,15 @@ describe("when there are initially some publicaciones saved", () => {
         .expect("Content-Type", /application\/json/);
 
       assert.strictEqual(savedPublicacion.body.titulo, newPublicacion.titulo);
-      assert.strictEqual(savedPublicacion.body.estado, "No resuelto"); // Default value
+      assert.strictEqual(savedPublicacion.body.estado, "No resuelto");
 
       const publicacionesAtEnd = await helper.publicacionesInDb();
-      assert.strictEqual(publicacionesAtEnd.length, publicacionesAtStart.length + 1);
+      assert.strictEqual(
+        publicacionesAtEnd.length,
+        publicacionesAtStart.length + 1
+      );
 
-      const titulos = publicacionesAtEnd.map(p => p.titulo);
+      const titulos = publicacionesAtEnd.map((p) => p.titulo);
       assert(titulos.includes(newPublicacion.titulo));
     });
 
@@ -181,29 +205,29 @@ describe("when there are initially some publicaciones saved", () => {
         fecha: "2024-01-20",
         tipo: "Perdido",
         categoria: "Otros",
-        usuario_id: nonExistingUserId
+        usuario_id: nonExistingUserId,
       };
 
-      await api
-        .post("/api/publicaciones")
-        .send(newPublicacion)
-        .expect(404);
+      await api.post("/api/publicaciones").send(newPublicacion).expect(404);
 
       const publicacionesAtEnd = await helper.publicacionesInDb();
-      assert.strictEqual(publicacionesAtEnd.length, publicacionesAtStart.length);
+      assert.strictEqual(
+        publicacionesAtEnd.length,
+        publicacionesAtStart.length
+      );
     });
 
     test("fails with status code 400 if data invalid", async () => {
       const publicacionesAtStart = await helper.publicacionesInDb();
 
       const newPublicacion = {
-        titulo: "AB", // Muy corto
-        descripcion: "Corta", // Muy corta
-        lugar: "", // Vacío
+        titulo: "AB",
+        descripcion: "Corta",
+        lugar: "",
         fecha: "fecha-invalida",
         tipo: "TipoInvalido",
         categoria: "CategoriaInvalida",
-        usuario_id: "id-invalido"
+        usuario_id: "id-invalido",
       };
 
       const result = await api
@@ -216,7 +240,10 @@ describe("when there are initially some publicaciones saved", () => {
       assert(result.body.detalles);
 
       const publicacionesAtEnd = await helper.publicacionesInDb();
-      assert.strictEqual(publicacionesAtEnd.length, publicacionesAtStart.length);
+      assert.strictEqual(
+        publicacionesAtEnd.length,
+        publicacionesAtStart.length
+      );
     });
 
     test("fails without content", async () => {
@@ -224,21 +251,21 @@ describe("when there are initially some publicaciones saved", () => {
 
       const newPublicacion = {};
 
-      await api
-        .post("/api/publicaciones")
-        .send(newPublicacion)
-        .expect(400);
+      await api.post("/api/publicaciones").send(newPublicacion).expect(400);
 
       const publicacionesAtEnd = await helper.publicacionesInDb();
-      assert.strictEqual(publicacionesAtEnd.length, publicacionesAtStart.length);
+      assert.strictEqual(
+        publicacionesAtEnd.length,
+        publicacionesAtStart.length
+      );
     });
 
     test("rejects future dates", async () => {
       const publicacionesAtStart = await helper.publicacionesInDb();
 
       const futureDate = new Date();
-      futureDate.setDate(futureDate.getDate() + 30); // 30 días en el futuro
-      const futureDateString = futureDate.toISOString().split('T')[0];
+      futureDate.setDate(futureDate.getDate() + 30);
+      const futureDateString = futureDate.toISOString().split("T")[0];
 
       const newPublicacion = {
         titulo: "Publicación futura",
@@ -247,16 +274,16 @@ describe("when there are initially some publicaciones saved", () => {
         fecha: futureDateString,
         tipo: "Perdido",
         categoria: "Otros",
-        usuario_id: usuarioId
+        usuario_id: usuarioId,
       };
 
-      await api
-        .post("/api/publicaciones")
-        .send(newPublicacion)
-        .expect(400);
+      await api.post("/api/publicaciones").send(newPublicacion).expect(400);
 
       const publicacionesAtEnd = await helper.publicacionesInDb();
-      assert.strictEqual(publicacionesAtEnd.length, publicacionesAtStart.length);
+      assert.strictEqual(
+        publicacionesAtEnd.length,
+        publicacionesAtStart.length
+      );
     });
   });
 
@@ -276,7 +303,7 @@ describe("when there are initially some publicaciones saved", () => {
         .expect("Content-Type", /application\/json/);
 
       assert.strictEqual(result.body.estado, "Resuelto");
-      assert.strictEqual(result.body.titulo, publicacionToUpdate.titulo); // Otros campos no cambiaron
+      assert.strictEqual(result.body.titulo, publicacionToUpdate.titulo);
     });
 
     test("fails with statuscode 404 if publicacion does not exist", async () => {

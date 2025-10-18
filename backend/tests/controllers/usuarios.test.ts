@@ -11,8 +11,7 @@ const api = supertest(app);
 describe("when there are initially some users saved", () => {
   beforeEach(async () => {
     await UsuarioModel.deleteMany({});
-    
-    // Crear usuarios uno por uno para evitar problemas con hash de passwords
+
     for (const usuario of helper.initialUsuarios) {
       const usuarioObject = new UsuarioModel(usuario);
       await usuarioObject.save();
@@ -62,17 +61,13 @@ describe("when there are initially some users saved", () => {
     test("fails with statuscode 404 if user does not exist", async () => {
       const validNonexistingId = await helper.nonExistingUserId();
 
-      await api
-        .get(`/api/usuarios/${validNonexistingId}`)
-        .expect(404);
+      await api.get(`/api/usuarios/${validNonexistingId}`).expect(404);
     });
 
     test("fails with statuscode 400 if id is invalid", async () => {
       const invalidId = "5a3d5da59070081a82a3445";
 
-      await api
-        .get(`/api/usuarios/${invalidId}`)
-        .expect(400);
+      await api.get(`/api/usuarios/${invalidId}`).expect(400);
     });
   });
 
@@ -80,13 +75,12 @@ describe("when there are initially some users saved", () => {
     test("succeeds with valid data", async () => {
       const usuariosAtStart = await helper.usuariosInDb();
 
-      // Usar timestamp para garantizar unicidad
       const timestamp = Date.now();
       const newUsuario = {
         nombre: "Ana López",
-        email: `ana${timestamp}@test.com`, 
+        email: `ana${timestamp}@test.com`,
         password: "password789",
-        telefono: `+569${timestamp.toString().slice(-8)}` // Teléfono único
+        telefono: `+569${timestamp.toString().slice(-8)}`,
       };
 
       const response = await api
@@ -95,7 +89,6 @@ describe("when there are initially some users saved", () => {
         .expect(201)
         .expect("Content-Type", /application\/json/);
 
-      // Verificar que la respuesta NO incluye password
       assert(!response.body.hasOwnProperty("password"));
       assert.strictEqual(response.body.nombre, newUsuario.nombre);
       assert.strictEqual(response.body.email, newUsuario.email);
@@ -103,7 +96,7 @@ describe("when there are initially some users saved", () => {
       const usuariosAtEnd = await helper.usuariosInDb();
       assert.strictEqual(usuariosAtEnd.length, usuariosAtStart.length + 1);
 
-      const nombres = usuariosAtEnd.map(u => u.nombre);
+      const nombres = usuariosAtEnd.map((u) => u.nombre);
       assert(nombres.includes(newUsuario.nombre));
     });
 
@@ -112,8 +105,8 @@ describe("when there are initially some users saved", () => {
 
       const newUsuario = {
         nombre: "Usuario Duplicado",
-        email: "juan@test.com", // Email que ya existe
-        password: "password123"
+        email: "juan@test.com",
+        password: "password123",
       };
 
       const result = await api
@@ -132,9 +125,9 @@ describe("when there are initially some users saved", () => {
       const usuariosAtStart = await helper.usuariosInDb();
 
       const newUsuario = {
-        nombre: "", // Nombre vacío
-        email: "email-invalido", // Email inválido
-        password: "123" // Password muy corto
+        nombre: "",
+        email: "email-invalido",
+        password: "123",
       };
 
       const result = await api
@@ -155,10 +148,7 @@ describe("when there are initially some users saved", () => {
 
       const newUsuario = {};
 
-      await api
-        .post("/api/usuarios")
-        .send(newUsuario)
-        .expect(400);
+      await api.post("/api/usuarios").send(newUsuario).expect(400);
 
       const usuariosAtEnd = await helper.usuariosInDb();
       assert.strictEqual(usuariosAtEnd.length, usuariosAtStart.length);

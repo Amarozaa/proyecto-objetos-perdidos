@@ -15,7 +15,6 @@ const ListadoObjetosPerdidos: React.FC = () => {
     publicacionesApi.obtenerTodas().then(setPublicaciones);
   }, []);
 
-  // Función para formatear fecha de manera amigable
   const formatearFechaAmigable = (fechaString: string) => {
     const fecha = new Date(fechaString);
     const ahora = new Date();
@@ -45,7 +44,6 @@ const ListadoObjetosPerdidos: React.FC = () => {
     }
   };
 
-  // Filtrar publicaciones según el tipo seleccionado
   const publicacionesFiltradas = publicaciones.filter((pub) => {
     if (filtroTipo === "Todos") return true;
     return pub.tipo === filtroTipo;
