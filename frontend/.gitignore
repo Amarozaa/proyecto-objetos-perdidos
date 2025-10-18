@@ -1,8 +1,5 @@
 # Node modules (frontend)
-frontend/node_modules/
-
-# Node modules (si alguna vez pones backend en Node)
-backend/node_modules/
+node_modules/
 
 # Logs
 *.log
@@ -13,8 +10,7 @@ npm-debug.log*
 Thumbs.db
 
 # Build / dist
-front-end/dist/
-back-end/dist/
+dist/
 
 # IDEs
 .vscode/
