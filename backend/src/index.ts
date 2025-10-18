@@ -13,4 +13,5 @@ declare global {
 
 app.listen(config.PORT, () => {
   logger.info(`Server running on port ${config.PORT}`);
+  logger.info(`Accede a la app en: http://localhost:${config.PORT}`);
 });
