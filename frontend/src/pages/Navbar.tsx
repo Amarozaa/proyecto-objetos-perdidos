@@ -6,18 +6,15 @@ import "../styles/Navbar.css";
 const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
-  // Obtener usuario actual desde localStorage
   const currentUser = authApi.getStoredUser();
-  const userId = currentUser?.id; 
+  const userId = currentUser?.id;
 
   const handleLogout = async () => {
     try {
       await authApi.logout();
       navigate('/');
     } catch (error) {
-      console.error('Error al cerrar sesión:', error);
-      // Limpiar localStorage de todas formas
+      console.error("Error al cerrar sesión:", error);
       localStorage.removeItem('user');
       navigate('/');
     }

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { publicacionesApi, authApi } from "../services/api";
 import "../styles/FormularioPublicacion.css";
+import type { CrearPublicacion } from "../types/types";
 
 const FormularioPublicacion: React.FC = () => {
   const navigate = useNavigate();
@@ -28,27 +29,37 @@ const FormularioPublicacion: React.FC = () => {
     }));
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFormData((prev) => ({
-        ...prev,
-        imagen_url: `/images/publicaciones/${e.target.files![0].name}`,
-      }));
-    }
-  };
+  const [errorMsg, setErrorMsg] = useState<string>("");
+  const [errorDetails, setErrorDetails] = useState<string[]>([]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMsg("");
+    setErrorDetails([]);
 
-    // Verificar autenticación usando authApi
     if (!authApi.isAuthenticated()) {
-      alert("Debes iniciar sesión para publicar.");
+      setErrorMsg("Debes iniciar sesión para publicar.");
       return;
     }
 
     try {
-      await publicacionesApi.crear({
-        ...formData,
+      if (
+        !formData.titulo.trim() ||
+        !formData.descripcion.trim() ||
+        !formData.lugar.trim() ||
+        !formData.fecha ||
+        !formData.tipo ||
+        !formData.categoria
+      ) {
+        setErrorMsg("Todos los campos son obligatorios.");
+        return;
+      }
+
+      const publicacionBase: Omit<CrearPublicacion, "imagen_url"> = {
+        titulo: formData.titulo.trim(),
+        descripcion: formData.descripcion.trim(),
+        lugar: formData.lugar.trim(),
+        fecha: formData.fecha,
         tipo: formData.tipo as "Perdido" | "Encontrado",
         categoria: formData.categoria as
           | "Electrónicos"
@@ -58,12 +69,39 @@ const FormularioPublicacion: React.FC = () => {
           | "Deportes"
           | "Útiles"
           | "Otros",
-        // usuario_id se obtiene automáticamente del JWT en el backend
-      });
-      alert("¡Publicación creada exitosamente!");
+      };
+      const publicacion: CrearPublicacion =
+        formData.imagen_url && formData.imagen_url.trim() !== ""
+          ? { ...publicacionBase, imagen_url: formData.imagen_url }
+          : publicacionBase;
+
+      await publicacionesApi.crear(publicacion);
+      setErrorMsg("");
+      setErrorDetails([]);
       navigate("/publicaciones");
-    } catch {
-      alert("Error al crear la publicación. Intenta nuevamente.");
+    } catch (error) {
+      let msg = "Error al crear la publicación. Intenta nuevamente.";
+      let detalles: string[] = [];
+      interface AxiosError {
+        response?: {
+          data?: {
+            error?: string;
+            detalles?: string[];
+          };
+        };
+      }
+      const err = error as AxiosError;
+      if (err.response && err.response.data) {
+        msg = err.response.data.error || msg;
+        if (
+          err.response.data.detalles &&
+          Array.isArray(err.response.data.detalles)
+        ) {
+          detalles = err.response.data.detalles;
+        }
+      }
+      setErrorMsg(msg);
+      setErrorDetails(detalles);
     }
   };
 
@@ -71,6 +109,31 @@ const FormularioPublicacion: React.FC = () => {
     <div className="formulario-publicacion-container">
       <h2 style={{ marginBottom: "1.5rem" }}>Crea una publicación</h2>
       <div className="formulario-publicacion-box">
+        {errorMsg && (
+          <div
+            style={{
+              color: "#c62828",
+              marginBottom: "1rem",
+              fontWeight: "bold",
+            }}
+          >
+            {errorMsg}
+            {errorDetails.length > 0 && (
+              <ul
+                style={{
+                  marginTop: "0.5rem",
+                  paddingLeft: "1.2rem",
+                  color: "#c62828",
+                  fontWeight: "normal",
+                }}
+              >
+                {errorDetails.map((detalle, idx) => (
+                  <li key={idx}>{detalle}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
         <form onSubmit={handleSubmit}>
           <div>
             <label htmlFor="titulo">Título</label>
@@ -157,21 +220,11 @@ const FormularioPublicacion: React.FC = () => {
           </div>
 
           <div>
-            <label htmlFor="imagen">Imagen</label>
-            <input
-              id="imagen"
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              placeholder="Sube una imagen del objeto"
-            />
+            <label>Imagen</label>
+            <span style={{ color: "#888", marginLeft: "0.5rem" }}>
+              aún no disponible
+            </span>
           </div>
-
-          {formData.imagen_url && (
-            <p>
-              Imagen seleccionada: <strong>{formData.imagen_url}</strong>
-            </p>
-          )}
 
           <button type="submit">Publicar</button>
         </form>

@@ -17,8 +17,13 @@ const PublicacionDetalle: React.FC = () => {
         .then((data) => {
           setPublicacion(data);
           if (data.usuario_id) {
+            let usuarioId = data.usuario_id;
+            if (typeof usuarioId === "object") {
+              const obj = usuarioId as Record<string, unknown>;
+              usuarioId = (obj.id as string) || (obj._id as string);
+            }
             usuariosApi
-              .obtenerPorId(data.usuario_id)
+              .obtenerPorId(usuarioId)
               .then(setUsuario)
               .catch(() => setUsuario(null));
           } else {
@@ -32,7 +37,6 @@ const PublicacionDetalle: React.FC = () => {
     }
   }, [id]);
 
-  // Función para formatear fecha de manera amigable
   const formatearFechaAmigable = (fechaString: string) => {
     const fecha = new Date(fechaString);
     const ahora = new Date();
@@ -62,7 +66,6 @@ const PublicacionDetalle: React.FC = () => {
     }
   };
 
-  // Switch según tipo de publicación
   const obtenerTextoSegunTipo = () => {
     if (!publicacion) return { accion: "", icono: "" };
 
@@ -81,7 +84,10 @@ const PublicacionDetalle: React.FC = () => {
     return (
       <div className="detalle-container">
         <div>No se encontró la publicación.</div>
-        <button className="boton-cerrar" onClick={() => navigate("/listado")}>
+        <button
+          className="boton-cerrar"
+          onClick={() => navigate("/publicaciones")}
+        >
           Volver al listado
         </button>
       </div>
@@ -128,7 +134,9 @@ const PublicacionDetalle: React.FC = () => {
 
           <p>
             <strong>Publicado por:</strong>{" "}
-            {usuario ? usuario.nombre : "Cargando usuario..."}
+            {usuario
+              ? `${usuario.nombre} (${usuario.email})`
+              : "Cargando usuario..."}
           </p>
           <p>
             <strong>Fecha de publicación:</strong>{" "}
@@ -157,7 +165,7 @@ const PublicacionDetalle: React.FC = () => {
           <div style={{ marginTop: "20px" }}>
             <button
               className="boton-cerrar"
-              onClick={() => navigate("/listado")}
+              onClick={() => navigate("/publicaciones")}
             >
               Volver al listado
             </button>

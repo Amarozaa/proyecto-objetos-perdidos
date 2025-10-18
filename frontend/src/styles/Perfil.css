@@ -1,3 +1,49 @@
+.perfil-datos-box {
+  background: #f8f8fc;
+  border-radius: 18px;
+  box-shadow: 0 2px 8px #0001;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1.5rem 1.5rem 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.perfil-img-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+}
+
+.perfil-img-placeholder {
+  width: 188px;
+  height: 188px;
+  background: #e0e0e0;
+  color: #888;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  border: 2px dashed #bbb;
+}
+
+.perfil-datos-info {
+  width: 100%;
+  margin-bottom: 1.2rem;
+}
+
+.perfil-nombre {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.perfil-dato-no {
+  color: #b71c1c;
+  font-style: italic;
+}
 :root {
     font-family: Helvetica, sans-serif;
     line-height: 1.5;

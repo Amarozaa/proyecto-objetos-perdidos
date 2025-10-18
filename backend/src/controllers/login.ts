@@ -12,7 +12,6 @@ const router = express.Router();
 router.post("/", async (request, response) => {
   const { email, password } = request.body;
 
-  // Buscar usuario por email
   const user = await UsuarioModel.findOne({ email });
 
   if (!user) {
@@ -22,9 +21,7 @@ router.post("/", async (request, response) => {
     return;
   }
 
-  // Comparar password con el hash guardado
   const passwordCorrect = await bcrypt.compare(password, user.passwordHash);
-
   if (!passwordCorrect) {
     response.status(401).json({
       error: "invalid email or password",
@@ -32,7 +29,6 @@ router.post("/", async (request, response) => {
     return;
   }
 
-  // Crear token JWT con información del usuario y token CSRF
   const csrfToken = randomUUID();
   const userForToken = {
     email: user.email,
@@ -40,23 +36,20 @@ router.post("/", async (request, response) => {
     csrf: csrfToken,
   };
 
-  // Firmar el JWT con el secreto (expira en 1 hora)
   const token = jwt.sign(userForToken, config.JWT_SECRET!, {
     expiresIn: 60 * 60, // 1 hora
   });
 
-  // Enviar el CSRF token en un header personalizado
   response.setHeader("X-CSRF-Token", csrfToken);
 
-  // Enviar el JWT como cookie httpOnly
   response.cookie("token", token, {
-    httpOnly: true, // No accesible desde JavaScript (protege contra XSS)
-    secure: process.env.NODE_ENV === "production", // Solo HTTPS en producción
-    sameSite: "strict", // Protege contra CSRF
-    maxAge: 60 * 60 * 1000, // 1 hora en milisegundos
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    maxAge: 60 * 60 * 1000,
   });
 
-  // Retornar datos del usuario (sin password)
+  // retornar datos del usuario (sin password)
   response.status(200).send({
     email: user.email,
     nombre: user.nombre,
@@ -75,7 +68,7 @@ router.post("/logout", (_request, response) => {
 // GET /api/login/me - Obtener usuario actual (requiere autenticación)
 router.get("/me", withUser, async (request, response) => {
   const user = await UsuarioModel.findById(request.userId);
-  
+
   if (!user) {
     response.status(404).json({ error: "User not found" });
     return;

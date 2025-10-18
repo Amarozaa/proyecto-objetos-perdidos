@@ -36,27 +36,34 @@ const Perfil: React.FC = () => {
 
   return (
     <div className="perfil-container">
-      <div className="data-container" style={{ textAlign: "center" }}>
-        <h1> Mis datos</h1>
-        {usuario.imagen_url ? (
-          <img
-            src={usuario.imagen_url}
-            alt="Foto usuario"
-            width="188"
-            height="188"
-          />
-        ) : (
-          <span>Sin imagen</span>
-        )}
-        <p>
-          <strong> {usuario.nombre} </strong>
-        </p>
-        <p>
-          <strong>Teléfono: </strong> {usuario.telefono}
-        </p>
-        <p>
-          <strong>Correo: </strong> {usuario.email}
-        </p>
+      <div className="data-container perfil-datos-box">
+        <h1>Mis datos</h1>
+        <div className="perfil-img-box">
+          {usuario.imagen_url ? (
+            <img
+              src={usuario.imagen_url}
+              alt="Foto usuario"
+              width="188"
+              height="188"
+            />
+          ) : (
+            <div className="perfil-img-placeholder">Sin imagen</div>
+          )}
+        </div>
+        <div className="perfil-datos-info">
+          <p className="perfil-nombre">
+            <strong>{usuario.nombre}</strong>
+          </p>
+          <p>
+            <strong>Teléfono: </strong>
+            {usuario.telefono && usuario.telefono.trim() !== ""
+              ? usuario.telefono
+              : <span className="perfil-dato-no">no disponible</span>}
+          </p>
+          <p>
+            <strong>Correo: </strong> {usuario.email}
+          </p>
+        </div>
         <button className="edit-btn">Editar datos</button>
       </div>
       <div className="listado-container">

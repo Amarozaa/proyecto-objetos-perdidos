@@ -1,13 +1,17 @@
 import express from 'express';
-import { getPublicaciones, createPublicacion, getPublicacionPorId, updatePublicacion } from '../controllers/postsController';
-import upload from '../middleware/uploadMiddleware';
+import {
+  getPublicaciones,
+  createPublicacion,
+  getPublicacionPorId,
+  updatePublicacion,
+} from "../controllers/postsController";
 import { withUser } from '../middleware/auth';
 
 const router = express.Router();
 
 router.get('/', getPublicaciones);
-router.post('/', withUser, upload.single('imagen'), createPublicacion);
+router.post("/", withUser, createPublicacion);
 router.get('/:id', getPublicacionPorId);
-router.put('/:id', withUser, upload.single('imagen'), updatePublicacion);
+router.put("/:id", withUser, updatePublicacion);
 
 export default router;
