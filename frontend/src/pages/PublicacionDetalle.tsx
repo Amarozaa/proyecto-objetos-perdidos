@@ -134,7 +134,9 @@ const PublicacionDetalle: React.FC = () => {
 
           <p>
             <strong>Publicado por:</strong>{" "}
-            {usuario ? usuario.nombre : "Cargando usuario..."}
+            {usuario
+              ? `${usuario.nombre} (${usuario.email})`
+              : "Cargando usuario..."}
           </p>
           <p>
             <strong>Fecha de publicación:</strong>{" "}

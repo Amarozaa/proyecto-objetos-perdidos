@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { publicacionesApi, authApi } from "../services/api";
 import "../styles/FormularioPublicacion.css";
+import type { CrearPublicacion } from "../types/types";
 
 const FormularioPublicacion: React.FC = () => {
   const navigate = useNavigate();
@@ -51,8 +52,25 @@ const FormularioPublicacion: React.FC = () => {
     }
 
     try {
-      await publicacionesApi.crear({
-        ...formData,
+      // Validar campos requeridos antes de enviar
+      if (
+        !formData.titulo.trim() ||
+        !formData.descripcion.trim() ||
+        !formData.lugar.trim() ||
+        !formData.fecha ||
+        !formData.tipo ||
+        !formData.categoria
+      ) {
+        setErrorMsg("Todos los campos son obligatorios.");
+        return;
+      }
+
+      // Construir el objeto a enviar, omitiendo imagen_url si está vacío
+      const publicacionBase: Omit<CrearPublicacion, "imagen_url"> = {
+        titulo: formData.titulo.trim(),
+        descripcion: formData.descripcion.trim(),
+        lugar: formData.lugar.trim(),
+        fecha: formData.fecha,
         tipo: formData.tipo as "Perdido" | "Encontrado",
         categoria: formData.categoria as
           | "Electrónicos"
@@ -62,14 +80,19 @@ const FormularioPublicacion: React.FC = () => {
           | "Deportes"
           | "Útiles"
           | "Otros",
-      });
+      };
+      const publicacion: CrearPublicacion =
+        formData.imagen_url && formData.imagen_url.trim() !== ""
+          ? { ...publicacionBase, imagen_url: formData.imagen_url }
+          : publicacionBase;
+
+      await publicacionesApi.crear(publicacion);
       setErrorMsg("");
       setErrorDetails([]);
       navigate("/publicaciones");
     } catch (error) {
       let msg = "Error al crear la publicación. Intenta nuevamente.";
       let detalles: string[] = [];
-      // Tipado explícito para error de Axios
       interface AxiosError {
         response?: {
           data?: {

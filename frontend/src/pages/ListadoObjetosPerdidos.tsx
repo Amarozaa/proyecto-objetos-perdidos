@@ -84,8 +84,14 @@ const ListadoObjetosPerdidos: React.FC = () => {
         </p>
       ) : (
         publicacionesFiltradas.map((pub) => {
+          const tipoClass =
+            pub.tipo === "Perdido"
+              ? "perdido"
+              : pub.tipo === "Encontrado"
+              ? "encontrado"
+              : "";
           return (
-            <div key={pub.id} className="card-publicacion">
+            <div key={pub.id} className={`card-publicacion ${tipoClass}`}>
               <div className="card-contenido">
                 <h2>
                   {pub.titulo}
