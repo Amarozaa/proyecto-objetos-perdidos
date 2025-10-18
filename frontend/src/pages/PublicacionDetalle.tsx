@@ -17,8 +17,13 @@ const PublicacionDetalle: React.FC = () => {
         .then((data) => {
           setPublicacion(data);
           if (data.usuario_id) {
+            let usuarioId = data.usuario_id;
+            if (typeof usuarioId === "object") {
+              const obj = usuarioId as Record<string, unknown>;
+              usuarioId = (obj.id as string) || (obj._id as string);
+            }
             usuariosApi
-              .obtenerPorId(data.usuario_id)
+              .obtenerPorId(usuarioId)
               .then(setUsuario)
               .catch(() => setUsuario(null));
           } else {
