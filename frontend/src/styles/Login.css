@@ -87,7 +87,7 @@ body {
   box-sizing: border-box;
 }
 
-.form-box button[type="submit"] {
+.form-box button {
   display: block;
   margin: 1.2rem auto 0 auto;
   background: #17635b;
@@ -101,7 +101,7 @@ body {
   transition: background 0.2s;
 }
 
-.form-box button[type="submit"]:hover {
+.form-box button:hover {
   background: #104d45;
 }
 
@@ -131,8 +131,8 @@ body {
 /* REGISTER TEXT */
 .register-text {
   display: flex;
-  justify-content: center; 
-  align-items: center;                       
+  justify-content: center;
+  align-items: center;
   margin-top: 10px;
 }
 
