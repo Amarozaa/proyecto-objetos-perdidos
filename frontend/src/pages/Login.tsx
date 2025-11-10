@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { authApi } from "../services/api";
-import "../styles/Login.css";
+import Container from "@mui/material/Container";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Alert from "@mui/material/Alert";
+import MuiLink from "@mui/material/Link";
+import Box from "@mui/material/Box";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
@@ -13,11 +20,7 @@ const Login: React.FC = () => {
 
   const [errorMsg, setErrorMsg] = useState<string>("");
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setLoginData((prev) => ({
       ...prev,
@@ -40,65 +43,88 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-box">
-        <h1>ObjetosUni</h1>
-        <p>
-          La siguiente plataforma te permite publicar sobre objetos perdidos o
-          encontrados dentro de la facultad{" "}
-        </p>
-        <h2>¡Ingresa a tu cuenta!</h2>
+    <Container
+      maxWidth="sm"
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        backgroundColor: "background.default",
+      }}
+    >
+      <Paper
+        elevation={3}
+        sx={{
+          padding: 3,
+          textAlign: "center",
+          maxWidth: 400,
+          width: "100%",
+        }}
+      >
+        <Typography variant="h3" component="h1" gutterBottom color="primary">
+          ObjetosUni
+        </Typography>
+        <Typography
+          variant="body1"
+          gutterBottom
+          sx={{ fontSize: "1.4rem", mb: 3 }}
+        >
+          La plataforma que te permite publicar sobre objetos perdidos o
+          encontrados dentro de la facultad
+        </Typography>
+        <Typography variant="h5" component="h2" gutterBottom>
+          ¡Ingresa a tu cuenta!
+        </Typography>
         {errorMsg && (
-          <div
-            style={{
-              color: "#c62828",
-              marginBottom: "1rem",
-              fontWeight: "bold",
-            }}
-          >
+          <Alert severity="error" sx={{ marginBottom: 2 }}>
             {errorMsg}
-          </div>
+          </Alert>
         )}
-        <div className="form-box">
-          <hr></hr>
-          <div>
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={loginData.email}
-              onChange={handleChange}
-              required
-              placeholder="ejemplo@correo.com"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="password">Contraseña</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={loginData.password}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <button type="button" onClick={handleSubmit}>
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+          <TextField
+            fullWidth
+            label="Email"
+            type="email"
+            name="email"
+            value={loginData.email}
+            onChange={handleChange}
+            required
+            placeholder="ejemplo@correo.com"
+            margin="normal"
+            InputLabelProps={{ required: false }}
+          />
+          <TextField
+            fullWidth
+            label="Contraseña"
+            type="password"
+            name="password"
+            value={loginData.password}
+            onChange={handleChange}
+            required
+            margin="normal"
+            InputLabelProps={{ required: false }}
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            sx={{ mt: 2, mb: 2 }}
+          >
             Ingresar
-          </button>
-          <div className="register-text">
-            <p>¿No tienes cuenta?</p>
-            <Link to="/register" className="login-page">
+          </Button>
+        </Box>
+        <Box sx={{ mt: 2 }}>
+          <Typography variant="body2">
+            ¿No tienes cuenta?{" "}
+            <MuiLink component={Link} to="/register" underline="hover">
               Regístrate
-            </Link>
-          </div>
-          <hr></hr>
-        </div>
-      </div>
-    </div>
+            </MuiLink>
+          </Typography>
+        </Box>
+      </Paper>
+    </Container>
   );
 };
+
 export default Login;

@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { usuariosApi } from "../services/api";
-import "../styles/Login.css";
+import Container from "@mui/material/Container";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Alert from "@mui/material/Alert";
+import MuiLink from "@mui/material/Link";
+import Box from "@mui/material/Box";
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
@@ -14,11 +21,7 @@ const Register: React.FC = () => {
     confirm_password: "",
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setRegisterData((prev) => ({
       ...prev,
@@ -75,109 +78,122 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="login-container">
-      <div className="login-box">
-        <h1>ObjetosUni</h1>
-        <h2>¡Regístrate!</h2>
+    <Container
+      maxWidth="sm"
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        backgroundColor: "background.default",
+      }}
+    >
+      <Paper
+        elevation={3}
+        sx={{
+          padding: 3,
+          textAlign: "center",
+          maxWidth: 400,
+          width: "100%",
+        }}
+      >
+        <Typography variant="h3" component="h1" gutterBottom color="primary">
+          ObjetosUni
+        </Typography>
+        <Typography variant="h5" component="h2" gutterBottom>
+          ¡Regístrate!
+        </Typography>
         {errorMsg && (
-          <div
-            style={{
-              color: "#c62828",
-              marginBottom: "1rem",
-              fontWeight: "bold",
-            }}
-          >
+          <Alert severity="error" sx={{ marginBottom: 2 }}>
             {errorMsg}
             {errorDetails.length > 0 && (
-              <ul
-                style={{
-                  marginTop: "0.5rem",
-                  paddingLeft: "1.2rem",
-                  color: "#c62828",
-                  fontWeight: "normal",
-                }}
-              >
+              <Box component="ul" sx={{ mt: 1, pl: 2, textAlign: "left" }}>
                 {errorDetails.map((detalle, idx) => (
                   <li key={idx}>{detalle}</li>
                 ))}
-              </ul>
+              </Box>
             )}
-          </div>
+          </Alert>
         )}
-        <form onSubmit={handleSubmit}>
-          <div className="form-box">
-            <hr></hr>
-            <div>
-              <label htmlFor="nombre">Nombre</label>
-              <input
-                type="text"
-                id="nombre"
-                name="nombre"
-                value={registerData.nombre}
-                onChange={handleChange}
-                required
-                placeholder="Tu nombre completo"
-              />
-            </div>
-            <div>
-              <label htmlFor="email">Correo</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={registerData.email}
-                onChange={handleChange}
-                required
-                placeholder="ejemplo@correo.com"
-              />
-            </div>
-            <div>
-              <label htmlFor="telefono">Teléfono (opcional)</label>
-              <input
-                type="tel"
-                id="telefono"
-                name="telefono"
-                value={registerData.telefono}
-                onChange={handleChange}
-                placeholder="Ej: +56912345678"
-              />
-            </div>
-            <div>
-              <label htmlFor="password">Contraseña</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={registerData.password}
-                onChange={handleChange}
-                required
-                placeholder="Mínimo 6 caracteres"
-              />
-            </div>
-            <div>
-              <label htmlFor="confirm_password">Confirmar contraseña</label>
-              <input
-                type="password"
-                id="confirm_password"
-                name="confirm_password"
-                value={registerData.confirm_password}
-                onChange={handleChange}
-                required
-                placeholder="Repite la contraseña"
-              />
-            </div>
-            <button type="submit">Crear cuenta</button>
-            <div className="register-text">
-              <p>¿Ya tienes cuenta?</p>
-              <Link to="/login" className="login-page">
-                Ingresar
-              </Link>
-            </div>
-            <hr></hr>
-          </div>
-        </form>
-      </div>
-    </div>
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+          <TextField
+            fullWidth
+            label="Nombre"
+            type="text"
+            name="nombre"
+            value={registerData.nombre}
+            onChange={handleChange}
+            required
+            placeholder="Tu nombre completo"
+            margin="normal"
+            InputLabelProps={{ required: false }}
+          />
+          <TextField
+            fullWidth
+            label="Correo"
+            type="email"
+            name="email"
+            value={registerData.email}
+            onChange={handleChange}
+            required
+            placeholder="ejemplo@correo.com"
+            margin="normal"
+            InputLabelProps={{ required: false }}
+          />
+          <TextField
+            fullWidth
+            label="Teléfono (opcional)"
+            type="tel"
+            name="telefono"
+            value={registerData.telefono}
+            onChange={handleChange}
+            placeholder="Ej: +56912345678"
+            margin="normal"
+          />
+          <TextField
+            fullWidth
+            label="Contraseña"
+            type="password"
+            name="password"
+            value={registerData.password}
+            onChange={handleChange}
+            required
+            placeholder="Mínimo 6 caracteres"
+            margin="normal"
+            InputLabelProps={{ required: false }}
+          />
+          <TextField
+            fullWidth
+            label="Confirmar contraseña"
+            type="password"
+            name="confirm_password"
+            value={registerData.confirm_password}
+            onChange={handleChange}
+            required
+            placeholder="Repite la contraseña"
+            margin="normal"
+            InputLabelProps={{ required: false }}
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            sx={{ mt: 2, mb: 2 }}
+          >
+            Crear cuenta
+          </Button>
+        </Box>
+        <Box sx={{ mt: 2 }}>
+          <Typography variant="body2">
+            ¿Ya tienes cuenta?{" "}
+            <MuiLink component={Link} to="/login" underline="hover">
+              Ingresar
+            </MuiLink>
+          </Typography>
+        </Box>
+      </Paper>
+    </Container>
   );
 };
+
 export default Register;

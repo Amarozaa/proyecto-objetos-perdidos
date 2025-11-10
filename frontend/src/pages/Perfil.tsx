@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import Container from "@mui/material/Container";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+import Avatar from "@mui/material/Avatar";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Box from "@mui/material/Box";
 import type { Publicacion, Usuario } from "../types/types";
 import { publicacionesApi, usuariosApi, displayApi } from "../services/api";
-import "../styles/Perfil.css";
-import "../styles/Listado.css";
 
 const Perfil: React.FC = () => {
   const { id } = useParams();
@@ -31,105 +38,193 @@ const Perfil: React.FC = () => {
     fetchData();
   }, [id]);
 
-  if (!usuario) return <p>Usuario no encontrado</p>;
-  if (!publicaciones) return <p>Publicaciones no encontradas</p>;
+  const getCategoriaColor = (categoria: string) => {
+    switch (categoria) {
+      case "Electrónicos":
+        return "primary";
+      case "Ropa":
+        return "secondary";
+      case "Documentos":
+        return "warning";
+      case "Accesorios":
+        return "success";
+      case "Deportes":
+        return "error";
+      case "Útiles":
+        return "info";
+      default:
+        return "default";
+    }
+  };
+
+  const getAvatarColor = (name: string) => {
+    const colors = [
+      "#f44336", // red
+      "#e91e63", // pink
+      "#9c27b0", // purple
+      "#673ab7", // deep purple
+      "#3f51b5", // indigo
+      "#2196f3", // blue
+      "#03a9f4", // light blue
+      "#00bcd4", // cyan
+      "#009688", // teal
+      "#4caf50", // green
+      "#8bc34a", // light green
+      "#cddc39", // lime
+      "#ffeb3b", // yellow
+      "#ffc107", // amber
+      "#ff9800", // orange
+      "#ff5722", // deep orange
+      "#795548", // brown
+      "#9e9e9e", // grey
+      "#607d8b", // blue grey
+    ];
+    const index = name.charCodeAt(0) % colors.length;
+    return colors[index];
+  };
+
+  if (!usuario) return <Typography>Cargando usuario...</Typography>;
+  if (!publicaciones) return <Typography>Cargando publicaciones...</Typography>;
 
   return (
-    <div className="perfil-container">
-      <div className="data-container perfil-datos-box">
-        <h1>Mis datos</h1>
-        <div className="perfil-img-box">
-          {usuario.imagen_url ? (
-            <img
-              src={usuario.imagen_url}
-              alt="Foto usuario"
-              width="188"
-              height="188"
-            />
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: { xs: "column", md: "row" },
+          gap: 4,
+        }}
+      >
+        <Box sx={{ flex: 1 }}>
+          <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+            <Typography variant="h5" component="h1" gutterBottom>
+              Mi Perfil
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                mb: 3,
+              }}
+            >
+              <Avatar
+                src={usuario.imagen_url || undefined}
+                alt="Foto de perfil"
+                sx={{
+                  width: 120,
+                  height: 120,
+                  mb: 2,
+                  bgcolor: !usuario.imagen_url
+                    ? getAvatarColor(usuario.nombre)
+                    : undefined,
+                }}
+              >
+                {!usuario.imagen_url && usuario.nombre.charAt(0).toUpperCase()}
+              </Avatar>
+              <Typography variant="h6" component="h2">
+                {usuario.nombre}
+              </Typography>
+            </Box>
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="body1" sx={{ mb: 1 }}>
+                <strong>Teléfono:</strong>{" "}
+                {usuario.telefono && usuario.telefono.trim() !== ""
+                  ? usuario.telefono
+                  : "No disponible"}
+              </Typography>
+              <Typography variant="body1">
+                <strong>Correo:</strong> {usuario.email}
+              </Typography>
+            </Box>
+            <Button variant="contained" color="primary" fullWidth>
+              Editar Datos
+            </Button>
+          </Paper>
+        </Box>
+        <Box sx={{ flex: 2 }}>
+          <Typography variant="h5" component="h1" gutterBottom>
+            Mis Publicaciones
+          </Typography>
+          {publicaciones.length === 0 ? (
+            <Typography variant="body1" color="text.secondary">
+              No hay publicaciones todavía
+            </Typography>
           ) : (
-            <div className="perfil-img-placeholder">Sin imagen</div>
-          )}
-        </div>
-        <div className="perfil-datos-info">
-          <p className="perfil-nombre">
-            <strong>{usuario.nombre}</strong>
-          </p>
-          <p>
-            <strong>Teléfono: </strong>
-            {usuario.telefono && usuario.telefono.trim() !== ""
-              ? usuario.telefono
-              : <span className="perfil-dato-no">no disponible</span>}
-          </p>
-          <p>
-            <strong>Correo: </strong> {usuario.email}
-          </p>
-        </div>
-        <button className="edit-btn">Editar datos</button>
-      </div>
-      <div className="listado-container">
-        <h1> Mis publicaciones</h1>
-        {publicaciones.length === 0 ? (
-          <p>No hay publicaciones todavía</p>
-        ) : (
-          publicaciones.map((pub) => {
-            return (
-              <div key={pub.id} className="card-publicacion">
-                <div className="card-contenido">
-                  <h2>
-                    {" "}
-                    {pub.titulo}
-                    <span
-                      className={`categoria ${
-                        pub.categoria === "Electrónicos"
-                          ? "electronicos"
-                          : pub.categoria === "Ropa"
-                          ? "ropa"
-                          : pub.categoria === "Documentos"
-                          ? "documentos"
-                          : pub.categoria === "Accesorios"
-                          ? "accesorios"
-                          : pub.categoria === "Deportes"
-                          ? "deportes"
-                          : pub.categoria === "Útiles"
-                          ? "utiles"
-                          : "otros"
-                      }`}
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              {publicaciones.map((pub) => (
+                <Card key={pub.id}>
+                  <CardContent>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "flex-start",
+                        mb: 1,
+                      }}
                     >
-                      {" "}
-                      {pub.categoria}
-                    </span>
-                  </h2>
-                  <p className="fecha-amigable">
-                    {pub.fecha_creacion
-                      ? displayApi.formatearFechaAmigable(pub.fecha_creacion)
-                      : "Fecha no disponible"}
-                  </p>
-                  <p>{pub.descripcion}</p>
-                  <div className="card-acciones">
-                    <div style={{ display: "flex", gap: "0.5rem" }}>
-                      <button
-                        className="boton-detalles"
-                        onClick={() => navigate(`/publicacion/${pub.id}`)}
+                      <Typography
+                        variant="h6"
+                        component="h2"
+                        sx={{ flexGrow: 1 }}
                       >
-                        Ver detalles
-                      </button>
-                      <button className="edit-btn">Editar</button>
-                    </div>
-                    <span
-                      className={`estado-publicacion${
-                        pub.estado === "Resuelto" ? " resuelto" : ""
-                      }`}
+                        {pub.titulo}
+                      </Typography>
+                      <Chip
+                        label={pub.categoria}
+                        color={getCategoriaColor(pub.categoria)}
+                        size="small"
+                      />
+                    </Box>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ mb: 1 }}
                     >
-                      {pub.estado}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            );
-          })
-        )}
-      </div>
-    </div>
+                      {pub.fecha_creacion
+                        ? displayApi.formatearFechaAmigable(pub.fecha_creacion)
+                        : "Fecha no disponible"}
+                    </Typography>
+                    <Typography variant="body1" sx={{ mb: 2 }}>
+                      {pub.descripcion}
+                    </Typography>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Box sx={{ display: "flex", gap: 1 }}>
+                        <Button
+                          variant="outlined"
+                          size="small"
+                          onClick={() =>
+                            navigate(`/publicacion/${pub.id}`, {
+                              state: { from: "perfil", userId: id },
+                            })
+                          }
+                        >
+                          Ver Detalles
+                        </Button>
+                        <Button variant="contained" size="small">
+                          Editar
+                        </Button>
+                      </Box>
+                      <Chip
+                        label={pub.estado}
+                        color={pub.estado === "Resuelto" ? "success" : "error"}
+                        size="small"
+                      />
+                    </Box>
+                  </CardContent>
+                </Card>
+              ))}
+            </Box>
+          )}
+        </Box>
+      </Box>
+    </Container>
   );
 };
 
