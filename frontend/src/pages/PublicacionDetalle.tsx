@@ -284,6 +284,10 @@ const PublicacionDetalle: React.FC = () => {
           </CardMedia>
         </Box>
       </Card>
+
+      <Button variant="contained" onClick={handleVolver} sx={{ mt: 3 }}>
+        Volver al listado
+      </Button>
     </Container>
   );
 };
