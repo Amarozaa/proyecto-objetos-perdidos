@@ -14,6 +14,7 @@ import usersRouter from './routes/users';
 import postsRouter from './routes/posts';
 import imagesRouter from './routes/images';
 import loginRouter from './controllers/login';
+import testingRouter from './controllers/testing';
 
 const app = express();
 mongoose.set("strictQuery", false);
@@ -40,6 +41,9 @@ app.use('/api/login', loginRouter);
 app.use('/api/usuarios', usersRouter);
 app.use('/api/publicaciones', postsRouter);
 app.use('/api/images', imagesRouter);
+if (process.env.NODE_ENV === 'test') {
+  app.use('/api/testing', testingRouter);
+}
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   const reqPath = req.path || "";

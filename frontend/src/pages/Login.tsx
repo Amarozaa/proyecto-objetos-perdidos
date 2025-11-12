@@ -93,6 +93,7 @@ const Login: React.FC = () => {
             placeholder="ejemplo@correo.com"
             margin="normal"
             InputLabelProps={{ required: false }}
+            data-testid="email"
           />
           <TextField
             fullWidth
@@ -104,12 +105,14 @@ const Login: React.FC = () => {
             required
             margin="normal"
             InputLabelProps={{ required: false }}
+            data-testid="password"
           />
           <Button
             type="submit"
             variant="contained"
             color="primary"
             sx={{ mt: 2, mb: 2 }}
+            data-testid="login-button"
           >
             Ingresar
           </Button>

@@ -69,6 +69,32 @@ Esto compilará el frontend y backend, y levantará el servidor.
 
 La aplicación estará disponible en `localhost` y el puerto definido en tu archivo `.env`.
 
+## 5. Ejecutar pruebas E2E
+
+Para ejecutar las pruebas end-to-end:
+
+1. Asegúrate de que el backend esté corriendo en modo test:
+   ```bash
+   cd backend
+   npm run start:test
+   ```
+   (El backend estará disponible en `http://localhost:3001`)
+
+2. En otra terminal, inicia el frontend:
+   ```bash
+   cd frontend
+   npm run dev
+   ```
+   (El frontend estará disponible en `http://localhost:8080`)
+
+3. En una tercera terminal, ejecuta las pruebas:
+   ```bash
+   cd e2etests
+   npm test
+   ```
+
+Para más detalles, consulta el README en la carpeta `e2etests/`.
+
 ---
 
 - Actualmente no hay imágenes de prueba, ya que el almacenamiento de imágenes aún no está implementado.

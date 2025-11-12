@@ -181,6 +181,7 @@ const FormularioPublicacion: React.FC = () => {
             placeholder="Ej: Mochila negra, billetera, celular..."
             inputProps={{ maxLength: 100 }}
             helperText={`${formData.titulo.length}/100 caracteres (mín 3)`}
+            data-testid="titulo"
           />
           <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
             <TextField
@@ -193,6 +194,7 @@ const FormularioPublicacion: React.FC = () => {
               placeholder="¿Dónde se perdió o encontró?"
               inputProps={{ maxLength: 100 }}
               helperText={`${formData.lugar.length}/100 caracteres`}
+              data-testid="lugar"
             />
             <TextField
               sx={{ flex: 1, minWidth: 200 }}
@@ -204,6 +206,7 @@ const FormularioPublicacion: React.FC = () => {
               required
               InputLabelProps={{ shrink: true }}
               inputProps={{ max: today }}
+              data-testid="fecha"
             />
           </Box>
           <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
@@ -214,6 +217,7 @@ const FormularioPublicacion: React.FC = () => {
                 value={formData.tipo}
                 onChange={handleChange}
                 label="Tipo"
+                data-testid="tipo"
               >
                 <MenuItem value="Perdido">Perdido</MenuItem>
                 <MenuItem value="Encontrado">Encontrado</MenuItem>
@@ -226,6 +230,7 @@ const FormularioPublicacion: React.FC = () => {
                 value={formData.categoria}
                 onChange={handleChange}
                 label="Categoría"
+                data-testid="categoria"
               >
                 <MenuItem value="Electrónicos">Electrónicos</MenuItem>
                 <MenuItem value="Ropa">Ropa</MenuItem>
@@ -249,6 +254,7 @@ const FormularioPublicacion: React.FC = () => {
             placeholder="Describe el objeto, características, color, marca, etc."
             inputProps={{ maxLength: 500 }}
             helperText={`${formData.descripcion.length}/500 caracteres (mín 10)`}
+            data-testid="descripcion"
           />
           <Typography variant="body1" sx={{ mb: 1 }}>
             Imagen{" "}
@@ -262,6 +268,7 @@ const FormularioPublicacion: React.FC = () => {
             color="primary"
             size="large"
             fullWidth
+            data-testid="publicar-button"
           >
             Publicar
           </Button>

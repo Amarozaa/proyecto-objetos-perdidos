@@ -12,7 +12,8 @@
     "dev": "cross-env NODE_ENV=development ts-node-dev src/index.ts",
     "test": "cross-env NODE_ENV=test tsx --test --test-timeout=15000 --test-concurrency=1 tests/**/*.test.ts",
     "build:ui": "rm -rf dist && cd ../frontend && npm run build && cp -r dist ../backend",
-    "build:uiw": "rmdir /s /q dist 2>nul & cd /d ..\\frontend && npm run build && xcopy .\\dist ..\\backend\\dist /E /I /Y"
+    "build:uiw": "rmdir /s /q dist 2>nul & cd /d ..\\frontend && npm run build && xcopy .\\dist ..\\backend\\dist /E /I /Y",
+    "start:test": "cross-env NODE_ENV=test ts-node-dev src/index.ts"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.9",
