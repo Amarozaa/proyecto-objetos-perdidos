@@ -5,7 +5,9 @@ import FormularioPublicacion from "./pages/FormularioPublicacion";
 import Navbar from "./pages/Navbar";
 import Perfil from "./pages/Perfil";
 import Login from "./pages/Login";
-import Register from "./pages/Register"
+import Register from "./pages/Register";
+import EditarPerfil from "./pages/EditarPerfil";
+import EditarPublicacion from "./pages/EditarPublicacion";
 
 const PublicacionDetalle = React.lazy(() => import("./pages/PublicacionDetalle"));
 
@@ -39,6 +41,8 @@ function MainRoutes() {
           }
         />
         <Route path="/perfil/:id" element={<Perfil />} />
+        <Route path="/perfil/:id/editar" element={<EditarPerfil />} />
+        <Route path="/publicacion/:id/editar" element={<EditarPublicacion />} />
       </Routes>
     </>
   );

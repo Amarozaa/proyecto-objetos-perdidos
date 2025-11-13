@@ -137,7 +137,12 @@ const Perfil: React.FC = () => {
                 <strong>Correo:</strong> {usuario.email}
               </Typography>
             </Box>
-            <Button variant="contained" color="primary" fullWidth>
+            <Button 
+              variant="contained" 
+              color="primary" 
+              fullWidth
+              onClick={() => navigate(`/perfil/${id}/editar`)}
+            >
               Editar Datos
             </Button>
           </Paper>
@@ -207,7 +212,11 @@ const Perfil: React.FC = () => {
                         >
                           Ver Detalles
                         </Button>
-                        <Button variant="contained" size="small">
+                        <Button 
+                          variant="contained" 
+                          size="small"
+                          onClick={() => navigate(`/publicacion/${pub.id}/editar`)}
+                        >
                           Editar
                         </Button>
                       </Box>

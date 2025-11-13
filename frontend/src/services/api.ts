@@ -117,6 +117,19 @@ export const usuariosApi = {
     return response.data;
   },
 
+  actualizar: async (
+    id: string,
+    userData: Partial<{
+      nombre: string;
+      email: string;
+      password: string;
+      telefono: string;
+    }>
+  ): Promise<Usuario> => {
+    const response = await api.put(`/usuarios/${id}`, userData);
+    return response.data;
+  },
+
   auth: async (email: string, password: string): Promise<Usuario> => {
     const response = await api.post("/login", { email, password });
 
