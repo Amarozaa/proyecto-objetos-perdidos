@@ -9,6 +9,11 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Chip from "@mui/material/Chip";
 import Box from "@mui/material/Box";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 import type { Publicacion, Usuario } from "../types/types";
 import { publicacionesApi, usuariosApi, displayApi } from "../services/api";
 
@@ -19,6 +24,8 @@ const Perfil: React.FC = () => {
     null
   );
   const [usuario, setUsuario] = useState<Usuario | null>(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [publicacionToDelete, setPublicacionToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,6 +44,33 @@ const Perfil: React.FC = () => {
     };
     fetchData();
   }, [id]);
+
+  const handleDeleteClick = (publicacionId: string) => {
+    setPublicacionToDelete(publicacionId);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!publicacionToDelete) return;
+
+    try {
+      await publicacionesApi.eliminar(publicacionToDelete);
+      // Actualizar la lista de publicaciones
+      setPublicaciones((prev) => 
+        prev ? prev.filter((pub) => pub.id !== publicacionToDelete) : null
+      );
+      setDeleteDialogOpen(false);
+      setPublicacionToDelete(null);
+    } catch (error) {
+      console.error("Error al eliminar publicación:", error);
+      alert("Error al eliminar la publicación");
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteDialogOpen(false);
+    setPublicacionToDelete(null);
+  };
 
   const getCategoriaColor = (categoria: string) => {
     switch (categoria) {
@@ -219,6 +253,14 @@ const Perfil: React.FC = () => {
                         >
                           Editar
                         </Button>
+                        <Button 
+                          variant="outlined" 
+                          size="small"
+                          color="error"
+                          onClick={() => handleDeleteClick(pub.id)}
+                        >
+                          Eliminar
+                        </Button>
                       </Box>
                       <Chip
                         label={pub.estado}
@@ -233,6 +275,31 @@ const Perfil: React.FC = () => {
           )}
         </Box>
       </Box>
+
+      {/* Diálogo de confirmación para eliminar */}
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleDeleteCancel}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          ¿Eliminar publicación?
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            ¿Estás seguro de que deseas eliminar esta publicación? Esta acción no se puede deshacer.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteCancel} color="primary">
+            Cancelar
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="error" variant="contained" autoFocus>
+            Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };

@@ -249,3 +249,38 @@ export const updatePublicacion = async (
     next(error);
   }
 };
+
+// Eliminar una publicación
+export const deletePublicacion = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      res.status(400).json({ error: "El ID proporcionado no es válido" });
+      return;
+    }
+
+    const publicacionExistente = await PublicacionModel.findById(id);
+
+    if (!publicacionExistente) {
+      res.status(404).json({ error: "Publicación no encontrada" });
+      return;
+    }
+
+    if (publicacionExistente.usuario_id.toString() !== req.userId) {
+      res
+        .status(403)
+        .json({ error: "No tienes permiso para eliminar esta publicación" });
+      return;
+    }
+
+    await PublicacionModel.findByIdAndDelete(id);
+    res.status(204).end();
+  } catch (error) {
+    next(error);
+  }
+};
