@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { publicacionesApi, usuariosApi } from "../services/api";
+import { publicacionesApi, usuariosApi, displayApi } from "../services/api";
 import type { Publicacion, Usuario } from "../types/types";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
@@ -48,35 +48,6 @@ const PublicacionDetalle: React.FC = () => {
     }
   }, [id]);
 
-  const formatearFechaAmigable = (fechaString: string) => {
-    const fecha = new Date(fechaString);
-    const ahora = new Date();
-    const diferenciaMilisegundos = ahora.getTime() - fecha.getTime();
-    const diferenciaDias = Math.floor(
-      diferenciaMilisegundos / (1000 * 60 * 60 * 24)
-    );
-
-    if (diferenciaDias === 0) {
-      return `Hoy a las ${fecha.toLocaleTimeString("es-ES", {
-        hour: "2-digit",
-        minute: "2-digit",
-      })}`;
-    } else if (diferenciaDias === 1) {
-      return `Ayer a las ${fecha.toLocaleTimeString("es-ES", {
-        hour: "2-digit",
-        minute: "2-digit",
-      })}`;
-    } else if (diferenciaDias <= 7) {
-      return `Hace ${diferenciaDias} días`;
-    } else {
-      return fecha.toLocaleDateString("es-ES", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      });
-    }
-  };
-
   const obtenerTextoSegunTipo = () => {
     if (!publicacion) return { accion: "", icono: "" };
 
@@ -89,51 +60,6 @@ const PublicacionDetalle: React.FC = () => {
         accion: "Encontrado en:",
       };
     }
-  };
-
-  const getCategoriaColor = (categoria: string) => {
-    switch (categoria) {
-      case "Electrónicos":
-        return "primary";
-      case "Ropa":
-        return "secondary";
-      case "Documentos":
-        return "warning";
-      case "Accesorios":
-        return "success";
-      case "Deportes":
-        return "error";
-      case "Útiles":
-        return "info";
-      default:
-        return "default";
-    }
-  };
-
-  const getAvatarColor = (name: string) => {
-    const colors = [
-      "#f44336", // red
-      "#e91e63", // pink
-      "#9c27b0", // purple
-      "#673ab7", // deep purple
-      "#3f51b5", // indigo
-      "#2196f3", // blue
-      "#03a9f4", // light blue
-      "#00bcd4", // cyan
-      "#009688", // teal
-      "#4caf50", // green
-      "#8bc34a", // light green
-      "#cddc39", // lime
-      "#ffeb3b", // yellow
-      "#ffc107", // amber
-      "#ff9800", // orange
-      "#ff5722", // deep orange
-      "#795548", // brown
-      "#9e9e9e", // grey
-      "#607d8b", // blue grey
-    ];
-    const index = name.charCodeAt(0) % colors.length;
-    return colors[index];
   };
 
   const handleVolver = () => {
@@ -169,7 +95,7 @@ const PublicacionDetalle: React.FC = () => {
           <CardContent sx={{ flex: 1 }}>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
               {publicacion.fecha_creacion
-                ? formatearFechaAmigable(publicacion.fecha_creacion)
+                ? displayApi.formatearFechaAmigable(publicacion.fecha_creacion)
                 : "No disponible"}
             </Typography>
             <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
@@ -185,7 +111,7 @@ const PublicacionDetalle: React.FC = () => {
                       height: 24,
                       mr: 1,
                       bgcolor: !usuario.imagen_url
-                        ? getAvatarColor(usuario.nombre)
+                        ? displayApi.getAvatarColor(usuario.nombre)
                         : undefined,
                       fontSize: 12,
                     }}
@@ -256,7 +182,7 @@ const PublicacionDetalle: React.FC = () => {
             >
               <Chip
                 label={publicacion.categoria}
-                color={getCategoriaColor(publicacion.categoria)}
+                color={displayApi.getCategoriaColor(publicacion.categoria)}
                 size="small"
               />
               <Chip
