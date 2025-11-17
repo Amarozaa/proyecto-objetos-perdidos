@@ -21,10 +21,9 @@ import { useUserStore } from "../stores/userStore";
 const Perfil: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { postsUsuario, obtenerTodasUsuario, eliminar } = usePostStore(); 
+  const { post, postsUsuario, obtenerTodasUsuario, eliminar, obtenerPostPorId, setPost } = usePostStore(); 
   const { user } = useUserStore();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [publicacionToDelete, setPublicacionToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,17 +38,17 @@ const Perfil: React.FC = () => {
   }, [id]);
 
   const handleDeleteClick = (publicacionId: string) => {
-    setPublicacionToDelete(publicacionId);
+    obtenerPostPorId(publicacionId);
     setDeleteDialogOpen(true);
   };
 
   const handleDeleteConfirm = async () => {
-    if (!publicacionToDelete) return;
+    if (!post) return;
 
     try {
-      await eliminar(publicacionToDelete);
+      await eliminar(post.id);
       setDeleteDialogOpen(false);
-      setPublicacionToDelete(null);
+      setPost(null);
     } catch (error) {
       console.error("Error al eliminar publicación:", error);
       alert("Error al eliminar la publicación");
@@ -58,7 +57,7 @@ const Perfil: React.FC = () => {
 
   const handleDeleteCancel = () => {
     setDeleteDialogOpen(false);
-    setPublicacionToDelete(null);
+    setPost(null);
   };
 
   if (!user) return <Typography>Cargando usuario...</Typography>;

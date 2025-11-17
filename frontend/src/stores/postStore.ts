@@ -11,6 +11,7 @@ type postStore = {
     filter: Filter;
 
     // acciones
+    setPost: (publicacion: Publicacion | null) => void;
     setFilter: (filtro: Filter) => void;
     obtenerTodas: () => Promise<void>;
     obtenerPostPorId: (id: string) => Promise<Publicacion>;
@@ -30,6 +31,9 @@ export const usePostStore = create<postStore>((set) => ({
     postsUsuario: [],
     post: null,
     filter: "Todos",
+    setPost: (publicacion) => {
+        set({ post: publicacion })
+    },
     setFilter: (filtro) => {
         set({ filter: filtro });
     },

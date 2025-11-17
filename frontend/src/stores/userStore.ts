@@ -20,9 +20,7 @@ type userStore = {
                     email: string;
                     password: string;
                     telefono: string;}>) => Promise<Usuario>;
-    auth: (email: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
-    me: () => Promise<void>;
 }
 
 export const useUserStore = create<userStore>((set, get) => ({
@@ -60,16 +58,8 @@ export const useUserStore = create<userStore>((set, get) => ({
         }));
         return usuarioActualizado;
     },
-    auth: async (email, password) => {
-        const datos = await usuariosApi.auth(email, password);
-        set({ user: datos });
-    },
     logout: async () => {
         await usuariosApi.logout();
         set({ user: null });
-    },
-    me: async () => {
-        const datos = await usuariosApi.me();
-        datos ? set({ user: datos }) : set({ user: null });
     },
 }));
