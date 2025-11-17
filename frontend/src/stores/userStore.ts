@@ -1,14 +1,15 @@
 import { create } from "zustand";
-import type { Usuario } from "./types/types"
-import { usuariosApi } from "./services/api";
+import type { Usuario } from "../types/types"
+import { usuariosApi } from "../services/api";
 
 type userStore = {
     users: Usuario[];
     user: Usuario | null;
 
     //acciones
+    setUser: (userData: Usuario) => void;
     obtenerTodos: () => Promise<void>;
-    obtenerPorId: (id: string) =>  Promise<void>;
+    obtenerUserPorId: (id: string) =>  Promise<Usuario>;
     crear: (userData: {nombre: string;
                         email: string;
                         password: string;
@@ -24,16 +25,25 @@ type userStore = {
     me: () => Promise<void>;
 }
 
-export const useUserStore = create<userStore>((set) => ({
+export const useUserStore = create<userStore>((set, get) => ({
     users: [],
     user: null,
+    setUser: (userData) => {
+        set({user: userData});
+    },
     obtenerTodos: async () => {
         const datos = await usuariosApi.obtenerTodos();
         set({ users: datos });
     },
-    obtenerPorId: async (id) =>  {
+    obtenerUserPorId: async (id) =>  {
+        const { users } = get();
+        const inUsers = users.find(u => u.id === id);
+        if (inUsers) return inUsers;
         const datos = await usuariosApi.obtenerPorId(id);
-        set({ user: datos });
+        set((state) => ({
+            users: state.users.concat(datos),
+        }));
+        return datos;
     },
     crear: async (userData) => {
         const nuevoUsuario = await usuariosApi.crear(userData);
@@ -46,6 +56,7 @@ export const useUserStore = create<userStore>((set) => ({
         const usuarioActualizado = await usuariosApi.actualizar(id, userData);
         set((state) => ({
             users: state.users.map((u) => u.id==id ? usuarioActualizado : u), 
+            user: usuarioActualizado.id == state.user?.id ? usuarioActualizado : state.user,
         }));
         return usuarioActualizado;
     },

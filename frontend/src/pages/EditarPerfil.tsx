@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { usuariosApi, authApi } from "../services/api";
+import { authApi } from "../services/api";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
@@ -9,10 +9,12 @@ import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useUserStore } from "../stores/userStore";
 
 const EditarPerfil: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { users, obtenerUserPorId, actualizar } = useUserStore();
   const currentUser = authApi.getStoredUser();
 
   const [formData, setFormData] = useState({
@@ -38,11 +40,12 @@ const EditarPerfil: React.FC = () => {
       }
 
       try {
-        const usuario = await usuariosApi.obtenerPorId(id);
+        let usuario = users.find(u => u.id === id);
+        if (!usuario) usuario = await obtenerUserPorId(id);
         setFormData({
-          nombre: usuario.nombre || "",
-          email: usuario.email || "",
-          telefono: usuario.telefono || "",
+          nombre: usuario?.nombre || "",
+          email: usuario?.email || "",
+          telefono: usuario?.telefono || "",
           password: "",
         });
         setLoading(false);
@@ -89,7 +92,7 @@ const EditarPerfil: React.FC = () => {
         datosActualizados.password = formData.password;
       }
 
-      const usuarioActualizado = await usuariosApi.actualizar(id, datosActualizados);
+      const usuarioActualizado = await actualizar(id, datosActualizados);
       
       // Actualizar usuario en localStorage
       authApi.setCurrentUser(usuarioActualizado);

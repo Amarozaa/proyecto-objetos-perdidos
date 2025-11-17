@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { usuariosApi } from "../services/api";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
@@ -9,9 +8,11 @@ import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import MuiLink from "@mui/material/Link";
 import Box from "@mui/material/Box";
+import { useUserStore } from "../stores/userStore";
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
+  const { crear } = useUserStore();
 
   const [registerData, setRegisterData] = useState({
     nombre: "",
@@ -41,42 +42,40 @@ const Register: React.FC = () => {
       setErrorMsg("Las contraseñas no coinciden");
       return;
     }
-
     try {
-      await usuariosApi.crear({
-        nombre: registerData.nombre,
-        email: registerData.email,
-        password: registerData.password,
-        telefono: registerData.telefono,
-      });
-      alert("¡Se ha creado la cuenta exitosamente!");
-      navigate("/login");
-    } catch (error) {
-      let msg = "Error al registrarse. Intenta nuevamente.";
-      let detalles: string[] = [];
-      interface AxiosError {
-        response?: {
-          data?: {
-            error?: string;
-            detalles?: string[];
+        await crear({
+          nombre: registerData.nombre,
+          email: registerData.email,
+          password: registerData.password,
+          telefono: registerData.telefono,
+        });
+        alert("¡Se ha creado la cuenta exitosamente!");
+        navigate("/login");
+      } catch (error) {
+        let msg = "Error al registrarse. Intenta nuevamente.";
+        let detalles: string[] = [];
+        interface AxiosError {
+          response?: {
+            data?: {
+              error?: string;
+              detalles?: string[];
+            };
           };
-        };
-      }
-      const err = error as AxiosError;
-      if (err.response && err.response.data) {
-        msg = err.response.data.error || msg;
-        if (
-          err.response.data.detalles &&
-          Array.isArray(err.response.data.detalles)
-        ) {
-          detalles = err.response.data.detalles;
         }
+        const err = error as AxiosError;
+        if (err.response && err.response.data) {
+          msg = err.response.data.error || msg;
+          if (
+            err.response.data.detalles &&
+            Array.isArray(err.response.data.detalles)
+          ) {
+            detalles = err.response.data.detalles;
+          }
+        }
+        setErrorMsg(msg);
+        setErrorDetails(detalles);
       }
-      setErrorMsg(msg);
-      setErrorDetails(detalles);
     }
-  };
-
   return (
     <Container
       maxWidth="sm"

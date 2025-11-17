@@ -1,14 +1,19 @@
 import { create } from "zustand";
-import type { Publicacion, CrearPublicacion } from "./types/types"
-import { publicacionesApi } from "./services/api";
+import type { Publicacion, CrearPublicacion } from "../types/types"
+import { publicacionesApi } from "../services/api";
+
+export type Filter = "Todos" | "Perdido" | "Encontrado";
 
 type postStore = {
     posts: Publicacion[];
+    postsUsuario: Publicacion[];
     post: Publicacion | null;
+    filter: Filter;
 
     // acciones
+    setFilter: (filtro: Filter) => void;
     obtenerTodas: () => Promise<void>;
-    obtenerPorId: (id: string) => Promise<void>;
+    obtenerPostPorId: (id: string) => Promise<Publicacion>;
     obtenerTodasUsuario: (user_id: string) => Promise<void>;
     crear: (publicacion: CrearPublicacion) => Promise<Publicacion>; 
     actualizar: (id: string, publicacion: Partial<Publicacion>) => Promise<Publicacion>;
@@ -22,23 +27,30 @@ type postStore = {
 
 export const usePostStore = create<postStore>((set) => ({
     posts: [],
+    postsUsuario: [],
     post: null,
+    filter: "Todos",
+    setFilter: (filtro) => {
+        set({ filter: filtro });
+    },
     obtenerTodas: async () => {
         const datos = await publicacionesApi.obtenerTodas();
         set({ posts: datos });
     },
-    obtenerPorId: async (id) => {
+    obtenerPostPorId: async (id) => {
         const datos = await publicacionesApi.obtenerPorId(id);
         set({ post: datos });
+        return datos;
     },
     obtenerTodasUsuario: async (user_id) => {
         const datos = await publicacionesApi.obtenerTodasUsuario(user_id);
-        set({ posts: datos });
+        set({ postsUsuario: datos });
     },
     crear: async (publicacion) => {
         const nuevaPublicacion = await publicacionesApi.crear(publicacion);
         set((state) => ({
             posts: state.posts.concat(nuevaPublicacion), 
+            postsUsuario: state.posts.concat(nuevaPublicacion),
         }));
         return nuevaPublicacion;
     }, 
@@ -46,6 +58,7 @@ export const usePostStore = create<postStore>((set) => ({
         const publicacionActualizada = await publicacionesApi.actualizar(id, publicacion);
         set((state) => ({
             posts: state.posts.map((p) => p.id==id ? publicacionActualizada : p), 
+            postsUsuario: state.postsUsuario.map((p) => p.id==id ? publicacionActualizada : p),
         }));
         return publicacionActualizada;
     },
@@ -53,6 +66,7 @@ export const usePostStore = create<postStore>((set) => ({
         await publicacionesApi.eliminar(id);
         set((state) => ({
             posts: state.posts.filter((p) => p.id !== id), 
+            postsUsuario: state.postsUsuario.filter((p) => p.id !== id), 
         }));
     },
     filtrar: async (filtros) => {
