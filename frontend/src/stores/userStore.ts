@@ -4,10 +4,11 @@ import { usuariosApi } from "../services/api";
 
 type userStore = {
     users: Usuario[];
-    user: Usuario | null;
+    actualUser: Usuario | null;
+    selectedUser: Usuario | null;
 
     //acciones
-    setUser: (userData: Usuario) => void;
+    setUser: (userData: Usuario | null) => void;
     obtenerTodos: () => Promise<void>;
     obtenerUserPorId: (id: string) =>  Promise<Usuario>;
     crear: (userData: {nombre: string;
@@ -21,13 +22,15 @@ type userStore = {
                     password: string;
                     telefono: string;}>) => Promise<Usuario>;
     logout: () => Promise<void>;
+    login: (userData: Usuario) => void;
 }
 
 export const useUserStore = create<userStore>((set, get) => ({
     users: [],
-    user: null,
+    actualUser: null,
+    selectedUser: null,
     setUser: (userData) => {
-        set({user: userData});
+        set({selectedUser: userData});
     },
     obtenerTodos: async () => {
         const datos = await usuariosApi.obtenerTodos();
@@ -36,10 +39,14 @@ export const useUserStore = create<userStore>((set, get) => ({
     obtenerUserPorId: async (id) =>  {
         const { users } = get();
         const inUsers = users.find(u => u.id === id);
-        if (inUsers) return inUsers;
+        if (inUsers){
+            set({ selectedUser: inUsers });
+            return inUsers
+        };
         const datos = await usuariosApi.obtenerPorId(id);
         set((state) => ({
             users: state.users.concat(datos),
+            selectedUser: datos,
         }));
         return datos;
     },
@@ -54,12 +61,16 @@ export const useUserStore = create<userStore>((set, get) => ({
         const usuarioActualizado = await usuariosApi.actualizar(id, userData);
         set((state) => ({
             users: state.users.map((u) => u.id==id ? usuarioActualizado : u), 
-            user: usuarioActualizado.id == state.user?.id ? usuarioActualizado : state.user,
+            selectedUser: usuarioActualizado.id == state.selectedUser?.id ? usuarioActualizado : state.selectedUser,
+            actualUser: usuarioActualizado.id == state.actualUser?.id ? usuarioActualizado : state.actualUser,
         }));
         return usuarioActualizado;
     },
     logout: async () => {
         await usuariosApi.logout();
-        set({ user: null });
+        set({ actualUser: null });
     },
+    login: (userData) => {
+        set({ actualUser: userData });
+    }
 }));

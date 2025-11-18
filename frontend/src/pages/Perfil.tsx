@@ -22,7 +22,7 @@ const Perfil: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { post, postsUsuario, obtenerTodasUsuario, eliminar, obtenerPostPorId, setPost } = usePostStore(); 
-  const { user } = useUserStore();
+  const { selectedUser, obtenerUserPorId } = useUserStore();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   useEffect(() => {
@@ -30,6 +30,7 @@ const Perfil: React.FC = () => {
       if (!id) return;
       try {
           obtenerTodasUsuario(id);
+          obtenerUserPorId(id);
       } catch (error) {
         console.error("Error cargando perfil:", error);
       }
@@ -60,7 +61,7 @@ const Perfil: React.FC = () => {
     setPost(null);
   };
 
-  if (!user) return <Typography>Cargando usuario...</Typography>;
+  if (!selectedUser) return <Typography>Cargando usuario...</Typography>;
   if (!postsUsuario) return <Typography>Cargando publicaciones...</Typography>;
 
   return (
@@ -86,32 +87,32 @@ const Perfil: React.FC = () => {
               }}
             >
               <Avatar
-                src={user.imagen_url || undefined}
+                src={selectedUser.imagen_url || undefined}
                 alt="Foto de perfil"
                 sx={{
                   width: 120,
                   height: 120,
                   mb: 2,
-                  bgcolor: !user.imagen_url
-                    ? displayApi.getAvatarColor(user.nombre)
+                  bgcolor: !selectedUser.imagen_url
+                    ? displayApi.getAvatarColor(selectedUser.nombre)
                     : undefined,
                 }}
               >
-                {!user.imagen_url && user.nombre.charAt(0).toUpperCase()}
+                {!selectedUser.imagen_url && selectedUser.nombre.charAt(0).toUpperCase()}
               </Avatar>
               <Typography variant="h6" component="h2">
-                {user.nombre}
+                {selectedUser.nombre}
               </Typography>
             </Box>
             <Box sx={{ mb: 2 }}>
               <Typography variant="body1" sx={{ mb: 1 }}>
                 <strong>Teléfono:</strong>{" "}
-                {user.telefono && user.telefono.trim() !== ""
-                  ? user.telefono
+                {selectedUser.telefono && selectedUser.telefono.trim() !== ""
+                  ? selectedUser.telefono
                   : "No disponible"}
               </Typography>
               <Typography variant="body1">
-                <strong>Correo:</strong> {user.email}
+                <strong>Correo:</strong> {selectedUser.email}
               </Typography>
             </Box>
             <Button 

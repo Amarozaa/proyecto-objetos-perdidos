@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { displayApi } from "../services/api";
-import type { Usuario } from "../types/types";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
@@ -21,8 +20,8 @@ const PublicacionDetalle: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { post, obtenerPostPorId } = usePostStore(); 
-  const { obtenerUserPorId } = useUserStore();
-  const [autor, setAutor] = useState<Usuario | null>(null);
+  const { selectedUser, obtenerUserPorId, setUser } = useUserStore();
+  //const [autor, setAutor] = useState<Usuario | null>(null);
   
   useEffect(() => {
     if (!id) return;
@@ -30,19 +29,17 @@ const PublicacionDetalle: React.FC = () => {
       try {
         const data = await obtenerPostPorId(id);
         if (!data || !data.usuario_id) {
-          setAutor(null);
+          setUser(null);
           return;
         }
         let usuarioId: any = data.usuario_id;
         if (typeof usuarioId === "object") {
           usuarioId = usuarioId.id || usuarioId._id;
         }
-        const usuario = await obtenerUserPorId(usuarioId);
-        setAutor(usuario);
-
+        obtenerUserPorId(usuarioId);
       } catch (err) {
         console.error("Error cargando publicación o usuario:", err);
-        setAutor(null);
+        setUser(null);
       }
     })();
   }, [id, obtenerPostPorId, obtenerUserPorId]);
@@ -102,28 +99,28 @@ const PublicacionDetalle: React.FC = () => {
               <Typography variant="body1" sx={{ mr: 1 }}>
                 <strong>Por:</strong>
               </Typography>
-              {autor ? (
+              {selectedUser ? (
                 <>
                   <Avatar
-                    src={autor.imagen_url || undefined}
+                    src={selectedUser.imagen_url || undefined}
                     sx={{
                       width: 24,
                       height: 24,
                       mr: 1,
-                      bgcolor: !autor.imagen_url
-                        ? displayApi.getAvatarColor(autor.nombre)
+                      bgcolor: !selectedUser.imagen_url
+                        ? displayApi.getAvatarColor(selectedUser.nombre)
                         : undefined,
                       fontSize: 12,
                     }}
                   >
-                    {!autor.imagen_url &&
-                      autor.nombre.charAt(0).toUpperCase()}
+                    {!selectedUser.imagen_url &&
+                      selectedUser.nombre.charAt(0).toUpperCase()}
                   </Avatar>
                   <Typography variant="body1" sx={{ mr: 1 }}>
-                    {autor.nombre}
+                    {selectedUser.nombre}
                   </Typography>
                   <IconButton
-                    href={`mailto:${autor.email}`}
+                    href={`mailto:${selectedUser.email}`}
                     size="small"
                     sx={{ p: 0 }}
                   >

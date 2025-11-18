@@ -13,7 +13,7 @@ import { useUserStore } from "../stores/userStore";
 
 const Login: React.FC = () => {
   const navigate = useNavigate();
-  const { setUser } = useUserStore();
+  const { login } = useUserStore();
 
   const [loginData, setLoginData] = useState({
     email: "",
@@ -36,7 +36,7 @@ const Login: React.FC = () => {
     try {
       const { email, password } = loginData;
       const data = await authApi.login({ email, password });
-      setUser(data);
+      login(data);
 
       authApi.setCurrentUser(data);
       navigate("/publicaciones");
