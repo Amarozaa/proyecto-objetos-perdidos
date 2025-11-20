@@ -14,29 +14,41 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import Alert from "@mui/material/Alert";
 import { displayApi } from "../services/api";
 import { usePostStore } from "../stores/postStore";
 import { useUserStore } from "../stores/userStore";
+import { handleApiError } from "../utils/errorHandler";
 
 const Perfil: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { post, postsUsuario, obtenerTodasUsuario, eliminar, obtenerPostPorId, setPost } = usePostStore(); 
+  const {
+    post,
+    postsUsuario,
+    obtenerTodasUsuario,
+    eliminar,
+    obtenerPostPorId,
+    setPost,
+  } = usePostStore();
   const { selectedUser, obtenerUserPorId } = useUserStore();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string>("");
+  const [successMsg, setSuccessMsg] = useState<string>("");
 
   useEffect(() => {
     const fetchData = async () => {
       if (!id) return;
       try {
-          obtenerTodasUsuario(id);
-          obtenerUserPorId(id);
+        obtenerTodasUsuario(id);
+        obtenerUserPorId(id);
       } catch (error) {
-        console.error("Error cargando perfil:", error);
+        const apiError = handleApiError(error, "Error cargando el perfil");
+        setErrorMsg(apiError.message);
       }
     };
     fetchData();
-  }, [id]);
+  }, [id, obtenerTodasUsuario, obtenerUserPorId]);
 
   const handleDeleteClick = (publicacionId: string) => {
     obtenerPostPorId(publicacionId);
@@ -50,9 +62,15 @@ const Perfil: React.FC = () => {
       await eliminar(post.id);
       setDeleteDialogOpen(false);
       setPost(null);
+      setSuccessMsg("Publicación eliminada correctamente");
+      setErrorMsg("");
+      setTimeout(() => setSuccessMsg(""), 3000);
     } catch (error) {
-      console.error("Error al eliminar publicación:", error);
-      alert("Error al eliminar la publicación");
+      const apiError = handleApiError(
+        error,
+        "Error al eliminar la publicación"
+      );
+      setErrorMsg(apiError.message);
     }
   };
 
@@ -66,6 +84,16 @@ const Perfil: React.FC = () => {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      {errorMsg && (
+        <Alert severity="error" sx={{ mb: 2 }}>
+          {errorMsg}
+        </Alert>
+      )}
+      {successMsg && (
+        <Alert severity="success" sx={{ mb: 2 }}>
+          {successMsg}
+        </Alert>
+      )}
       <Box
         sx={{
           display: "flex",
@@ -98,7 +126,8 @@ const Perfil: React.FC = () => {
                     : undefined,
                 }}
               >
-                {!selectedUser.imagen_url && selectedUser.nombre.charAt(0).toUpperCase()}
+                {!selectedUser.imagen_url &&
+                  selectedUser.nombre.charAt(0).toUpperCase()}
               </Avatar>
               <Typography variant="h6" component="h2">
                 {selectedUser.nombre}
@@ -115,9 +144,9 @@ const Perfil: React.FC = () => {
                 <strong>Correo:</strong> {selectedUser.email}
               </Typography>
             </Box>
-            <Button 
-              variant="contained" 
-              color="primary" 
+            <Button
+              variant="contained"
+              color="primary"
               fullWidth
               onClick={() => navigate(`/perfil/${id}/editar`)}
             >
@@ -190,15 +219,17 @@ const Perfil: React.FC = () => {
                         >
                           Ver Detalles
                         </Button>
-                        <Button 
-                          variant="contained" 
+                        <Button
+                          variant="contained"
                           size="small"
-                          onClick={() => navigate(`/publicacion/${pub.id}/editar`)}
+                          onClick={() =>
+                            navigate(`/publicacion/${pub.id}/editar`)
+                          }
                         >
                           Editar
                         </Button>
-                        <Button 
-                          variant="outlined" 
+                        <Button
+                          variant="outlined"
                           size="small"
                           color="error"
                           onClick={() => handleDeleteClick(pub.id)}
@@ -232,14 +263,20 @@ const Perfil: React.FC = () => {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            ¿Estás seguro de que deseas eliminar esta publicación? Esta acción no se puede deshacer.
+            ¿Estás seguro de que deseas eliminar esta publicación? Esta acción
+            no se puede deshacer.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDeleteCancel} color="primary">
             Cancelar
           </Button>
-          <Button onClick={handleDeleteConfirm} color="error" variant="contained" autoFocus>
+          <Button
+            onClick={handleDeleteConfirm}
+            color="error"
+            variant="contained"
+            autoFocus
+          >
             Eliminar
           </Button>
         </DialogActions>

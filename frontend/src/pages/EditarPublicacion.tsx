@@ -11,6 +11,7 @@ import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import CircularProgress from "@mui/material/CircularProgress";
 import { usePostStore } from "../stores/postStore";
+import { handleApiError } from "../utils/errorHandler";
 
 const EditarPublicacion: React.FC = () => {
   const navigate = useNavigate();
@@ -127,12 +128,11 @@ const EditarPublicacion: React.FC = () => {
         navigate(`/publicacion/${id}`);
       }, 1500);
     } catch (_error) {
-      const errorData = _error as { response?: { data?: { error?: string } } };
-      if (errorData.response?.data?.error) {
-        setErrorMsg(errorData.response.data.error);
-      } else {
-        setErrorMsg("Error al actualizar la publicación");
-      }
+      const error = handleApiError(
+        _error,
+        "Error al actualizar la publicación"
+      );
+      setErrorMsg(error.message);
     }
   };
 

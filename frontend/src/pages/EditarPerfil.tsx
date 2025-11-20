@@ -10,6 +10,7 @@ import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useUserStore } from "../stores/userStore";
+import { handleApiError } from "../utils/errorHandler";
 
 const EditarPerfil: React.FC = () => {
   const navigate = useNavigate();
@@ -107,12 +108,8 @@ const EditarPerfil: React.FC = () => {
         navigate(`/perfil/${id}`);
       }, 1500);
     } catch (_error) {
-      const errorData = _error as { response?: { data?: { error?: string } } };
-      if (errorData.response?.data?.error) {
-        setErrorMsg(errorData.response.data.error);
-      } else {
-        setErrorMsg("Error al actualizar el perfil");
-      }
+      const error = handleApiError(_error, "Error al actualizar el perfil");
+      setErrorMsg(error.message);
     }
   };
 
@@ -195,12 +192,7 @@ const EditarPerfil: React.FC = () => {
           />
 
           <Box sx={{ mt: 3, display: "flex", gap: 2 }}>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-            >
+            <Button type="submit" variant="contained" color="primary" fullWidth>
               Guardar Cambios
             </Button>
             <Button

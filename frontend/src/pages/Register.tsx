@@ -9,6 +9,7 @@ import Alert from "@mui/material/Alert";
 import MuiLink from "@mui/material/Link";
 import Box from "@mui/material/Box";
 import { useUserStore } from "../stores/userStore";
+import { handleApiError } from "../utils/errorHandler";
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
@@ -43,39 +44,19 @@ const Register: React.FC = () => {
       return;
     }
     try {
-        await crear({
-          nombre: registerData.nombre,
-          email: registerData.email,
-          password: registerData.password,
-          telefono: registerData.telefono,
-        });
-        alert("¡Se ha creado la cuenta exitosamente!");
-        navigate("/login");
-      } catch (error) {
-        let msg = "Error al registrarse. Intenta nuevamente.";
-        let detalles: string[] = [];
-        interface AxiosError {
-          response?: {
-            data?: {
-              error?: string;
-              detalles?: string[];
-            };
-          };
-        }
-        const err = error as AxiosError;
-        if (err.response && err.response.data) {
-          msg = err.response.data.error || msg;
-          if (
-            err.response.data.detalles &&
-            Array.isArray(err.response.data.detalles)
-          ) {
-            detalles = err.response.data.detalles;
-          }
-        }
-        setErrorMsg(msg);
-        setErrorDetails(detalles);
-      }
+      await crear({
+        nombre: registerData.nombre,
+        email: registerData.email,
+        password: registerData.password,
+        telefono: registerData.telefono,
+      });
+      alert("¡Se ha creado la cuenta exitosamente!");
+      navigate("/login");
+    } catch (error) {
+      const apiError = handleApiError(error, "Error al registrarse");
+      setErrorMsg(apiError.message);
     }
+  };
   return (
     <Container
       maxWidth="sm"

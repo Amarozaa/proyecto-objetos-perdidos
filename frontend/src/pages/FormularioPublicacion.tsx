@@ -15,6 +15,7 @@ import type { SelectChangeEvent } from "@mui/material/Select";
 import { authApi } from "../services/api";
 import type { CrearPublicacion } from "../types/types";
 import { usePostStore } from "../stores/postStore";
+import { handleApiError } from "../utils/errorHandler";
 
 interface FormData {
   titulo: string;
@@ -38,7 +39,7 @@ const FormularioPublicacion: React.FC = () => {
     categoria: "",
     imagen_url: "",
   });
-  const { crear } = usePostStore(); 
+  const { crear } = usePostStore();
 
   const handleChange = (
     e:
@@ -120,28 +121,9 @@ const FormularioPublicacion: React.FC = () => {
       setErrorDetails([]);
       navigate("/publicaciones");
     } catch (error) {
-      let msg = "Error al crear la publicación. Intenta nuevamente.";
-      let detalles: string[] = [];
-      interface AxiosError {
-        response?: {
-          data?: {
-            error?: string;
-            detalles?: string[];
-          };
-        };
-      }
-      const err = error as AxiosError;
-      if (err.response && err.response.data) {
-        msg = err.response.data.error || msg;
-        if (
-          err.response.data.detalles &&
-          Array.isArray(err.response.data.detalles)
-        ) {
-          detalles = err.response.data.detalles;
-        }
-      }
-      setErrorMsg(msg);
-      setErrorDetails(detalles);
+      const apiError = handleApiError(error, "Error al crear la publicación");
+      setErrorMsg(apiError.message);
+      // Para errores específicos de campos, podría expandirse con validación por campo
     }
   };
 
