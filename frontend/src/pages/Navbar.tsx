@@ -15,14 +15,12 @@ const Navbar: React.FC = () => {
   const userId = currentUser?.id;
 
   const handleLogout = async () => {
-    try {
-      logout();
-      navigate("/");
-    } catch (error) {
-      console.error("Error al cerrar sesión:", error);
-      localStorage.removeItem("user");
-      navigate("/");
-    }
+    // logout() de userStore se encarga de:
+    // 1. Llamar al backend para cerrar sesión
+    // 2. Limpiar localStorage (user y csrfToken)
+    // 3. Limpiar el estado de Zustand
+    await logout();
+    navigate("/login", { replace: true });
   };
 
   return (

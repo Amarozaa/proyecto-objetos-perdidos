@@ -53,22 +53,35 @@ export const useUserStore = create<userStore>((set, get) => ({
     crear: async (userData) => {
         const nuevoUsuario = await usuariosApi.crear(userData);
         set((state) => ({
-            users: state.users.concat(nuevoUsuario), 
+            users: state.users.concat(nuevoUsuario),
         }));
         return nuevoUsuario;
     },
     actualizar: async (id, userData) => {
         const usuarioActualizado = await usuariosApi.actualizar(id, userData);
         set((state) => ({
-            users: state.users.map((u) => u.id==id ? usuarioActualizado : u), 
+            users: state.users.map((u) => u.id==id ? usuarioActualizado : u),
             selectedUser: usuarioActualizado.id == state.selectedUser?.id ? usuarioActualizado : state.selectedUser,
             actualUser: usuarioActualizado.id == state.actualUser?.id ? usuarioActualizado : state.actualUser,
         }));
         return usuarioActualizado;
     },
     logout: async () => {
-        await usuariosApi.logout();
-        set({ actualUser: null });
+        try {
+            await usuariosApi.logout();
+        } catch (error) {
+            console.error("Error durante logout:", error);
+        } finally {
+            // Limpiar el estado de Zustand
+            set({
+                actualUser: null,
+                users: [],
+                selectedUser: null
+            });
+            // Limpiar localStorage completamente
+            localStorage.removeItem("user");
+            localStorage.removeItem("csrfToken");
+        }
     },
     login: (userData) => {
         set({ actualUser: userData });
