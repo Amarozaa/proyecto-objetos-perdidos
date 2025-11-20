@@ -31,7 +31,7 @@ const EditarPerfil: React.FC = () => {
   useEffect(() => {
     const fetchUsuario = async () => {
       if (!id) return;
-      
+
       // Verificar que el usuario actual puede editar este perfil
       if (currentUser?.id !== id) {
         setErrorMsg("No tienes permiso para editar este perfil");
@@ -40,7 +40,7 @@ const EditarPerfil: React.FC = () => {
       }
 
       try {
-        let usuario = users.find(u => u.id === id);
+        let usuario = users.find((u) => u.id === id);
         if (!usuario) usuario = await obtenerUserPorId(id);
         setFormData({
           nombre: usuario?.nombre || "",
@@ -49,7 +49,7 @@ const EditarPerfil: React.FC = () => {
           password: "",
         });
         setLoading(false);
-      } catch (error) {
+      } catch {
         setErrorMsg("Error al cargar los datos del usuario");
         setLoading(false);
       }
@@ -75,7 +75,12 @@ const EditarPerfil: React.FC = () => {
 
     try {
       // Solo enviar campos que no estén vacíos
-      const datosActualizados: any = {
+      const datosActualizados: Partial<{
+        nombre: string;
+        email: string;
+        telefono?: string;
+        password?: string;
+      }> = {
         nombre: formData.nombre,
         email: formData.email,
       };
@@ -93,17 +98,18 @@ const EditarPerfil: React.FC = () => {
       }
 
       const usuarioActualizado = await actualizar(id, datosActualizados);
-      
+
       // Actualizar usuario en localStorage
       authApi.setCurrentUser(usuarioActualizado);
-      
+
       setSuccessMsg("Perfil actualizado correctamente");
       setTimeout(() => {
         navigate(`/perfil/${id}`);
       }, 1500);
-    } catch (error: any) {
-      if (error.response?.data?.error) {
-        setErrorMsg(error.response.data.error);
+    } catch (_error) {
+      const errorData = _error as { response?: { data?: { error?: string } } };
+      if (errorData.response?.data?.error) {
+        setErrorMsg(errorData.response.data.error);
       } else {
         setErrorMsg("Error al actualizar el perfil");
       }

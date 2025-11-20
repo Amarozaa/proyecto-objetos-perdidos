@@ -19,10 +19,10 @@ const PublicacionDetalle: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const { post, obtenerPostPorId } = usePostStore(); 
+  const { post, obtenerPostPorId } = usePostStore();
   const { selectedUser, obtenerUserPorId, setUser } = useUserStore();
   //const [autor, setAutor] = useState<Usuario | null>(null);
-  
+
   useEffect(() => {
     if (!id) return;
     (async () => {
@@ -32,17 +32,20 @@ const PublicacionDetalle: React.FC = () => {
           setUser(null);
           return;
         }
-        let usuarioId: any = data.usuario_id;
-        if (typeof usuarioId === "object") {
-          usuarioId = usuarioId.id || usuarioId._id;
+        const usuarioId =
+          typeof data.usuario_id === "object"
+            ? ((data.usuario_id as { id?: string; _id?: string }) || {}).id ||
+              ((data.usuario_id as { id?: string; _id?: string }) || {})._id
+            : data.usuario_id;
+        if (usuarioId) {
+          obtenerUserPorId(usuarioId);
         }
-        obtenerUserPorId(usuarioId);
       } catch (err) {
         console.error("Error cargando publicación o usuario:", err);
         setUser(null);
       }
     })();
-  }, [id, obtenerPostPorId, obtenerUserPorId]);
+  }, [id, obtenerPostPorId, obtenerUserPorId, setUser]);
 
 
   const obtenerTextoSegunTipo = () => {

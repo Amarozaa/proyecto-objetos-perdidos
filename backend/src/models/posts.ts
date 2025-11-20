@@ -58,8 +58,8 @@ const publicacionSchema = new Schema<Publicacion>({
 });
 
 publicacionSchema.set('toJSON', {
-  transform: (_: any, returnedObject: any) => {
-    returnedObject.id = returnedObject._id?.toString() || returnedObject.id;
+  transform: (_: unknown, returnedObject: any) => {
+    returnedObject.id = (returnedObject._id as any)?.toString() || returnedObject.id;
     delete returnedObject._id;
     delete returnedObject.__v;
   },

@@ -37,14 +37,17 @@ const EditarPublicacion: React.FC = () => {
       if (!id) return;
 
       try {
-        let publicacion = posts.find(p => p.id === id);
+        let publicacion = posts.find((p) => p.id === id);
         if (!publicacion) publicacion = await obtenerPostPorId(id);
-   
-        
+
         // Verificar que el usuario actual sea el dueño de la publicación
-        const publicacionUserId = typeof publicacion.usuario_id === 'object' 
-          ? (publicacion.usuario_id as any).id || (publicacion.usuario_id as any)._id
-          : publicacion.usuario_id;
+        const publicacionUserId =
+          typeof publicacion.usuario_id === "object"
+            ? ((publicacion.usuario_id as { id?: string; _id?: string }) || {})
+                .id ||
+              ((publicacion.usuario_id as { id?: string; _id?: string }) || {})
+                ._id
+            : publicacion.usuario_id;
 
         if (currentUser?.id !== publicacionUserId) {
           setErrorMsg("No tienes permiso para editar esta publicación");
@@ -62,7 +65,7 @@ const EditarPublicacion: React.FC = () => {
           estado: publicacion.estado || "No resuelto",
         });
         setLoading(false);
-      } catch (error) {
+      } catch {
         setErrorMsg("Error al cargar la publicación");
         setLoading(false);
       }
@@ -100,14 +103,33 @@ const EditarPublicacion: React.FC = () => {
     }
 
     try {
-      await actualizar(id, formData as any);
+      await actualizar(
+        id,
+        formData as Partial<{
+          titulo: string;
+          descripcion: string;
+          lugar: string;
+          fecha: string;
+          tipo: "Perdido" | "Encontrado";
+          categoria:
+            | "Electrónicos"
+            | "Ropa"
+            | "Documentos"
+            | "Accesorios"
+            | "Deportes"
+            | "Útiles"
+            | "Otros";
+          estado: "Resuelto" | "No resuelto";
+        }>
+      );
       setSuccessMsg("Publicación actualizada correctamente");
       setTimeout(() => {
         navigate(`/publicacion/${id}`);
       }, 1500);
-    } catch (error: any) {
-      if (error.response?.data?.error) {
-        setErrorMsg(error.response.data.error);
+    } catch (_error) {
+      const errorData = _error as { response?: { data?: { error?: string } } };
+      if (errorData.response?.data?.error) {
+        setErrorMsg(errorData.response.data.error);
       } else {
         setErrorMsg("Error al actualizar la publicación");
       }
