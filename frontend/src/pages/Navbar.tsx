@@ -5,16 +5,18 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
+import { useUserStore } from "../stores/userStore";
 
 const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { logout } = useUserStore();
   const currentUser = authApi.getStoredUser();
   const userId = currentUser?.id;
 
   const handleLogout = async () => {
     try {
-      await authApi.logout();
+      logout();
       navigate("/");
     } catch (error) {
       console.error("Error al cerrar sesión:", error);

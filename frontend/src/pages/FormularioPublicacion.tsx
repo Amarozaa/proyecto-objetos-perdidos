@@ -12,8 +12,9 @@ import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import type { SelectChangeEvent } from "@mui/material/Select";
-import { authApi, publicacionesApi } from "../services/api";
+import { authApi } from "../services/api";
 import type { CrearPublicacion } from "../types/types";
+import { usePostStore } from "../stores/postStore";
 
 interface FormData {
   titulo: string;
@@ -37,6 +38,7 @@ const FormularioPublicacion: React.FC = () => {
     categoria: "",
     imagen_url: "",
   });
+  const { crear } = usePostStore(); 
 
   const handleChange = (
     e:
@@ -113,7 +115,7 @@ const FormularioPublicacion: React.FC = () => {
           ? { ...publicacionBase, imagen_url: formData.imagen_url }
           : publicacionBase;
 
-      await publicacionesApi.crear(publicacion);
+      await crear(publicacion);
       setErrorMsg("");
       setErrorDetails([]);
       navigate("/publicaciones");

@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { publicacionesApi, usuariosApi } from "../services/api";
-import type { Publicacion, Usuario } from "../types/types";
+import { displayApi } from "../services/api";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
@@ -13,68 +12,24 @@ import Box from "@mui/material/Box";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Avatar from "@mui/material/Avatar";
+import { usePostStore } from "../stores/postStore";
+import { useUserStore } from "../stores/userStore";
 
 const ListadoObjetosPerdidos: React.FC = () => {
-  const [publicaciones, setPublicaciones] = useState<Publicacion[]>([]);
-  const [usuarios, setUsuarios] = useState<Record<string, Usuario>>({});
-  const [filtroTipo, setFiltroTipo] = useState<
-    "Todos" | "Perdido" | "Encontrado"
-  >("Todos");
+  const { posts, filter, obtenerTodas, setFilter } = usePostStore();
+  const { users, obtenerTodos } = useUserStore();
   const navigate = useNavigate();
 
+  // Obtener publicaciones
   useEffect(() => {
-    publicacionesApi.obtenerTodas().then(async (pubs) => {
-      setPublicaciones(pubs);
-      const userIds = pubs
-        .map((p) => {
-          let uid = p.usuario_id;
-          if (typeof uid === "object") {
-            const obj = uid as Record<string, unknown>;
-            uid = (obj.id as string) || (obj._id as string);
-          }
-          return uid as string;
-        })
-        .filter((id, index, arr) => arr.indexOf(id) === index);
-      const userPromises = userIds.map((id) => usuariosApi.obtenerPorId(id));
-      const users = await Promise.all(userPromises);
-      const userMap: Record<string, Usuario> = {};
-      users.forEach((u) => (userMap[u.id] = u));
-      setUsuarios(userMap);
-    });
+    obtenerTodas();
+    obtenerTodos();
   }, []);
 
-  const formatearFechaAmigable = (fechaString: string) => {
-    const fecha = new Date(fechaString);
-    const ahora = new Date();
-    const diferenciaMilisegundos = ahora.getTime() - fecha.getTime();
-    const diferenciaDias = Math.floor(
-      diferenciaMilisegundos / (1000 * 60 * 60 * 24)
-    );
 
-    if (diferenciaDias === 0) {
-      return `Hoy a las ${fecha.toLocaleTimeString("es-ES", {
-        hour: "2-digit",
-        minute: "2-digit",
-      })}`;
-    } else if (diferenciaDias === 1) {
-      return `Ayer a las ${fecha.toLocaleTimeString("es-ES", {
-        hour: "2-digit",
-        minute: "2-digit",
-      })}`;
-    } else if (diferenciaDias <= 7) {
-      return `Hace ${diferenciaDias} días`;
-    } else {
-      return fecha.toLocaleDateString("es-ES", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      });
-    }
-  };
-
-  const publicacionesFiltradas = publicaciones.filter((pub) => {
-    if (filtroTipo === "Todos") return true;
-    return pub.tipo === filtroTipo;
+  const publicacionesFiltradas = posts.filter((pub) => {
+    if (filter === "Todos") return true;
+    return pub.tipo === filter;
   });
 
   const handleFiltroChange = (
@@ -82,53 +37,8 @@ const ListadoObjetosPerdidos: React.FC = () => {
     newFiltro: "Todos" | "Perdido" | "Encontrado"
   ) => {
     if (newFiltro !== null) {
-      setFiltroTipo(newFiltro);
+      setFilter(newFiltro);
     }
-  };
-
-  const getCategoriaColor = (categoria: string) => {
-    switch (categoria) {
-      case "Electrónicos":
-        return "primary";
-      case "Ropa":
-        return "secondary";
-      case "Documentos":
-        return "warning";
-      case "Accesorios":
-        return "success";
-      case "Deportes":
-        return "error";
-      case "Útiles":
-        return "info";
-      default:
-        return "default";
-    }
-  };
-
-  const getAvatarColor = (name: string) => {
-    const colors = [
-      "#f44336", // red
-      "#e91e63", // pink
-      "#9c27b0", // purple
-      "#673ab7", // deep purple
-      "#3f51b5", // indigo
-      "#2196f3", // blue
-      "#03a9f4", // light blue
-      "#00bcd4", // cyan
-      "#009688", // teal
-      "#4caf50", // green
-      "#8bc34a", // light green
-      "#cddc39", // lime
-      "#ffeb3b", // yellow
-      "#ffc107", // amber
-      "#ff9800", // orange
-      "#ff5722", // deep orange
-      "#795548", // brown
-      "#9e9e9e", // grey
-      "#607d8b", // blue grey
-    ];
-    const index = name.charCodeAt(0) % colors.length;
-    return colors[index];
   };
 
   return (
@@ -139,21 +49,21 @@ const ListadoObjetosPerdidos: React.FC = () => {
 
       <Box sx={{ mb: 3, display: "flex", justifyContent: "center" }}>
         <ToggleButtonGroup
-          value={filtroTipo}
+          value={filter}
           exclusive
           onChange={handleFiltroChange}
           aria-label="filtro tipo"
         >
           <ToggleButton value="Todos">
-            Todos ({publicaciones.length})
+            Todos ({posts.length})
           </ToggleButton>
           <ToggleButton value="Perdido">
-            Perdidos ({publicaciones.filter((p) => p.tipo === "Perdido").length}
+            Perdidos ({posts.filter((p) => p.tipo === "Perdido").length}
             )
           </ToggleButton>
           <ToggleButton value="Encontrado">
             Encontrados (
-            {publicaciones.filter((p) => p.tipo === "Encontrado").length})
+            {posts.filter((p) => p.tipo === "Encontrado").length})
           </ToggleButton>
         </ToggleButtonGroup>
       </Box>
@@ -161,7 +71,7 @@ const ListadoObjetosPerdidos: React.FC = () => {
       {publicacionesFiltradas.length === 0 ? (
         <Typography variant="body1" align="center">
           No hay publicaciones
-          {filtroTipo !== "Todos" ? ` de tipo "${filtroTipo}"` : ""}.
+          {filter !== "Todos" ? ` de tipo "${filter}"` : ""}.
         </Typography>
       ) : (
         publicacionesFiltradas.map((pub) => (
@@ -181,7 +91,7 @@ const ListadoObjetosPerdidos: React.FC = () => {
                   </Typography>
                   <Chip
                     label={pub.categoria}
-                    color={getCategoriaColor(pub.categoria)}
+                    color={displayApi.getCategoriaColor(pub.categoria)}
                     size="small"
                   />
                 </Box>
@@ -191,7 +101,7 @@ const ListadoObjetosPerdidos: React.FC = () => {
                     const obj = userId as Record<string, unknown>;
                     userId = (obj.id as string) || (obj._id as string);
                   }
-                  const user = usuarios[userId as string];
+                  const user = users.find(u => u.id === userId);
                   return user ? (
                     <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                       <Avatar
@@ -201,7 +111,7 @@ const ListadoObjetosPerdidos: React.FC = () => {
                           height: 24,
                           mr: 1,
                           bgcolor: !user.imagen_url
-                            ? getAvatarColor(user.nombre)
+                            ? displayApi.getAvatarColor(user.nombre)
                             : undefined,
                           fontSize: 12,
                         }}
@@ -221,7 +131,7 @@ const ListadoObjetosPerdidos: React.FC = () => {
                   sx={{ mb: 1 }}
                 >
                   {pub.fecha_creacion
-                    ? formatearFechaAmigable(pub.fecha_creacion)
+                    ? displayApi.formatearFechaAmigable(pub.fecha_creacion)
                     : "Fecha no disponible"}
                 </Typography>
                 <Typography variant="body1" sx={{ mb: 2 }}>

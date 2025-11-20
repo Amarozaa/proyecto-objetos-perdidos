@@ -215,6 +215,49 @@ export const displayApi = {
       });
     }
   },
+  getCategoriaColor: (categoria: string) => {
+    switch (categoria) {
+      case "Electrónicos":
+        return "primary";
+      case "Ropa":
+        return "secondary";
+      case "Documentos":
+        return "warning";
+      case "Accesorios":
+        return "success";
+      case "Deportes":
+        return "error";
+      case "Útiles":
+        return "info";
+      default:
+        return "default";
+    }
+  },
+  getAvatarColor: (name: string) => {
+    const colors = [
+      "#f44336", // red
+      "#e91e63", // pink
+      "#9c27b0", // purple
+      "#673ab7", // deep purple
+      "#3f51b5", // indigo
+      "#2196f3", // blue
+      "#03a9f4", // light blue
+      "#00bcd4", // cyan
+      "#009688", // teal
+      "#4caf50", // green
+      "#8bc34a", // light green
+      "#cddc39", // lime
+      "#ffeb3b", // yellow
+      "#ffc107", // amber
+      "#ff9800", // orange
+      "#ff5722", // deep orange
+      "#795548", // brown
+      "#9e9e9e", // grey
+      "#607d8b", // blue grey
+    ];
+    const index = name.charCodeAt(0) % colors.length;
+    return colors[index];
+  },
 };
 
 // Servicios para autenticación

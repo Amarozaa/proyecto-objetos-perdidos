@@ -14,30 +14,23 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import type { Publicacion, Usuario } from "../types/types";
-import { publicacionesApi, usuariosApi, displayApi } from "../services/api";
+import { displayApi } from "../services/api";
+import { usePostStore } from "../stores/postStore";
+import { useUserStore } from "../stores/userStore";
 
 const Perfil: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [publicaciones, setPublicaciones] = useState<Publicacion[] | null>(
-    null
-  );
-  const [usuario, setUsuario] = useState<Usuario | null>(null);
+  const { post, postsUsuario, obtenerTodasUsuario, eliminar, obtenerPostPorId, setPost } = usePostStore(); 
+  const { selectedUser, obtenerUserPorId } = useUserStore();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [publicacionToDelete, setPublicacionToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       if (!id) return;
       try {
-        const userData = await usuariosApi.obtenerPorId(id);
-        setUsuario(userData);
-
-        const publicacionesData = await publicacionesApi.obtenerTodasUsuario(
-          id
-        );
-        setPublicaciones(publicacionesData);
+          obtenerTodasUsuario(id);
+          obtenerUserPorId(id);
       } catch (error) {
         console.error("Error cargando perfil:", error);
       }
@@ -46,21 +39,17 @@ const Perfil: React.FC = () => {
   }, [id]);
 
   const handleDeleteClick = (publicacionId: string) => {
-    setPublicacionToDelete(publicacionId);
+    obtenerPostPorId(publicacionId);
     setDeleteDialogOpen(true);
   };
 
   const handleDeleteConfirm = async () => {
-    if (!publicacionToDelete) return;
+    if (!post) return;
 
     try {
-      await publicacionesApi.eliminar(publicacionToDelete);
-      // Actualizar la lista de publicaciones
-      setPublicaciones((prev) => 
-        prev ? prev.filter((pub) => pub.id !== publicacionToDelete) : null
-      );
+      await eliminar(post.id);
       setDeleteDialogOpen(false);
-      setPublicacionToDelete(null);
+      setPost(null);
     } catch (error) {
       console.error("Error al eliminar publicación:", error);
       alert("Error al eliminar la publicación");
@@ -69,56 +58,11 @@ const Perfil: React.FC = () => {
 
   const handleDeleteCancel = () => {
     setDeleteDialogOpen(false);
-    setPublicacionToDelete(null);
+    setPost(null);
   };
 
-  const getCategoriaColor = (categoria: string) => {
-    switch (categoria) {
-      case "Electrónicos":
-        return "primary";
-      case "Ropa":
-        return "secondary";
-      case "Documentos":
-        return "warning";
-      case "Accesorios":
-        return "success";
-      case "Deportes":
-        return "error";
-      case "Útiles":
-        return "info";
-      default:
-        return "default";
-    }
-  };
-
-  const getAvatarColor = (name: string) => {
-    const colors = [
-      "#f44336", // red
-      "#e91e63", // pink
-      "#9c27b0", // purple
-      "#673ab7", // deep purple
-      "#3f51b5", // indigo
-      "#2196f3", // blue
-      "#03a9f4", // light blue
-      "#00bcd4", // cyan
-      "#009688", // teal
-      "#4caf50", // green
-      "#8bc34a", // light green
-      "#cddc39", // lime
-      "#ffeb3b", // yellow
-      "#ffc107", // amber
-      "#ff9800", // orange
-      "#ff5722", // deep orange
-      "#795548", // brown
-      "#9e9e9e", // grey
-      "#607d8b", // blue grey
-    ];
-    const index = name.charCodeAt(0) % colors.length;
-    return colors[index];
-  };
-
-  if (!usuario) return <Typography>Cargando usuario...</Typography>;
-  if (!publicaciones) return <Typography>Cargando publicaciones...</Typography>;
+  if (!selectedUser) return <Typography>Cargando usuario...</Typography>;
+  if (!postsUsuario) return <Typography>Cargando publicaciones...</Typography>;
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -143,32 +87,32 @@ const Perfil: React.FC = () => {
               }}
             >
               <Avatar
-                src={usuario.imagen_url || undefined}
+                src={selectedUser.imagen_url || undefined}
                 alt="Foto de perfil"
                 sx={{
                   width: 120,
                   height: 120,
                   mb: 2,
-                  bgcolor: !usuario.imagen_url
-                    ? getAvatarColor(usuario.nombre)
+                  bgcolor: !selectedUser.imagen_url
+                    ? displayApi.getAvatarColor(selectedUser.nombre)
                     : undefined,
                 }}
               >
-                {!usuario.imagen_url && usuario.nombre.charAt(0).toUpperCase()}
+                {!selectedUser.imagen_url && selectedUser.nombre.charAt(0).toUpperCase()}
               </Avatar>
               <Typography variant="h6" component="h2">
-                {usuario.nombre}
+                {selectedUser.nombre}
               </Typography>
             </Box>
             <Box sx={{ mb: 2 }}>
               <Typography variant="body1" sx={{ mb: 1 }}>
                 <strong>Teléfono:</strong>{" "}
-                {usuario.telefono && usuario.telefono.trim() !== ""
-                  ? usuario.telefono
+                {selectedUser.telefono && selectedUser.telefono.trim() !== ""
+                  ? selectedUser.telefono
                   : "No disponible"}
               </Typography>
               <Typography variant="body1">
-                <strong>Correo:</strong> {usuario.email}
+                <strong>Correo:</strong> {selectedUser.email}
               </Typography>
             </Box>
             <Button 
@@ -185,13 +129,13 @@ const Perfil: React.FC = () => {
           <Typography variant="h5" component="h1" gutterBottom>
             Mis Publicaciones
           </Typography>
-          {publicaciones.length === 0 ? (
+          {postsUsuario.length === 0 ? (
             <Typography variant="body1" color="text.secondary">
               No hay publicaciones todavía
             </Typography>
           ) : (
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              {publicaciones.map((pub) => (
+              {postsUsuario.map((pub) => (
                 <Card key={pub.id}>
                   <CardContent>
                     <Box
@@ -211,7 +155,7 @@ const Perfil: React.FC = () => {
                       </Typography>
                       <Chip
                         label={pub.categoria}
-                        color={getCategoriaColor(pub.categoria)}
+                        color={displayApi.getCategoriaColor(pub.categoria)}
                         size="small"
                       />
                     </Box>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { publicacionesApi, authApi } from "../services/api";
+import { authApi } from "../services/api";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
@@ -10,12 +10,13 @@ import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import CircularProgress from "@mui/material/CircularProgress";
-import type { Publicacion } from "../types/types";
+import { usePostStore } from "../stores/postStore";
 
 const EditarPublicacion: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const currentUser = authApi.getStoredUser();
+  const { posts, obtenerPostPorId, actualizar } = usePostStore();
 
   const [formData, setFormData] = useState({
     titulo: "",
@@ -36,7 +37,9 @@ const EditarPublicacion: React.FC = () => {
       if (!id) return;
 
       try {
-        const publicacion: Publicacion = await publicacionesApi.obtenerPorId(id);
+        let publicacion = posts.find(p => p.id === id);
+        if (!publicacion) publicacion = await obtenerPostPorId(id);
+   
         
         // Verificar que el usuario actual sea el dueño de la publicación
         const publicacionUserId = typeof publicacion.usuario_id === 'object' 
@@ -66,7 +69,7 @@ const EditarPublicacion: React.FC = () => {
     };
     fetchPublicacion();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, obtenerPostPorId]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -97,7 +100,7 @@ const EditarPublicacion: React.FC = () => {
     }
 
     try {
-      await publicacionesApi.actualizar(id, formData as any);
+      await actualizar(id, formData as any);
       setSuccessMsg("Publicación actualizada correctamente");
       setTimeout(() => {
         navigate(`/publicacion/${id}`);

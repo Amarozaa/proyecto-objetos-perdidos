@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
-import { publicacionesApi, usuariosApi } from "../services/api";
-import type { Publicacion, Usuario } from "../types/types";
+import { displayApi } from "../services/api";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
@@ -13,74 +12,43 @@ import Chip from "@mui/material/Chip";
 import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import EmailIcon from "@mui/icons-material/Email";
+import { usePostStore } from "../stores/postStore";
+import { useUserStore } from "../stores/userStore";
 
 const PublicacionDetalle: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const [publicacion, setPublicacion] = useState<Publicacion | null>(null);
-  const [usuario, setUsuario] = useState<Usuario | null>(null);
-
+  const { post, obtenerPostPorId } = usePostStore(); 
+  const { selectedUser, obtenerUserPorId, setUser } = useUserStore();
+  //const [autor, setAutor] = useState<Usuario | null>(null);
+  
   useEffect(() => {
-    if (id) {
-      publicacionesApi
-        .obtenerPorId(id)
-        .then((data) => {
-          setPublicacion(data);
-          if (data.usuario_id) {
-            let usuarioId = data.usuario_id;
-            if (typeof usuarioId === "object") {
-              const obj = usuarioId as Record<string, unknown>;
-              usuarioId = (obj.id as string) || (obj._id as string);
-            }
-            usuariosApi
-              .obtenerPorId(usuarioId)
-              .then(setUsuario)
-              .catch(() => setUsuario(null));
-          } else {
-            setUsuario(null);
-          }
-        })
-        .catch(() => {
-          setPublicacion(null);
-          setUsuario(null);
-        });
-    }
-  }, [id]);
+    if (!id) return;
+    (async () => {
+      try {
+        const data = await obtenerPostPorId(id);
+        if (!data || !data.usuario_id) {
+          setUser(null);
+          return;
+        }
+        let usuarioId: any = data.usuario_id;
+        if (typeof usuarioId === "object") {
+          usuarioId = usuarioId.id || usuarioId._id;
+        }
+        obtenerUserPorId(usuarioId);
+      } catch (err) {
+        console.error("Error cargando publicación o usuario:", err);
+        setUser(null);
+      }
+    })();
+  }, [id, obtenerPostPorId, obtenerUserPorId]);
 
-  const formatearFechaAmigable = (fechaString: string) => {
-    const fecha = new Date(fechaString);
-    const ahora = new Date();
-    const diferenciaMilisegundos = ahora.getTime() - fecha.getTime();
-    const diferenciaDias = Math.floor(
-      diferenciaMilisegundos / (1000 * 60 * 60 * 24)
-    );
-
-    if (diferenciaDias === 0) {
-      return `Hoy a las ${fecha.toLocaleTimeString("es-ES", {
-        hour: "2-digit",
-        minute: "2-digit",
-      })}`;
-    } else if (diferenciaDias === 1) {
-      return `Ayer a las ${fecha.toLocaleTimeString("es-ES", {
-        hour: "2-digit",
-        minute: "2-digit",
-      })}`;
-    } else if (diferenciaDias <= 7) {
-      return `Hace ${diferenciaDias} días`;
-    } else {
-      return fecha.toLocaleDateString("es-ES", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      });
-    }
-  };
 
   const obtenerTextoSegunTipo = () => {
-    if (!publicacion) return { accion: "", icono: "" };
+    if (!post) return { accion: "", icono: "" };
 
-    if (publicacion.tipo === "Perdido") {
+    if (post.tipo === "Perdido") {
       return {
         accion: "Perdido en:",
       };
@@ -89,51 +57,6 @@ const PublicacionDetalle: React.FC = () => {
         accion: "Encontrado en:",
       };
     }
-  };
-
-  const getCategoriaColor = (categoria: string) => {
-    switch (categoria) {
-      case "Electrónicos":
-        return "primary";
-      case "Ropa":
-        return "secondary";
-      case "Documentos":
-        return "warning";
-      case "Accesorios":
-        return "success";
-      case "Deportes":
-        return "error";
-      case "Útiles":
-        return "info";
-      default:
-        return "default";
-    }
-  };
-
-  const getAvatarColor = (name: string) => {
-    const colors = [
-      "#f44336", // red
-      "#e91e63", // pink
-      "#9c27b0", // purple
-      "#673ab7", // deep purple
-      "#3f51b5", // indigo
-      "#2196f3", // blue
-      "#03a9f4", // light blue
-      "#00bcd4", // cyan
-      "#009688", // teal
-      "#4caf50", // green
-      "#8bc34a", // light green
-      "#cddc39", // lime
-      "#ffeb3b", // yellow
-      "#ffc107", // amber
-      "#ff9800", // orange
-      "#ff5722", // deep orange
-      "#795548", // brown
-      "#9e9e9e", // grey
-      "#607d8b", // blue grey
-    ];
-    const index = name.charCodeAt(0) % colors.length;
-    return colors[index];
   };
 
   const handleVolver = () => {
@@ -145,7 +68,7 @@ const PublicacionDetalle: React.FC = () => {
     }
   };
 
-  if (!publicacion) {
+  if (!post) {
     return (
       <Container maxWidth="md" sx={{ py: 4 }}>
         <Typography variant="body1">No se encontró la publicación.</Typography>
@@ -161,43 +84,43 @@ const PublicacionDetalle: React.FC = () => {
   return (
     <Container maxWidth="md" sx={{ py: 4 }}>
       <Typography variant="h4" component="h2" gutterBottom>
-        {publicacion.titulo}
+        {post.titulo}
       </Typography>
 
       <Card sx={{ borderRadius: 1 }}>
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <CardContent sx={{ flex: 1 }}>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-              {publicacion.fecha_creacion
-                ? formatearFechaAmigable(publicacion.fecha_creacion)
+              {post.fecha_creacion
+                ? displayApi.formatearFechaAmigable(post.fecha_creacion)
                 : "No disponible"}
             </Typography>
             <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
               <Typography variant="body1" sx={{ mr: 1 }}>
                 <strong>Por:</strong>
               </Typography>
-              {usuario ? (
+              {selectedUser ? (
                 <>
                   <Avatar
-                    src={usuario.imagen_url || undefined}
+                    src={selectedUser.imagen_url || undefined}
                     sx={{
                       width: 24,
                       height: 24,
                       mr: 1,
-                      bgcolor: !usuario.imagen_url
-                        ? getAvatarColor(usuario.nombre)
+                      bgcolor: !selectedUser.imagen_url
+                        ? displayApi.getAvatarColor(selectedUser.nombre)
                         : undefined,
                       fontSize: 12,
                     }}
                   >
-                    {!usuario.imagen_url &&
-                      usuario.nombre.charAt(0).toUpperCase()}
+                    {!selectedUser.imagen_url &&
+                      selectedUser.nombre.charAt(0).toUpperCase()}
                   </Avatar>
                   <Typography variant="body1" sx={{ mr: 1 }}>
-                    {usuario.nombre}
+                    {selectedUser.nombre}
                   </Typography>
                   <IconButton
-                    href={`mailto:${usuario.email}`}
+                    href={`mailto:${selectedUser.email}`}
                     size="small"
                     sx={{ p: 0 }}
                   >
@@ -212,21 +135,21 @@ const PublicacionDetalle: React.FC = () => {
             <Box sx={{ my: 2 }} />
 
             <Typography variant="body1" sx={{ mb: 1 }}>
-              <strong>{textos.accion}</strong> {publicacion.lugar}
+              <strong>{textos.accion}</strong> {post.lugar}
             </Typography>
             <Typography variant="body1" sx={{ mb: 1 }}>
-              <strong>Tipo:</strong> {publicacion.tipo}
+              <strong>Tipo:</strong> {post.tipo}
             </Typography>
             <Typography variant="body1" sx={{ mb: 1 }}>
               <strong>Fecha del suceso:</strong>{" "}
-              {new Date(publicacion.fecha).toLocaleDateString("es-ES", {
+              {new Date(post.fecha).toLocaleDateString("es-ES", {
                 day: "2-digit",
                 month: "2-digit",
                 year: "numeric",
               })}
             </Typography>
             <Typography variant="body1" sx={{ mb: 2 }}>
-              <strong>Descripción:</strong> {publicacion.descripcion}
+              <strong>Descripción:</strong> {post.descripcion}
             </Typography>
           </CardContent>
 
@@ -255,21 +178,21 @@ const PublicacionDetalle: React.FC = () => {
               }}
             >
               <Chip
-                label={publicacion.categoria}
-                color={getCategoriaColor(publicacion.categoria)}
+                label={post.categoria}
+                color={displayApi.getCategoriaColor(post.categoria)}
                 size="small"
               />
               <Chip
-                label={publicacion.estado}
-                color={publicacion.estado === "Resuelto" ? "success" : "error"}
+                label={post.estado}
+                color={post.estado === "Resuelto" ? "success" : "error"}
                 size="small"
               />
             </Box>
-            {publicacion.imagen_url ? (
+            {post.imagen_url ? (
               <Box
                 component="img"
-                src={publicacion.imagen_url}
-                alt={publicacion.titulo}
+                src={post.imagen_url}
+                alt={post.titulo}
                 sx={{
                   maxWidth: 250,
                   maxHeight: 250,
