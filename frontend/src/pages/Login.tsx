@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { authApi } from "../services/api";
-import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import Alert from "@mui/material/Alert";
 import MuiLink from "@mui/material/Link";
 import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Avatar from "@mui/material/Avatar";
+import SearchIcon from "@mui/icons-material/Search";
 import { useUserStore } from "../stores/userStore";
 
 const Login: React.FC = () => {
@@ -46,90 +47,229 @@ const Login: React.FC = () => {
   };
 
   return (
-    <Container
-      maxWidth="sm"
+    <Box
       sx={{
         display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
         minHeight: "100vh",
         backgroundColor: "background.default",
       }}
     >
-      <Paper
-        elevation={3}
+      {/* Lado izquierdo - Branding */}
+      <Box
         sx={{
-          padding: 3,
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
           textAlign: "center",
-          maxWidth: 400,
-          width: "100%",
+          p: 6,
+          background: "linear-gradient(135deg, #17635b 0%, #226a63 100%)",
+          color: "white",
         }}
       >
-        <Typography variant="h3" component="h1" gutterBottom color="primary">
-          ObjetosUni
-        </Typography>
-        <Typography
-          variant="body1"
-          gutterBottom
-          sx={{ fontSize: "1.4rem", mb: 3 }}
+        <Avatar
+          sx={{
+            width: 100,
+            height: 100,
+            backgroundColor: "rgba(255, 255, 255, 0.2)",
+            mb: 3,
+            fontSize: "3rem",
+          }}
         >
-          La plataforma que te permite publicar sobre objetos perdidos o
-          encontrados dentro de la facultad
-        </Typography>
-        <Typography variant="h5" component="h2" gutterBottom>
-          ¡Ingresa a tu cuenta!
-        </Typography>
-        {errorMsg && (
-          <Alert severity="error" sx={{ marginBottom: 2 }}>
-            {errorMsg}
-          </Alert>
-        )}
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
-          <TextField
-            fullWidth
-            label="Email"
-            type="email"
-            name="email"
-            value={loginData.email}
-            onChange={handleChange}
-            required
-            placeholder="ejemplo@correo.com"
-            margin="normal"
-            InputLabelProps={{ required: false }}
-            data-testid="email"
-          />
-          <TextField
-            fullWidth
-            label="Contraseña"
-            type="password"
-            name="password"
-            value={loginData.password}
-            onChange={handleChange}
-            required
-            margin="normal"
-            InputLabelProps={{ required: false }}
-            data-testid="password"
-          />
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            sx={{ mt: 2, mb: 2 }}
-            data-testid="login-button"
+          <SearchIcon sx={{ fontSize: "3rem" }} />
+        </Avatar>
+        <Box sx={{ mb: 4 }}>
+          <Typography
+            variant="h2"
+            component="h1"
+            sx={{
+              fontWeight: 700,
+              mb: 2,
+              color: "white",
+            }}
           >
-            Ingresar
-          </Button>
-        </Box>
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="body2">
-            ¿No tienes cuenta?{" "}
-            <MuiLink component={Link} to="/register" underline="hover">
-              Regístrate
-            </MuiLink>
+            ObjetosUni
+          </Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 400,
+              color: "rgba(255, 255, 255, 0.9)",
+              maxWidth: 400,
+              lineHeight: 1.6,
+            }}
+          >
+            La plataforma que te permite publicar sobre objetos perdidos o
+            encontrados dentro de la facultad
           </Typography>
         </Box>
-      </Paper>
-    </Container>
+      </Box>
+
+      {/* Lado derecho - Login Form */}
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          p: 4,
+        }}
+      >
+        <Paper
+          elevation={0}
+          sx={{
+            width: "100%",
+            maxWidth: 400,
+            border: "1px solid",
+            borderColor: "divider",
+            borderRadius: 1,
+            overflow: "hidden",
+          }}
+        >
+          {/* Barra superior de color */}
+          <Box
+            sx={{
+              height: 6,
+              background: "linear-gradient(90deg, #17635b 0%, #226a63 100%)",
+            }}
+          />
+
+          <Box sx={{ p: 4 }}>
+            <Typography
+              variant="h5"
+              component="h2"
+              gutterBottom
+              align="center"
+              sx={{
+                fontWeight: 700,
+                mb: 1,
+              }}
+            >
+              Inicia sesión
+            </Typography>
+            <Typography
+              variant="body2"
+              gutterBottom
+              align="center"
+              sx={{
+                color: "text.secondary",
+                mb: 3,
+              }}
+            >
+              Ingresa con tu cuenta para continuar
+            </Typography>
+
+            {errorMsg && (
+              <Box
+                sx={{
+                  mb: 3,
+                  p: 2.5,
+                  border: "1px solid",
+                  borderColor: "error.light",
+                  borderRadius: 0.5,
+                  backgroundColor: "rgba(244, 67, 54, 0.05)",
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "error.main",
+                    fontWeight: 500,
+                  }}
+                >
+                  {errorMsg}
+                </Typography>
+              </Box>
+            )}
+
+            <Box component="form" onSubmit={handleSubmit}>
+              <Stack spacing={2.5}>
+                <TextField
+                  fullWidth
+                  label="Email"
+                  type="email"
+                  name="email"
+                  value={loginData.email}
+                  onChange={handleChange}
+                  required
+                  placeholder="ejemplo@correo.com"
+                  data-testid="email"
+                  variant="outlined"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 0.5,
+                    },
+                  }}
+                />
+                <TextField
+                  fullWidth
+                  label="Contraseña"
+                  type="password"
+                  name="password"
+                  value={loginData.password}
+                  onChange={handleChange}
+                  required
+                  data-testid="password"
+                  variant="outlined"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 0.5,
+                    },
+                  }}
+                />
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  fullWidth
+                  data-testid="login-button"
+                  sx={{
+                    py: 1.5,
+                    borderRadius: 0.5,
+                    textTransform: "none",
+                    fontSize: "1rem",
+                    fontWeight: 600,
+                    boxShadow: "none",
+                    mt: 1,
+                  }}
+                >
+                  Ingresar
+                </Button>
+              </Stack>
+            </Box>
+
+            <Box
+              sx={{
+                mt: 3,
+                pt: 3,
+                borderTop: "1px solid",
+                borderColor: "divider",
+              }}
+            >
+              <Typography variant="body2" align="center" color="text.secondary">
+                ¿No tienes cuenta?{" "}
+                <MuiLink
+                  component={Link}
+                  to="/register"
+                  sx={{
+                    fontWeight: 600,
+                    textDecoration: "none",
+                    color: "primary.main",
+                    "&:hover": {
+                      textDecoration: "underline",
+                    },
+                  }}
+                >
+                  Regístrate aquí
+                </MuiLink>
+              </Typography>
+            </Box>
+          </Box>
+        </Paper>
+      </Box>
+    </Box>
   );
 };
 
