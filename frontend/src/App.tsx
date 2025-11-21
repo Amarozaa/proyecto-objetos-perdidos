@@ -5,8 +5,6 @@ import Navbar from "./pages/Navbar";
 import Perfil from "./pages/Perfil";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import EditarPerfil from "./pages/EditarPerfil";
-import EditarPublicacion from "./pages/EditarPublicacion";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
 function App() {
@@ -52,22 +50,6 @@ function MainRoutes() {
           element={
             <ProtectedRoute>
               <Perfil />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/perfil/:id/editar"
-          element={
-            <ProtectedRoute>
-              <EditarPerfil />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/publicacion/:id/editar"
-          element={
-            <ProtectedRoute>
-              <EditarPublicacion />
             </ProtectedRoute>
           }
         />

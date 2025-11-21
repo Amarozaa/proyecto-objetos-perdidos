@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
@@ -32,10 +32,10 @@ import { handleApiError } from "../utils/errorHandler";
 import { formatearFechaPersonalizada } from "../utils/dateFormatter";
 import PublicacionDetalleModal from "../components/PublicacionDetalleModal";
 import EditarPublicacionModal from "../components/EditarPublicacionModal";
+import EditarPerfilModal from "../components/EditarPerfilModal";
 
 const Perfil: React.FC = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
   const {
     post,
     postsUsuario,
@@ -52,6 +52,7 @@ const Perfil: React.FC = () => {
   const [selectedPublicacionIdEdit, setSelectedPublicacionIdEdit] = useState<
     string | null
   >(null);
+  const [editarPerfilOpen, setEditarPerfilOpen] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [successMsg, setSuccessMsg] = useState<string>("");
   const [ordenamiento, setOrdenamiento] = useState<"reciente" | "antiguo">(
@@ -211,7 +212,7 @@ const Perfil: React.FC = () => {
             <Button
               variant="contained"
               color="primary"
-              onClick={() => navigate(`/perfil/${id}/editar`)}
+              onClick={() => setEditarPerfilOpen(true)}
               sx={{
                 borderRadius: 0.5,
                 textTransform: "none",
@@ -606,6 +607,14 @@ const Perfil: React.FC = () => {
           open={!!selectedPublicacionIdEdit}
           onClose={() => setSelectedPublicacionIdEdit(null)}
           publicacionId={selectedPublicacionIdEdit}
+        />
+      )}
+
+      {id && (
+        <EditarPerfilModal
+          open={editarPerfilOpen}
+          onClose={() => setEditarPerfilOpen(false)}
+          usuarioId={id}
         />
       )}
     </Container>
