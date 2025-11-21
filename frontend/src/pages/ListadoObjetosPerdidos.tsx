@@ -3,6 +3,8 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
+import MenuItem from "@mui/material/MenuItem";
+import TextField from "@mui/material/TextField";
 import { usePostStore } from "../stores/postStore";
 import { useUserStore } from "../stores/userStore";
 import PublicacionCard from "../components/PublicacionCard";
@@ -16,6 +18,9 @@ const ListadoObjetosPerdidos: React.FC = () => {
   const [selectedPublicacionId, setSelectedPublicacionId] = useState<
     string | null
   >(null);
+  const [ordenamiento, setOrdenamiento] = useState<"reciente" | "antiguo">(
+    "reciente"
+  );
 
   // Obtener publicaciones
   useEffect(() => {
@@ -24,10 +29,16 @@ const ListadoObjetosPerdidos: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const publicacionesFiltradas = posts.filter((pub) => {
-    if (filter === "Todos") return true;
-    return pub.tipo === filter;
-  });
+  const publicacionesFiltradas = posts
+    .filter((pub) => {
+      if (filter === "Todos") return true;
+      return pub.tipo === filter;
+    })
+    .sort((a, b) => {
+      const dateA = a.fecha_creacion ? new Date(a.fecha_creacion).getTime() : 0;
+      const dateB = b.fecha_creacion ? new Date(b.fecha_creacion).getTime() : 0;
+      return ordenamiento === "reciente" ? dateB - dateA : dateA - dateB;
+    });
 
   const handleFiltroChange = (
     _event: React.MouseEvent<HTMLElement>,
@@ -67,7 +78,15 @@ const ListadoObjetosPerdidos: React.FC = () => {
         Objetos Perdidos y Encontrados
       </Typography>
 
-      <Box sx={{ mb: 4, display: "flex", justifyContent: "center" }}>
+      <Box
+        sx={{
+          mb: 4,
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: 2,
+        }}
+      >
         <FiltroPublicaciones
           filter={filter}
           totalPublicaciones={posts.length}
@@ -75,6 +94,25 @@ const ListadoObjetosPerdidos: React.FC = () => {
           encontradosCount={posts.filter((p) => p.tipo === "Encontrado").length}
           onFiltroChange={handleFiltroChange}
         />
+
+        <TextField
+          select
+          label="Ordenar por"
+          value={ordenamiento}
+          onChange={(e) =>
+            setOrdenamiento(e.target.value as "reciente" | "antiguo")
+          }
+          size="small"
+          sx={{
+            minWidth: 180,
+            "& .MuiOutlinedInput-root": {
+              borderRadius: 0.5,
+            },
+          }}
+        >
+          <MenuItem value="reciente">Más recientes</MenuItem>
+          <MenuItem value="antiguo">Más antiguas</MenuItem>
+        </TextField>
       </Box>
 
       {publicacionesFiltradas.length === 0 ? (

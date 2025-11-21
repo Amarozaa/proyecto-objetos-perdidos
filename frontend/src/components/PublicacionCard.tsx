@@ -146,15 +146,15 @@ const PublicacionCard: React.FC<PublicacionCardProps> = ({
         >
           <Box sx={{ display: "flex", gap: 3, alignItems: "center" }}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <LocationOnIcon sx={{ fontSize: 20, color: "primary.main" }} />
-              <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                {pub.lugar}
-              </Typography>
-            </Box>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <CalendarTodayIcon sx={{ fontSize: 18, color: "primary.main" }} />
               <Typography variant="body2" sx={{ fontWeight: 500 }}>
                 {formatearFechaPersonalizada(pub.fecha)}
+              </Typography>
+            </Box>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <LocationOnIcon sx={{ fontSize: 20, color: "primary.main" }} />
+              <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                {pub.lugar}
               </Typography>
             </Box>
           </Box>

@@ -22,7 +22,7 @@ const FiltroPublicaciones: React.FC<FiltroPublicacionesProps> = ({
   onFiltroChange,
 }) => {
   return (
-    <Box sx={{ mb: 4, display: "flex", justifyContent: "center" }}>
+    <Box sx={{ display: "flex", justifyContent: "center" }}>
       <ToggleButtonGroup
         value={filter}
         exclusive
