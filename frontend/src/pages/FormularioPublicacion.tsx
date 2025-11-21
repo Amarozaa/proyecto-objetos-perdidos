@@ -24,7 +24,6 @@ interface FormData {
   fecha: string;
   tipo: string;
   categoria: string;
-  imagen_url: string;
 }
 
 const FormularioPublicacion: React.FC = () => {
@@ -37,7 +36,6 @@ const FormularioPublicacion: React.FC = () => {
     fecha: "",
     tipo: "",
     categoria: "",
-    imagen_url: "",
   });
   const { crear } = usePostStore();
 
@@ -96,7 +94,7 @@ const FormularioPublicacion: React.FC = () => {
         return;
       }
 
-      const publicacionBase: Omit<CrearPublicacion, "imagen_url"> = {
+      const publicacion: CrearPublicacion = {
         titulo: formData.titulo.trim(),
         descripcion: formData.descripcion.trim(),
         lugar: formData.lugar.trim(),
@@ -111,10 +109,6 @@ const FormularioPublicacion: React.FC = () => {
           | "Útiles"
           | "Otros",
       };
-      const publicacion: CrearPublicacion =
-        formData.imagen_url && formData.imagen_url.trim() !== ""
-          ? { ...publicacionBase, imagen_url: formData.imagen_url }
-          : publicacionBase;
 
       await crear(publicacion);
       setErrorMsg("");
@@ -240,12 +234,6 @@ const FormularioPublicacion: React.FC = () => {
             helperText={`${formData.descripcion.length}/500 caracteres (mín 10)`}
             data-testid="descripcion"
           />
-          <Typography variant="body1" sx={{ mb: 1 }}>
-            Imagen{" "}
-            <Typography component="span" sx={{ color: "text.secondary" }}>
-              aún no disponible
-            </Typography>
-          </Typography>
           <Button
             type="submit"
             variant="contained"

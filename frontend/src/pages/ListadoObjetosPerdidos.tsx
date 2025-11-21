@@ -5,7 +5,6 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import Box from "@mui/material/Box";
@@ -25,7 +24,6 @@ const ListadoObjetosPerdidos: React.FC = () => {
     obtenerTodas();
     obtenerTodos();
   }, []);
-
 
   const publicacionesFiltradas = posts.filter((pub) => {
     if (filter === "Todos") return true;
@@ -54,16 +52,12 @@ const ListadoObjetosPerdidos: React.FC = () => {
           onChange={handleFiltroChange}
           aria-label="filtro tipo"
         >
-          <ToggleButton value="Todos">
-            Todos ({posts.length})
-          </ToggleButton>
+          <ToggleButton value="Todos">Todos ({posts.length})</ToggleButton>
           <ToggleButton value="Perdido">
-            Perdidos ({posts.filter((p) => p.tipo === "Perdido").length}
-            )
+            Perdidos ({posts.filter((p) => p.tipo === "Perdido").length})
           </ToggleButton>
           <ToggleButton value="Encontrado">
-            Encontrados (
-            {posts.filter((p) => p.tipo === "Encontrado").length})
+            Encontrados ({posts.filter((p) => p.tipo === "Encontrado").length})
           </ToggleButton>
         </ToggleButtonGroup>
       </Box>
@@ -101,23 +95,19 @@ const ListadoObjetosPerdidos: React.FC = () => {
                     const obj = userId as Record<string, unknown>;
                     userId = (obj.id as string) || (obj._id as string);
                   }
-                  const user = users.find(u => u.id === userId);
+                  const user = users.find((u) => u.id === userId);
                   return user ? (
                     <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                       <Avatar
-                        src={user.imagen_url || undefined}
                         sx={{
                           width: 24,
                           height: 24,
                           mr: 1,
-                          bgcolor: !user.imagen_url
-                            ? displayApi.getAvatarColor(user.nombre)
-                            : undefined,
+                          bgcolor: displayApi.getAvatarColor(user.nombre),
                           fontSize: 12,
                         }}
                       >
-                        {!user.imagen_url &&
-                          user.nombre.charAt(0).toUpperCase()}
+                        {user.nombre.charAt(0).toUpperCase()}
                       </Avatar>
                       <Typography variant="body2" color="text.secondary">
                         {user.nombre}
@@ -157,12 +147,11 @@ const ListadoObjetosPerdidos: React.FC = () => {
                   />
                 </Box>
               </CardContent>
-              <CardMedia
-                component="div"
+              <Box
                 sx={{
                   width: 120,
                   height: 120,
-                  backgroundColor: "#bfbfbf",
+                  backgroundColor: "#e0e0e0",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -170,24 +159,10 @@ const ListadoObjetosPerdidos: React.FC = () => {
                   ml: 2,
                 }}
               >
-                {pub.imagen_url ? (
-                  <Box
-                    component="img"
-                    src={pub.imagen_url}
-                    alt={pub.titulo}
-                    sx={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      borderRadius: 1,
-                    }}
-                  />
-                ) : (
-                  <Typography variant="body2" color="text.secondary">
-                    Sin imagen
-                  </Typography>
-                )}
-              </CardMedia>
+                <Typography variant="body2" color="text.secondary">
+                  {pub.categoria}
+                </Typography>
+              </Box>
             </Box>
           </Card>
         ))

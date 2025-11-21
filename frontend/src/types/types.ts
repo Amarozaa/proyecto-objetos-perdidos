@@ -3,7 +3,6 @@ export interface Usuario {
   nombre: string;
   email: string;
   telefono?: string;
-  imagen_url?: string;
 }
 
 // Interface para crear/actualizar usuario (incluye password)
@@ -12,7 +11,6 @@ export interface UsuarioFormData {
   email: string;
   password?: string;
   telefono?: string;
-  imagen_url?: string;
 }
 
 // Los tipos definen si el objeto ha sido perdido o encontrado (tipo de la publicación)
@@ -33,7 +31,6 @@ export interface Publicacion {
   estado: Estado;
   tipo: Tipo;
   categoria: Categoria;
-  imagen_url?: string;
   fecha_creacion?: string;
   usuario_id: string;
   usuario?: Usuario;
@@ -47,5 +44,4 @@ export interface CrearPublicacion {
   fecha: string;
   tipo: Tipo;
   categoria: Categoria;
-  imagen_url?: string;
 }

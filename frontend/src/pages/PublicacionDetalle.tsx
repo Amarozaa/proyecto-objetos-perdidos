@@ -5,7 +5,7 @@ import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
+
 import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
 import Chip from "@mui/material/Chip";
@@ -46,7 +46,6 @@ const PublicacionDetalle: React.FC = () => {
       }
     })();
   }, [id, obtenerPostPorId, obtenerUserPorId, setUser]);
-
 
   const obtenerTextoSegunTipo = () => {
     if (!post) return { accion: "", icono: "" };
@@ -105,19 +104,15 @@ const PublicacionDetalle: React.FC = () => {
               {selectedUser ? (
                 <>
                   <Avatar
-                    src={selectedUser.imagen_url || undefined}
                     sx={{
                       width: 24,
                       height: 24,
                       mr: 1,
-                      bgcolor: !selectedUser.imagen_url
-                        ? displayApi.getAvatarColor(selectedUser.nombre)
-                        : undefined,
+                      bgcolor: displayApi.getAvatarColor(selectedUser.nombre),
                       fontSize: 12,
                     }}
                   >
-                    {!selectedUser.imagen_url &&
-                      selectedUser.nombre.charAt(0).toUpperCase()}
+                    {selectedUser.nombre.charAt(0).toUpperCase()}
                   </Avatar>
                   <Typography variant="body1" sx={{ mr: 1 }}>
                     {selectedUser.nombre}
@@ -154,32 +149,7 @@ const PublicacionDetalle: React.FC = () => {
             <Typography variant="body1" sx={{ mb: 2 }}>
               <strong>Descripción:</strong> {post.descripcion}
             </Typography>
-          </CardContent>
-
-          <CardMedia
-            component="div"
-            sx={{
-              width: 300,
-              height: 400,
-              backgroundColor: "#bfbfbf",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              ml: 2,
-              mr: 2,
-              position: "relative",
-            }}
-          >
-            <Box
-              sx={{
-                position: "absolute",
-                top: 8,
-                right: 8,
-                display: "flex",
-                flexDirection: "column",
-                gap: 1,
-              }}
-            >
+            <Box sx={{ display: "flex", gap: 1, mt: 2 }}>
               <Chip
                 label={post.categoria}
                 color={displayApi.getCategoriaColor(post.categoria)}
@@ -191,23 +161,7 @@ const PublicacionDetalle: React.FC = () => {
                 size="small"
               />
             </Box>
-            {post.imagen_url ? (
-              <Box
-                component="img"
-                src={post.imagen_url}
-                alt={post.titulo}
-                sx={{
-                  maxWidth: 250,
-                  maxHeight: 250,
-                  objectFit: "contain",
-                }}
-              />
-            ) : (
-              <Typography variant="body2" color="text.secondary">
-                Imagen
-              </Typography>
-            )}
-          </CardMedia>
+          </CardContent>
         </Box>
       </Card>
 

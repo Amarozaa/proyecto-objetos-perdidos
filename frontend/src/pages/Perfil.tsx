@@ -115,19 +115,14 @@ const Perfil: React.FC = () => {
               }}
             >
               <Avatar
-                src={selectedUser.imagen_url || undefined}
-                alt="Foto de perfil"
                 sx={{
                   width: 120,
                   height: 120,
                   mb: 2,
-                  bgcolor: !selectedUser.imagen_url
-                    ? displayApi.getAvatarColor(selectedUser.nombre)
-                    : undefined,
+                  bgcolor: displayApi.getAvatarColor(selectedUser.nombre),
                 }}
               >
-                {!selectedUser.imagen_url &&
-                  selectedUser.nombre.charAt(0).toUpperCase()}
+                {selectedUser.nombre.charAt(0).toUpperCase()}
               </Avatar>
               <Typography variant="h6" component="h2">
                 {selectedUser.nombre}
