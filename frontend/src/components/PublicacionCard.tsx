@@ -3,14 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { displayApi } from "../services/api";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-import Button from "@mui/material/Button";
 import Chip from "@mui/material/Chip";
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
-import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import type { Publicacion, Usuario } from "../types/types";
 
 interface PublicacionCardProps {
@@ -62,27 +63,35 @@ const PublicacionCard: React.FC<PublicacionCardProps> = ({
       />
 
       <CardContent sx={{ p: 3 }}>
-        {/* Header con título y categoría */}
+        {/* Header con título, categoría y tipo */}
         <Box
           sx={{
             display: "flex",
             alignItems: "flex-start",
+            justifyContent: "space-between",
             mb: 2,
-            gap: 2,
           }}
         >
           <Box sx={{ flex: 1 }}>
-            <Typography
-              variant="h5"
-              component="h2"
-              sx={{
-                fontWeight: 700,
-                mb: 1,
-                color: "text.primary",
-              }}
-            >
-              {pub.titulo}
-            </Typography>
+            {/* Título y categoría en la misma línea */}
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
+              <Typography
+                variant="h5"
+                component="h2"
+                sx={{
+                  fontWeight: 700,
+                  color: "text.primary",
+                }}
+              >
+                {pub.titulo}
+              </Typography>
+              <Chip
+                label={pub.categoria}
+                color={displayApi.getCategoriaColor(pub.categoria)}
+                size="small"
+                sx={{ fontWeight: 600 }}
+              />
+            </Box>
 
             {/* Info del usuario */}
             {usuario && (
@@ -113,22 +122,14 @@ const PublicacionCard: React.FC<PublicacionCardProps> = ({
             )}
           </Box>
 
-          {/* Chips de categoría y tipo */}
-          <Stack direction="row" spacing={1}>
-            <Chip
-              label={pub.categoria}
-              color={displayApi.getCategoriaColor(pub.categoria)}
-              size="medium"
-              sx={{ fontWeight: 600 }}
-            />
-            <Chip
-              label={pub.tipo}
-              color={pub.tipo === "Perdido" ? "error" : "success"}
-              variant="outlined"
-              size="medium"
-              sx={{ fontWeight: 600 }}
-            />
-          </Stack>
+          {/* Chip de tipo solo (arriba a la derecha) */}
+          <Chip
+            label={pub.tipo}
+            color={pub.tipo === "Perdido" ? "error" : "success"}
+            variant="outlined"
+            size="medium"
+            sx={{ fontWeight: 600, ml: 2 }}
+          />
         </Box>
 
         {/* Info adicional: Lugar y Fecha */}
@@ -160,22 +161,19 @@ const PublicacionCard: React.FC<PublicacionCardProps> = ({
           </Box>
 
           {/* Botón de acción */}
-          <Button
-            variant="contained"
-            onClick={handleVerDetalles}
-            sx={{
-              py: 1,
-              px: 3,
-              borderRadius: 0.5,
-              textTransform: "none",
-              fontSize: "0.95rem",
-              fontWeight: 600,
-              boxShadow: "none",
-              whiteSpace: "nowrap",
-            }}
-          >
-            Ver detalles
-          </Button>
+          <Tooltip title="Ver detalles">
+            <IconButton
+              onClick={handleVerDetalles}
+              sx={{
+                color: "primary.main",
+                "&:hover": {
+                  backgroundColor: "action.hover",
+                },
+              }}
+            >
+              <VisibilityIcon />
+            </IconButton>
+          </Tooltip>
         </Box>
       </CardContent>
     </Card>
