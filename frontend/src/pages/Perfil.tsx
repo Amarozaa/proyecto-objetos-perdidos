@@ -22,6 +22,7 @@ import { displayApi } from "../services/api";
 import { usePostStore } from "../stores/postStore";
 import { useUserStore } from "../stores/userStore";
 import { handleApiError } from "../utils/errorHandler";
+import { formatearFechaPersonalizada } from "../utils/dateFormatter";
 
 const Perfil: React.FC = () => {
   const { id } = useParams();
@@ -362,7 +363,7 @@ const Perfil: React.FC = () => {
                           sx={{ fontSize: 18, color: "primary.main" }}
                         />
                         <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                          {pub.fecha}
+                          {formatearFechaPersonalizada(pub.fecha)}
                         </Typography>
                       </Box>
                     </Box>
