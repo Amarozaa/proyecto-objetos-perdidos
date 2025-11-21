@@ -481,9 +481,12 @@ const Perfil: React.FC = () => {
             onClick={handleDeleteCancel}
             variant="outlined"
             sx={{
+              py: 0.75,
+              px: 2.5,
               borderRadius: 0.5,
               textTransform: "none",
               fontWeight: 600,
+              fontSize: "0.9rem",
             }}
           >
             Cancelar
@@ -495,9 +498,12 @@ const Perfil: React.FC = () => {
             autoFocus
             data-testid="confirmar-eliminar-button"
             sx={{
+              py: 0.75,
+              px: 2.5,
               borderRadius: 0.5,
               textTransform: "none",
               fontWeight: 600,
+              fontSize: "0.9rem",
               boxShadow: "none",
             }}
           >
