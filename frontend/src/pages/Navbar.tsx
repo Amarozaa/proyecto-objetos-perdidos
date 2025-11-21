@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { authApi } from "../services/api";
 import Box from "@mui/material/Box";
@@ -6,6 +6,11 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import Container from "@mui/material/Container";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogActions from "@mui/material/DialogActions";
 import { useUserStore } from "../stores/userStore";
 
 const Navbar: React.FC = () => {
@@ -14,14 +19,24 @@ const Navbar: React.FC = () => {
   const { logout } = useUserStore();
   const currentUser = authApi.getStoredUser();
   const userId = currentUser?.id;
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
 
-  const handleLogout = async () => {
+  const handleLogoutClick = () => {
+    setLogoutDialogOpen(true);
+  };
+
+  const handleLogoutConfirm = async () => {
+    setLogoutDialogOpen(false);
     // logout() de userStore se encarga de:
     // 1. Llamar al backend para cerrar sesión
     // 2. Limpiar localStorage (user y csrfToken)
     // 3. Limpiar el estado de Zustand
     await logout();
     navigate("/login", { replace: true });
+  };
+
+  const handleLogoutCancel = () => {
+    setLogoutDialogOpen(false);
   };
 
   return (
@@ -156,7 +171,7 @@ const Navbar: React.FC = () => {
             {/* Botón logout */}
             <Button
               variant="contained"
-              onClick={handleLogout}
+              onClick={handleLogoutClick}
               sx={{
                 textTransform: "none",
                 fontSize: "0.95rem",
@@ -176,6 +191,59 @@ const Navbar: React.FC = () => {
           </Box>
         </Box>
       </Container>
+
+      {/* Modal de confirmación de logout */}
+      <Dialog
+        open={logoutDialogOpen}
+        onClose={handleLogoutCancel}
+        PaperProps={{
+          sx: {
+            borderRadius: 0.5,
+            border: "1px solid",
+            borderColor: "divider",
+          },
+        }}
+      >
+        <DialogTitle sx={{ fontWeight: 700, fontSize: "1.25rem" }}>
+          ¿Cerrar sesión?
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText sx={{ color: "text.secondary", mt: 1 }}>
+            ¿Estás seguro de que deseas cerrar sesión?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions sx={{ p: 2, gap: 1 }}>
+          <Button
+            onClick={handleLogoutCancel}
+            variant="outlined"
+            sx={{
+              py: 0.75,
+              px: 2.5,
+              borderRadius: 0.5,
+              textTransform: "none",
+              fontWeight: 600,
+              fontSize: "0.9rem",
+            }}
+          >
+            Cancelar
+          </Button>
+          <Button
+            onClick={handleLogoutConfirm}
+            variant="contained"
+            sx={{
+              py: 0.75,
+              px: 2.5,
+              borderRadius: 0.5,
+              textTransform: "none",
+              fontWeight: 600,
+              fontSize: "0.9rem",
+              boxShadow: "none",
+            }}
+          >
+            Cerrar sesión
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };
