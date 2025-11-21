@@ -439,18 +439,43 @@ const Perfil: React.FC = () => {
         onClose={handleDeleteCancel}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
+        PaperProps={{
+          sx: {
+            borderRadius: 0.5,
+            border: "1px solid",
+            borderColor: "divider",
+          },
+        }}
       >
-        <DialogTitle id="alert-dialog-title">
+        <DialogTitle
+          id="alert-dialog-title"
+          sx={{
+            fontWeight: 700,
+            fontSize: "1.25rem",
+            color: "text.primary",
+          }}
+        >
           ¿Eliminar publicación?
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
+          <DialogContentText
+            id="alert-dialog-description"
+            sx={{ color: "text.secondary", mt: 1 }}
+          >
             ¿Estás seguro de que deseas eliminar esta publicación? Esta acción
             no se puede deshacer.
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDeleteCancel} color="primary">
+        <DialogActions sx={{ p: 2, gap: 1 }}>
+          <Button
+            onClick={handleDeleteCancel}
+            variant="outlined"
+            sx={{
+              borderRadius: 0.5,
+              textTransform: "none",
+              fontWeight: 600,
+            }}
+          >
             Cancelar
           </Button>
           <Button
@@ -459,6 +484,12 @@ const Perfil: React.FC = () => {
             variant="contained"
             autoFocus
             data-testid="confirmar-eliminar-button"
+            sx={{
+              borderRadius: 0.5,
+              textTransform: "none",
+              fontWeight: 600,
+              boxShadow: "none",
+            }}
           >
             Eliminar
           </Button>
