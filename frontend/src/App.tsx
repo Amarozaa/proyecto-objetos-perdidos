@@ -1,4 +1,3 @@
-import React from "react";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import ListadoObjetosPerdidos from "./pages/ListadoObjetosPerdidos";
 import FormularioPublicacion from "./pages/FormularioPublicacion";
@@ -10,8 +9,6 @@ import EditarPerfil from "./pages/EditarPerfil";
 import EditarPublicacion from "./pages/EditarPublicacion";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
-const PublicacionDetalle = React.lazy(() => import("./pages/PublicacionDetalle"));
-
 function App() {
   return (
     <BrowserRouter>
@@ -22,7 +19,10 @@ function App() {
 
 function MainRoutes() {
   const location = useLocation();
-  const hideNavbar = location.pathname === "/" || location.pathname === "/login" || location.pathname === "/register";
+  const hideNavbar =
+    location.pathname === "/" ||
+    location.pathname === "/login" ||
+    location.pathname === "/register";
 
   return (
     <>
@@ -31,55 +31,45 @@ function MainRoutes() {
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route 
-          path="/publicaciones" 
+        <Route
+          path="/publicaciones"
           element={
             <ProtectedRoute>
               <ListadoObjetosPerdidos />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/formulario" 
+        <Route
+          path="/formulario"
           element={
             <ProtectedRoute>
               <FormularioPublicacion />
             </ProtectedRoute>
-          } 
-        />
-        <Route
-          path="/publicacion/:id"
-          element={
-            <ProtectedRoute>
-              <React.Suspense fallback={<div>Cargando...</div>}>
-                <PublicacionDetalle />
-              </React.Suspense>
-            </ProtectedRoute>
           }
         />
-        <Route 
-          path="/perfil/:id" 
+        <Route
+          path="/perfil/:id"
           element={
             <ProtectedRoute>
               <Perfil />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/perfil/:id/editar" 
+        <Route
+          path="/perfil/:id/editar"
           element={
             <ProtectedRoute>
               <EditarPerfil />
             </ProtectedRoute>
-          } 
+          }
         />
-        <Route 
-          path="/publicacion/:id/editar" 
+        <Route
+          path="/publicacion/:id/editar"
           element={
             <ProtectedRoute>
               <EditarPublicacion />
             </ProtectedRoute>
-          } 
+          }
         />
       </Routes>
     </>

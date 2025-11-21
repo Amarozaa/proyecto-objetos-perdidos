@@ -23,6 +23,7 @@ import { usePostStore } from "../stores/postStore";
 import { useUserStore } from "../stores/userStore";
 import { handleApiError } from "../utils/errorHandler";
 import { formatearFechaPersonalizada } from "../utils/dateFormatter";
+import PublicacionDetalleModal from "../components/PublicacionDetalleModal";
 
 const Perfil: React.FC = () => {
   const { id } = useParams();
@@ -37,6 +38,9 @@ const Perfil: React.FC = () => {
   } = usePostStore();
   const { selectedUser, obtenerUserPorId } = useUserStore();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [selectedPublicacionId, setSelectedPublicacionId] = useState<
+    string | null
+  >(null);
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [successMsg, setSuccessMsg] = useState<string>("");
 
@@ -372,11 +376,7 @@ const Perfil: React.FC = () => {
                     <Stack direction="row" spacing={1}>
                       <Button
                         variant="contained"
-                        onClick={() =>
-                          navigate(`/publicacion/${pub.id}`, {
-                            state: { from: "perfil", userId: id },
-                          })
-                        }
+                        onClick={() => setSelectedPublicacionId(pub.id)}
                         sx={{
                           py: 1,
                           px: 3,
@@ -496,6 +496,14 @@ const Perfil: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {selectedPublicacionId && (
+        <PublicacionDetalleModal
+          open={!!selectedPublicacionId}
+          onClose={() => setSelectedPublicacionId(null)}
+          publicacionId={selectedPublicacionId}
+        />
+      )}
     </Container>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -6,17 +6,22 @@ import Stack from "@mui/material/Stack";
 import { usePostStore } from "../stores/postStore";
 import { useUserStore } from "../stores/userStore";
 import PublicacionCard from "../components/PublicacionCard";
+import PublicacionDetalleModal from "../components/PublicacionDetalleModal";
 import FiltroPublicaciones from "../components/FiltroPublicaciones";
 import { formatearFechaPersonalizada } from "../utils/dateFormatter";
 
 const ListadoObjetosPerdidos: React.FC = () => {
   const { posts, filter, obtenerTodas, setFilter } = usePostStore();
   const { users, obtenerTodos } = useUserStore();
+  const [selectedPublicacionId, setSelectedPublicacionId] = useState<
+    string | null
+  >(null);
 
   // Obtener publicaciones
   useEffect(() => {
     obtenerTodas();
     obtenerTodos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const publicacionesFiltradas = posts.filter((pub) => {
@@ -87,16 +92,27 @@ const ListadoObjetosPerdidos: React.FC = () => {
           </Typography>
         </Box>
       ) : (
-        <Stack spacing={2}>
-          {publicacionesFiltradas.map((pub) => (
-            <PublicacionCard
-              key={pub.id}
-              publicacion={pub}
-              usuario={obtenerUsuario(pub.usuario_id)}
-              formatearFechaPersonalizada={formatearFechaPersonalizada}
+        <>
+          <Stack spacing={2}>
+            {publicacionesFiltradas.map((pub) => (
+              <PublicacionCard
+                key={pub.id}
+                publicacion={pub}
+                usuario={obtenerUsuario(pub.usuario_id)}
+                formatearFechaPersonalizada={formatearFechaPersonalizada}
+                onVerDetalles={() => setSelectedPublicacionId(pub.id)}
+              />
+            ))}
+          </Stack>
+
+          {selectedPublicacionId && (
+            <PublicacionDetalleModal
+              open={!!selectedPublicacionId}
+              onClose={() => setSelectedPublicacionId(null)}
+              publicacionId={selectedPublicacionId}
             />
-          ))}
-        </Stack>
+          )}
+        </>
       )}
     </Container>
   );

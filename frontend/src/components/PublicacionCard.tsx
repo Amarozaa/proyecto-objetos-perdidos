@@ -17,14 +17,24 @@ interface PublicacionCardProps {
   publicacion: Publicacion;
   usuario?: Usuario;
   formatearFechaPersonalizada: (fecha: string) => string;
+  onVerDetalles?: () => void;
 }
 
 const PublicacionCard: React.FC<PublicacionCardProps> = ({
   publicacion: pub,
   usuario,
   formatearFechaPersonalizada,
+  onVerDetalles,
 }) => {
   const navigate = useNavigate();
+
+  const handleVerDetalles = () => {
+    if (onVerDetalles) {
+      onVerDetalles();
+    } else {
+      navigate(`/publicacion/${pub.id}`);
+    }
+  };
 
   return (
     <Card
@@ -152,7 +162,7 @@ const PublicacionCard: React.FC<PublicacionCardProps> = ({
           {/* Botón de acción */}
           <Button
             variant="contained"
-            onClick={() => navigate(`/publicacion/${pub.id}`)}
+            onClick={handleVerDetalles}
             sx={{
               py: 1,
               px: 3,
