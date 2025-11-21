@@ -121,20 +121,6 @@ const PublicacionCard: React.FC<PublicacionCardProps> = ({
           </Stack>
         </Box>
 
-        {/* Descripción */}
-        <Typography
-          variant="body1"
-          sx={{
-            mb: 2,
-            color: "text.secondary",
-            lineHeight: 1.6,
-          }}
-        >
-          {pub.descripcion.length > 200
-            ? `${pub.descripcion.substring(0, 200)}...`
-            : pub.descripcion}
-        </Typography>
-
         {/* Info adicional: Lugar y Fecha */}
         <Box
           sx={{
