@@ -15,6 +15,9 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Alert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import { displayApi } from "../services/api";
 import { usePostStore } from "../stores/postStore";
 import { useUserStore } from "../stores/userStore";
@@ -83,35 +86,53 @@ const Perfil: React.FC = () => {
   if (!postsUsuario) return <Typography>Cargando publicaciones...</Typography>;
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+    <Container maxWidth="lg" sx={{ py: 4 }}>
       {errorMsg && (
-        <Alert severity="error" sx={{ mb: 2 }}>
+        <Alert severity="error" sx={{ mb: 3 }}>
           {errorMsg}
         </Alert>
       )}
       {successMsg && (
-        <Alert severity="success" sx={{ mb: 2 }}>
+        <Alert severity="success" sx={{ mb: 3 }}>
           {successMsg}
         </Alert>
       )}
-      <Box
+
+      {/* Tarjeta de perfil */}
+      <Paper
+        elevation={0}
         sx={{
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          gap: 4,
+          border: "1px solid",
+          borderColor: "divider",
+          borderRadius: 0.5,
+          overflow: "hidden",
+          mb: 4,
         }}
       >
-        <Box sx={{ flex: 1 }}>
-          <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
-            <Typography variant="h5" component="h1" gutterBottom>
-              Mi Perfil
-            </Typography>
+        {/* Barra superior de color */}
+        <Box
+          sx={{
+            height: 6,
+            background: "linear-gradient(90deg, #17635b 0%, #226a63 100%)",
+          }}
+        />
+
+        <Box sx={{ p: 4 }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
+              gap: 4,
+              alignItems: { xs: "center", sm: "flex-start" },
+            }}
+          >
+            {/* Avatar y nombre */}
             <Box
               sx={{
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                mb: 3,
+                flex: 0,
               }}
             >
               <Avatar
@@ -120,132 +141,296 @@ const Perfil: React.FC = () => {
                   height: 120,
                   mb: 2,
                   bgcolor: displayApi.getAvatarColor(selectedUser.nombre),
+                  fontSize: "3.5rem",
+                  fontWeight: 700,
                 }}
               >
                 {selectedUser.nombre.charAt(0).toUpperCase()}
               </Avatar>
-              <Typography variant="h6" component="h2">
+              <Typography
+                variant="h5"
+                sx={{ fontWeight: 700, textAlign: "center" }}
+              >
                 {selectedUser.nombre}
               </Typography>
             </Box>
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="body1" sx={{ mb: 1 }}>
-                <strong>Teléfono:</strong>{" "}
-                {selectedUser.telefono && selectedUser.telefono.trim() !== ""
-                  ? selectedUser.telefono
-                  : "No disponible"}
-              </Typography>
-              <Typography variant="body1">
-                <strong>Correo:</strong> {selectedUser.email}
-              </Typography>
+
+            {/* Información */}
+            <Box sx={{ flex: 1 }}>
+              <Stack spacing={2}>
+                <Box>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mb: 0.5 }}
+                  >
+                    Teléfono
+                  </Typography>
+                  <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                    {selectedUser.telefono &&
+                    selectedUser.telefono.trim() !== ""
+                      ? selectedUser.telefono
+                      : "No disponible"}
+                  </Typography>
+                </Box>
+                <Box>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mb: 0.5 }}
+                  >
+                    Correo
+                  </Typography>
+                  <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                    {selectedUser.email}
+                  </Typography>
+                </Box>
+              </Stack>
             </Box>
+
+            {/* Botón editar */}
             <Button
               variant="contained"
               color="primary"
-              fullWidth
               onClick={() => navigate(`/perfil/${id}/editar`)}
+              sx={{
+                borderRadius: 0.5,
+                textTransform: "none",
+                fontSize: "1rem",
+                fontWeight: 600,
+                boxShadow: "none",
+                px: 3,
+              }}
             >
               Editar Datos
             </Button>
-          </Paper>
+          </Box>
         </Box>
-        <Box sx={{ flex: 2 }}>
-          <Typography variant="h5" component="h1" gutterBottom>
-            Mis Publicaciones
-          </Typography>
-          {postsUsuario.length === 0 ? (
+      </Paper>
+
+      {/* Mis publicaciones */}
+      <Box>
+        <Typography
+          variant="h5"
+          sx={{
+            fontWeight: 700,
+            mb: 3,
+            background: "linear-gradient(45deg, #17635b 30%, #226a63 90%)",
+            backgroundClip: "text",
+            textFillColor: "transparent",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+        >
+          Mis Publicaciones
+        </Typography>
+
+        {postsUsuario.length === 0 ? (
+          <Paper
+            elevation={0}
+            sx={{
+              border: "1px solid",
+              borderColor: "divider",
+              borderRadius: 0.5,
+              p: 4,
+              textAlign: "center",
+            }}
+          >
             <Typography variant="body1" color="text.secondary">
               No hay publicaciones todavía
             </Typography>
-          ) : (
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-              {postsUsuario.map((pub) => (
-                <Card key={pub.id}>
-                  <CardContent>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "flex-start",
-                        mb: 1,
-                      }}
-                    >
+          </Paper>
+        ) : (
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {postsUsuario.map((pub) => (
+              <Card
+                key={pub.id}
+                elevation={0}
+                sx={{
+                  border: "1px solid",
+                  borderColor: "divider",
+                  borderRadius: 0.5,
+                  overflow: "hidden",
+                  transition: "border-color 0.3s ease",
+                  "&:hover": {
+                    borderColor:
+                      pub.tipo === "Perdido" ? "error.light" : "success.light",
+                  },
+                }}
+              >
+                {/* Barra superior de color según tipo */}
+                <Box
+                  sx={{
+                    height: 6,
+                    background:
+                      pub.tipo === "Perdido"
+                        ? "linear-gradient(90deg, #f44336 0%, #e91e63 100%)"
+                        : "linear-gradient(90deg, #4caf50 0%, #66bb6a 100%)",
+                  }}
+                />
+
+                <CardContent sx={{ p: 3 }}>
+                  {/* Header con título y chips */}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "flex-start",
+                      mb: 2,
+                      gap: 2,
+                    }}
+                  >
+                    <Box sx={{ flex: 1 }}>
                       <Typography
-                        variant="h6"
+                        variant="h5"
                         component="h2"
-                        sx={{ flexGrow: 1 }}
+                        sx={{
+                          fontWeight: 700,
+                          mb: 1,
+                          color: "text.primary",
+                        }}
                       >
                         {pub.titulo}
                       </Typography>
+
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ mb: 1 }}
+                      >
+                        {pub.fecha_creacion
+                          ? displayApi.formatearFechaAmigable(
+                              pub.fecha_creacion
+                            )
+                          : "Fecha no disponible"}
+                      </Typography>
+                    </Box>
+
+                    {/* Chips de categoría y tipo */}
+                    <Stack direction="row" spacing={1}>
                       <Chip
                         label={pub.categoria}
                         color={displayApi.getCategoriaColor(pub.categoria)}
-                        size="small"
+                        size="medium"
+                        sx={{ fontWeight: 600 }}
                       />
-                    </Box>
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{ mb: 1 }}
-                    >
-                      {pub.fecha_creacion
-                        ? displayApi.formatearFechaAmigable(pub.fecha_creacion)
-                        : "Fecha no disponible"}
-                    </Typography>
-                    <Typography variant="body1" sx={{ mb: 2 }}>
-                      {pub.descripcion}
-                    </Typography>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Box sx={{ display: "flex", gap: 1 }}>
-                        <Button
-                          variant="outlined"
-                          size="small"
-                          onClick={() =>
-                            navigate(`/publicacion/${pub.id}`, {
-                              state: { from: "perfil", userId: id },
-                            })
-                          }
-                        >
-                          Ver Detalles
-                        </Button>
-                        <Button
-                          variant="contained"
-                          size="small"
-                          onClick={() =>
-                            navigate(`/publicacion/${pub.id}/editar`)
-                          }
-                          data-testid={`editar-publicacion-${pub.id}`}
-                        >
-                          Editar
-                        </Button>
-                        <Button
-                          variant="outlined"
-                          size="small"
-                          color="error"
-                          onClick={() => handleDeleteClick(pub.id)}
-                          data-testid={`eliminar-publicacion-${pub.id}`}
-                        >
-                          Eliminar
-                        </Button>
-                      </Box>
                       <Chip
-                        label={pub.estado}
-                        color={pub.estado === "Resuelto" ? "success" : "error"}
-                        size="small"
+                        label={pub.tipo}
+                        color={pub.tipo === "Perdido" ? "error" : "success"}
+                        variant="outlined"
+                        size="medium"
+                        sx={{ fontWeight: 600 }}
                       />
+                    </Stack>
+                  </Box>
+
+                  {/* Descripción */}
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mb: 2 }}
+                  >
+                    {pub.descripcion}
+                  </Typography>
+
+                  {/* Info adicional: Lugar, Fecha y botones */}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 3,
+                      p: 2,
+                      backgroundColor: "action.hover",
+                      borderRadius: 0.5,
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Box sx={{ display: "flex", gap: 3, alignItems: "center" }}>
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
+                        <LocationOnIcon
+                          sx={{ fontSize: 20, color: "primary.main" }}
+                        />
+                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                          {pub.lugar}
+                        </Typography>
+                      </Box>
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
+                        <CalendarTodayIcon
+                          sx={{ fontSize: 18, color: "primary.main" }}
+                        />
+                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                          {pub.fecha}
+                        </Typography>
+                      </Box>
                     </Box>
-                  </CardContent>
-                </Card>
-              ))}
-            </Box>
-          )}
-        </Box>
+
+                    {/* Botones de acción */}
+                    <Stack direction="row" spacing={1}>
+                      <Button
+                        variant="contained"
+                        onClick={() =>
+                          navigate(`/publicacion/${pub.id}`, {
+                            state: { from: "perfil", userId: id },
+                          })
+                        }
+                        sx={{
+                          py: 1,
+                          px: 3,
+                          borderRadius: 0.5,
+                          textTransform: "none",
+                          fontSize: "0.95rem",
+                          fontWeight: 600,
+                          boxShadow: "none",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        Ver detalles
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        onClick={() =>
+                          navigate(`/publicacion/${pub.id}/editar`)
+                        }
+                        data-testid={`editar-publicacion-${pub.id}`}
+                        sx={{
+                          py: 1,
+                          px: 3,
+                          borderRadius: 0.5,
+                          textTransform: "none",
+                          fontSize: "0.95rem",
+                          fontWeight: 600,
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        Editar
+                      </Button>
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        onClick={() => handleDeleteClick(pub.id)}
+                        data-testid={`eliminar-publicacion-${pub.id}`}
+                        sx={{
+                          py: 1,
+                          px: 3,
+                          borderRadius: 0.5,
+                          textTransform: "none",
+                          fontSize: "0.95rem",
+                          fontWeight: 600,
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        Eliminar
+                      </Button>
+                    </Stack>
+                  </Box>
+                </CardContent>
+              </Card>
+            ))}
+          </Box>
+        )}
       </Box>
 
       {/* Diálogo de confirmación para eliminar */}
