@@ -177,6 +177,7 @@ const EditarPublicacion: React.FC = () => {
             required
             margin="normal"
             variant="outlined"
+            data-testid="titulo-edit"
           />
 
           <TextField
@@ -190,6 +191,7 @@ const EditarPublicacion: React.FC = () => {
             variant="outlined"
             multiline
             rows={4}
+            data-testid="descripcion-edit"
           />
 
           <TextField
@@ -274,6 +276,7 @@ const EditarPublicacion: React.FC = () => {
               variant="contained"
               color="primary"
               fullWidth
+              data-testid="guardar-cambios-button"
             >
               Guardar Cambios
             </Button>

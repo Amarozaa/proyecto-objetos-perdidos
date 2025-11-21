@@ -22,7 +22,7 @@ Esta carpeta contiene pruebas end-to-end para la aplicación Objetos Perdidos ut
 
 ## Ejecutar Pruebas
 
-Para ejecutar todas las pruebas:
+Para ejecutar todas las pruebas (considere tener el backend y frontend corriendo):
 ```bash
 npm test
 ```
@@ -40,4 +40,4 @@ npm run test:report
 ## Cobertura de Pruebas
 
 - Funcionalidad de login y acceso protegido
-- Operaciones CRUD en publicaciones (Crear, Leer)
+- Operaciones CRUD en publicaciones (Crear, Leer, Editar, Eliminar)

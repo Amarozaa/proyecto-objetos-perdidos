@@ -1,11 +1,13 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Objetos Perdidos App', () => {
+  let userId: string;
+
   test.beforeEach(async ({ page, request }) => {
     // Reset database
     await request.post('http://localhost:3001/api/testing/reset');
     // Create test user
-    await request.post('http://localhost:3001/api/usuarios', {
+    const userResponse = await request.post('http://localhost:3001/api/usuarios', {
       data: {
         nombre: 'Test User',
         email: 'test@example.com',
@@ -13,6 +15,8 @@ test.describe('Objetos Perdidos App', () => {
         telefono: '123456789',
       },
     });
+    const user = await userResponse.json();
+    userId = user.id;
     await page.goto('/');
   });
 
@@ -71,6 +75,51 @@ test.describe('Objetos Perdidos App', () => {
       await page.getByTestId('descripcion').locator('textarea').first().fill('Another test description.');
       await page.getByTestId('publicar-button').click();
       await expect(page.getByText('Another Test Publication')).toBeVisible();
+    });
+
+    test('can edit a publication', async ({ page }) => {
+      // First create a publication
+      await page.goto('/formulario');
+      await page.getByTestId('titulo').locator('input').fill('Publication to Edit');
+      await page.getByTestId('lugar').locator('input').fill('Edit Place');
+      await page.getByTestId('fecha').locator('input').fill('2023-10-03');
+      await page.getByTestId('tipo').click();
+      await page.getByRole('option', { name: 'Perdido' }).click();
+      await page.getByTestId('categoria').click();
+      await page.getByRole('option', { name: 'Electrónicos' }).click();
+      await page.getByTestId('descripcion').locator('textarea').first().fill('Description to edit.');
+      await page.getByTestId('publicar-button').click();
+      await expect(page.getByText('Publication to Edit')).toBeVisible();
+
+      // Go to profile to edit
+      await page.goto(`/perfil/${userId}`);
+      await page.getByText('Publication to Edit').locator('..').locator('..').getByTestId(/editar-publicacion-/).click();
+      await page.getByTestId('titulo-edit').locator('input').fill('Edited Publication');
+      await page.getByTestId('descripcion-edit').locator('textarea').first().fill('Edited description.');
+      await page.getByTestId('guardar-cambios-button').click();
+      await expect(page.getByText('Edited Publication')).toBeVisible();
+    });
+
+    test('can delete a publication', async ({ page }) => {
+      // First create a publication
+      await page.goto('/formulario');
+      await page.getByTestId('titulo').locator('input').fill('Publication to Delete');
+      await page.getByTestId('lugar').locator('input').fill('Delete Place');
+      await page.getByTestId('fecha').locator('input').fill('2023-10-04');
+      await page.getByTestId('tipo').click();
+      await page.getByRole('option', { name: 'Encontrado' }).click();
+      await page.getByTestId('categoria').click();
+      await page.getByRole('option', { name: 'Ropa' }).click();
+      await page.getByTestId('descripcion').locator('textarea').first().fill('Description for deletion.');
+      await page.getByTestId('publicar-button').click();
+      await expect(page.getByText('Publication to Delete')).toBeVisible();
+
+      // Go to profile to delete
+      await page.goto(`/perfil/${userId}`);
+      await page.getByText('Publication to Delete').locator('..').locator('..').getByTestId(/eliminar-publicacion-/).click();
+      await page.getByTestId('confirmar-eliminar-button').click();
+      await expect(page.getByText('Publicación eliminada correctamente')).toBeVisible();
+      await expect(page.getByText('Publication to Delete')).not.toBeVisible();
     });
   });
 });

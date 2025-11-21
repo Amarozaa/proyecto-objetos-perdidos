@@ -93,6 +93,10 @@ Para ejecutar las pruebas end-to-end:
    npm test
    ```
 
+Las pruebas E2E cubren:
+- Login y acceso protegido
+- Operaciones CRUD completas en publicaciones (Crear, Leer, Editar, Eliminar)
+
 Para más detalles, consulta el README en la carpeta `e2etests/`.
 
 ---

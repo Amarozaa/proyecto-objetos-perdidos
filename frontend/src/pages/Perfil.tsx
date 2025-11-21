@@ -225,6 +225,7 @@ const Perfil: React.FC = () => {
                           onClick={() =>
                             navigate(`/publicacion/${pub.id}/editar`)
                           }
+                          data-testid={`editar-publicacion-${pub.id}`}
                         >
                           Editar
                         </Button>
@@ -233,6 +234,7 @@ const Perfil: React.FC = () => {
                           size="small"
                           color="error"
                           onClick={() => handleDeleteClick(pub.id)}
+                          data-testid={`eliminar-publicacion-${pub.id}`}
                         >
                           Eliminar
                         </Button>
@@ -276,6 +278,7 @@ const Perfil: React.FC = () => {
             color="error"
             variant="contained"
             autoFocus
+            data-testid="confirmar-eliminar-button"
           >
             Eliminar
           </Button>
