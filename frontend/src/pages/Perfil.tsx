@@ -18,6 +18,11 @@ import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 import { displayApi } from "../services/api";
 import { usePostStore } from "../stores/postStore";
 import { useUserStore } from "../stores/userStore";
@@ -377,56 +382,58 @@ const Perfil: React.FC = () => {
                     </Box>
 
                     {/* Botones de acción */}
-                    <Stack direction="row" spacing={1}>
-                      <Button
-                        variant="contained"
-                        onClick={() => setSelectedPublicacionId(pub.id)}
-                        sx={{
-                          py: 1,
-                          px: 3,
-                          borderRadius: 0.5,
-                          textTransform: "none",
-                          fontSize: "0.95rem",
-                          fontWeight: 600,
-                          boxShadow: "none",
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        Ver detalles
-                      </Button>
-                      <Button
-                        variant="outlined"
-                        onClick={() => setSelectedPublicacionIdEdit(pub.id)}
-                        data-testid={`editar-publicacion-${pub.id}`}
-                        sx={{
-                          py: 1,
-                          px: 3,
-                          borderRadius: 0.5,
-                          textTransform: "none",
-                          fontSize: "0.95rem",
-                          fontWeight: 600,
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        Editar
-                      </Button>
-                      <Button
-                        variant="outlined"
-                        color="error"
-                        onClick={() => handleDeleteClick(pub.id)}
-                        data-testid={`eliminar-publicacion-${pub.id}`}
-                        sx={{
-                          py: 1,
-                          px: 3,
-                          borderRadius: 0.5,
-                          textTransform: "none",
-                          fontSize: "0.95rem",
-                          fontWeight: 600,
-                          whiteSpace: "nowrap",
-                        }}
-                      >
-                        Eliminar
-                      </Button>
+                    <Stack
+                      direction="row"
+                      spacing={0.5}
+                      sx={{ justifyContent: "flex-end" }}
+                    >
+                      <Tooltip title="Editar">
+                        <IconButton
+                          onClick={() => setSelectedPublicacionIdEdit(pub.id)}
+                          data-testid={`editar-publicacion-${pub.id}`}
+                          sx={{
+                            color: "primary.main",
+                            borderRadius: 0.5,
+                            "&:hover": {
+                              backgroundColor: "action.hover",
+                            },
+                          }}
+                          size="small"
+                        >
+                          <EditIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Ver detalles">
+                        <IconButton
+                          onClick={() => setSelectedPublicacionId(pub.id)}
+                          sx={{
+                            color: "primary.main",
+                            borderRadius: 0.5,
+                            "&:hover": {
+                              backgroundColor: "action.hover",
+                            },
+                          }}
+                          size="small"
+                        >
+                          <VisibilityIcon />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Eliminar">
+                        <IconButton
+                          onClick={() => handleDeleteClick(pub.id)}
+                          data-testid={`eliminar-publicacion-${pub.id}`}
+                          sx={{
+                            color: "error.main",
+                            borderRadius: 0.5,
+                            "&:hover": {
+                              backgroundColor: "error.lighter",
+                            },
+                          }}
+                          size="small"
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
                     </Stack>
                   </Box>
                 </CardContent>
