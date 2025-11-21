@@ -16,6 +16,8 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Alert from "@mui/material/Alert";
 import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import MenuItem from "@mui/material/MenuItem";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import EditIcon from "@mui/icons-material/Edit";
@@ -52,6 +54,9 @@ const Perfil: React.FC = () => {
   >(null);
   const [errorMsg, setErrorMsg] = useState<string>("");
   const [successMsg, setSuccessMsg] = useState<string>("");
+  const [ordenamiento, setOrdenamiento] = useState<"reciente" | "antiguo">(
+    "reciente"
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -224,20 +229,49 @@ const Perfil: React.FC = () => {
 
       {/* Mis publicaciones */}
       <Box>
-        <Typography
-          variant="h5"
+        <Box
           sx={{
-            fontWeight: 700,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
             mb: 3,
-            background: "linear-gradient(45deg, #17635b 30%, #226a63 90%)",
-            backgroundClip: "text",
-            textFillColor: "transparent",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
           }}
         >
-          Mis Publicaciones
-        </Typography>
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: 700,
+              background: "linear-gradient(45deg, #17635b 30%, #226a63 90%)",
+              backgroundClip: "text",
+              textFillColor: "transparent",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
+            Mis Publicaciones
+          </Typography>
+
+          {postsUsuario.length > 0 && (
+            <TextField
+              select
+              label="Ordenar por"
+              value={ordenamiento}
+              onChange={(e) =>
+                setOrdenamiento(e.target.value as "reciente" | "antiguo")
+              }
+              size="small"
+              sx={{
+                minWidth: 180,
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 0.5,
+                },
+              }}
+            >
+              <MenuItem value="reciente">Más recientes</MenuItem>
+              <MenuItem value="antiguo">Más antiguas</MenuItem>
+            </TextField>
+          )}
+        </Box>
 
         {postsUsuario.length === 0 ? (
           <Paper
@@ -255,191 +289,238 @@ const Perfil: React.FC = () => {
             </Typography>
           </Paper>
         ) : (
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {postsUsuario.map((pub) => (
-              <Card
-                key={pub.id}
-                elevation={0}
-                sx={{
-                  border: "1px solid",
-                  borderColor: "divider",
-                  borderRadius: 0.5,
-                  overflow: "hidden",
-                  transition: "border-color 0.3s ease",
-                  "&:hover": {
-                    borderColor:
-                      pub.tipo === "Perdido" ? "error.light" : "success.light",
-                  },
-                }}
-              >
-                {/* Barra superior de color según tipo */}
-                <Box
-                  sx={{
-                    height: 6,
-                    background:
-                      pub.tipo === "Perdido"
-                        ? "linear-gradient(90deg, #f44336 0%, #e91e63 100%)"
-                        : "linear-gradient(90deg, #4caf50 0%, #66bb6a 100%)",
-                  }}
-                />
-
-                <CardContent sx={{ p: 3 }}>
-                  {/* Header con título y chips */}
-                  <Box
+          <>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              {postsUsuario
+                .sort((a, b) => {
+                  const dateA = a.fecha_creacion
+                    ? new Date(a.fecha_creacion).getTime()
+                    : 0;
+                  const dateB = b.fecha_creacion
+                    ? new Date(b.fecha_creacion).getTime()
+                    : 0;
+                  return ordenamiento === "reciente"
+                    ? dateB - dateA
+                    : dateA - dateB;
+                })
+                .map((pub) => (
+                  <Card
+                    key={pub.id}
+                    elevation={0}
                     sx={{
-                      display: "flex",
-                      alignItems: "flex-start",
-                      mb: 2,
-                      gap: 2,
+                      border: "1px solid",
+                      borderColor: "divider",
+                      borderRadius: 0.5,
+                      overflow: "hidden",
+                      transition: "border-color 0.3s ease",
+                      "&:hover": {
+                        borderColor:
+                          pub.tipo === "Perdido"
+                            ? "error.light"
+                            : "success.light",
+                      },
                     }}
                   >
-                    <Box sx={{ flex: 1 }}>
-                      <Typography
-                        variant="h5"
-                        component="h2"
+                    {/* Barra superior de color según tipo */}
+                    <Box
+                      sx={{
+                        height: 6,
+                        background:
+                          pub.tipo === "Perdido"
+                            ? "linear-gradient(90deg, #f44336 0%, #e91e63 100%)"
+                            : "linear-gradient(90deg, #4caf50 0%, #66bb6a 100%)",
+                      }}
+                    />
+
+                    <CardContent sx={{ p: 3 }}>
+                      {/* Header con título, categoría y tipo */}
+                      <Box
                         sx={{
-                          fontWeight: 700,
-                          mb: 1,
-                          color: "text.primary",
+                          display: "flex",
+                          alignItems: "flex-start",
+                          justifyContent: "space-between",
+                          mb: 2,
                         }}
                       >
-                        {pub.titulo}
-                      </Typography>
+                        <Box sx={{ flex: 1 }}>
+                          {/* Título y categoría en la misma línea */}
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 2,
+                              mb: 1,
+                            }}
+                          >
+                            <Typography
+                              variant="h5"
+                              component="h2"
+                              sx={{
+                                fontWeight: 700,
+                                color: "text.primary",
+                              }}
+                            >
+                              {pub.titulo}
+                            </Typography>
+                            <Chip
+                              label={pub.categoria}
+                              color={displayApi.getCategoriaColor(
+                                pub.categoria
+                              )}
+                              size="small"
+                              sx={{ fontWeight: 600 }}
+                            />
+                          </Box>
 
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ mb: 1 }}
+                          >
+                            {pub.fecha_creacion
+                              ? displayApi.formatearFechaAmigable(
+                                  pub.fecha_creacion
+                                )
+                              : "Fecha no disponible"}
+                          </Typography>
+                        </Box>
+
+                        {/* Chip de tipo solo (arriba a la derecha) */}
+                        <Chip
+                          label={pub.tipo}
+                          color={pub.tipo === "Perdido" ? "error" : "success"}
+                          variant="outlined"
+                          size="medium"
+                          sx={{ fontWeight: 600, ml: 2 }}
+                        />
+                      </Box>
+
+                      {/* Descripción */}
                       <Typography
                         variant="body2"
                         color="text.secondary"
-                        sx={{ mb: 1 }}
+                        sx={{ mb: 2 }}
                       >
-                        {pub.fecha_creacion
-                          ? displayApi.formatearFechaAmigable(
-                              pub.fecha_creacion
-                            )
-                          : "Fecha no disponible"}
+                        {pub.descripcion}
                       </Typography>
-                    </Box>
 
-                    {/* Chips de categoría y tipo */}
-                    <Stack direction="row" spacing={1}>
-                      <Chip
-                        label={pub.categoria}
-                        color={displayApi.getCategoriaColor(pub.categoria)}
-                        size="medium"
-                        sx={{ fontWeight: 600 }}
-                      />
-                      <Chip
-                        label={pub.tipo}
-                        color={pub.tipo === "Perdido" ? "error" : "success"}
-                        variant="outlined"
-                        size="medium"
-                        sx={{ fontWeight: 600 }}
-                      />
-                    </Stack>
-                  </Box>
-
-                  {/* Descripción */}
-                  <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{ mb: 2 }}
-                  >
-                    {pub.descripcion}
-                  </Typography>
-
-                  {/* Info adicional: Lugar, Fecha y botones */}
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: 3,
-                      p: 2,
-                      backgroundColor: "action.hover",
-                      borderRadius: 0.5,
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <Box sx={{ display: "flex", gap: 3, alignItems: "center" }}>
+                      {/* Info adicional: Fecha, Lugar y botones */}
                       <Box
-                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                        sx={{
+                          display: "flex",
+                          gap: 3,
+                          p: 2,
+                          backgroundColor: "action.hover",
+                          borderRadius: 0.5,
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                        }}
                       >
-                        <LocationOnIcon
-                          sx={{ fontSize: 20, color: "primary.main" }}
-                        />
-                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                          {pub.lugar}
-                        </Typography>
-                      </Box>
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                      >
-                        <CalendarTodayIcon
-                          sx={{ fontSize: 18, color: "primary.main" }}
-                        />
-                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                          {formatearFechaPersonalizada(pub.fecha)}
-                        </Typography>
-                      </Box>
-                    </Box>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            gap: 3,
+                            alignItems: "center",
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 1,
+                            }}
+                          >
+                            <CalendarTodayIcon
+                              sx={{ fontSize: 18, color: "primary.main" }}
+                            />
+                            <Typography
+                              variant="body2"
+                              sx={{ fontWeight: 500 }}
+                            >
+                              {formatearFechaPersonalizada(pub.fecha)}
+                            </Typography>
+                          </Box>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 1,
+                            }}
+                          >
+                            <LocationOnIcon
+                              sx={{ fontSize: 20, color: "primary.main" }}
+                            />
+                            <Typography
+                              variant="body2"
+                              sx={{ fontWeight: 500 }}
+                            >
+                              {pub.lugar}
+                            </Typography>
+                          </Box>
+                        </Box>
 
-                    {/* Botones de acción */}
-                    <Stack
-                      direction="row"
-                      spacing={0.5}
-                      sx={{ justifyContent: "flex-end" }}
-                    >
-                      <Tooltip title="Editar">
-                        <IconButton
-                          onClick={() => setSelectedPublicacionIdEdit(pub.id)}
-                          data-testid={`editar-publicacion-${pub.id}`}
-                          sx={{
-                            color: "primary.main",
-                            borderRadius: 0.5,
-                            "&:hover": {
-                              backgroundColor: "action.hover",
-                            },
-                          }}
-                          size="small"
+                        {/* Botones de acción */}
+                        <Stack
+                          direction="row"
+                          spacing={0.5}
+                          sx={{ justifyContent: "flex-end" }}
                         >
-                          <EditIcon />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Ver detalles">
-                        <IconButton
-                          onClick={() => setSelectedPublicacionId(pub.id)}
-                          sx={{
-                            color: "primary.main",
-                            borderRadius: 0.5,
-                            "&:hover": {
-                              backgroundColor: "action.hover",
-                            },
-                          }}
-                          size="small"
-                        >
-                          <VisibilityIcon />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Eliminar">
-                        <IconButton
-                          onClick={() => handleDeleteClick(pub.id)}
-                          data-testid={`eliminar-publicacion-${pub.id}`}
-                          sx={{
-                            color: "error.main",
-                            borderRadius: 0.5,
-                            "&:hover": {
-                              backgroundColor: "error.lighter",
-                            },
-                          }}
-                          size="small"
-                        >
-                          <DeleteIcon />
-                        </IconButton>
-                      </Tooltip>
-                    </Stack>
-                  </Box>
-                </CardContent>
-              </Card>
-            ))}
-          </Box>
+                          <Tooltip title="Editar">
+                            <IconButton
+                              onClick={() =>
+                                setSelectedPublicacionIdEdit(pub.id)
+                              }
+                              data-testid={`editar-publicacion-${pub.id}`}
+                              sx={{
+                                color: "primary.main",
+                                borderRadius: 0.5,
+                                "&:hover": {
+                                  backgroundColor: "action.hover",
+                                },
+                              }}
+                              size="small"
+                            >
+                              <EditIcon />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Ver detalles">
+                            <IconButton
+                              onClick={() => setSelectedPublicacionId(pub.id)}
+                              sx={{
+                                color: "primary.main",
+                                borderRadius: 0.5,
+                                "&:hover": {
+                                  backgroundColor: "action.hover",
+                                },
+                              }}
+                              size="small"
+                            >
+                              <VisibilityIcon />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Eliminar">
+                            <IconButton
+                              onClick={() => handleDeleteClick(pub.id)}
+                              data-testid={`eliminar-publicacion-${pub.id}`}
+                              sx={{
+                                color: "error.main",
+                                borderRadius: 0.5,
+                                "&:hover": {
+                                  backgroundColor: "error.lighter",
+                                },
+                              }}
+                              size="small"
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          </Tooltip>
+                        </Stack>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                ))}
+            </Box>
+          </>
         )}
       </Box>
 
