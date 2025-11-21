@@ -24,6 +24,7 @@ import { useUserStore } from "../stores/userStore";
 import { handleApiError } from "../utils/errorHandler";
 import { formatearFechaPersonalizada } from "../utils/dateFormatter";
 import PublicacionDetalleModal from "../components/PublicacionDetalleModal";
+import EditarPublicacionModal from "../components/EditarPublicacionModal";
 
 const Perfil: React.FC = () => {
   const { id } = useParams();
@@ -39,6 +40,9 @@ const Perfil: React.FC = () => {
   const { selectedUser, obtenerUserPorId } = useUserStore();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedPublicacionId, setSelectedPublicacionId] = useState<
+    string | null
+  >(null);
+  const [selectedPublicacionIdEdit, setSelectedPublicacionIdEdit] = useState<
     string | null
   >(null);
   const [errorMsg, setErrorMsg] = useState<string>("");
@@ -392,9 +396,7 @@ const Perfil: React.FC = () => {
                       </Button>
                       <Button
                         variant="outlined"
-                        onClick={() =>
-                          navigate(`/publicacion/${pub.id}/editar`)
-                        }
+                        onClick={() => setSelectedPublicacionIdEdit(pub.id)}
                         data-testid={`editar-publicacion-${pub.id}`}
                         sx={{
                           py: 1,
@@ -502,6 +504,14 @@ const Perfil: React.FC = () => {
           open={!!selectedPublicacionId}
           onClose={() => setSelectedPublicacionId(null)}
           publicacionId={selectedPublicacionId}
+        />
+      )}
+
+      {selectedPublicacionIdEdit && (
+        <EditarPublicacionModal
+          open={!!selectedPublicacionIdEdit}
+          onClose={() => setSelectedPublicacionIdEdit(null)}
+          publicacionId={selectedPublicacionIdEdit}
         />
       )}
     </Container>
