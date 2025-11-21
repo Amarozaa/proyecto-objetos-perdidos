@@ -11,6 +11,8 @@ import InputLabel from "@mui/material/InputLabel";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import Stack from "@mui/material/Stack";
 import type { SelectChangeEvent } from "@mui/material/Select";
 import { authApi } from "../services/api";
 import type { CrearPublicacion } from "../types/types";
@@ -122,147 +124,308 @@ const FormularioPublicacion: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
-      <Paper elevation={3} sx={{ p: 4, borderRadius: 2 }}>
-        <Typography
-          variant="h4"
-          component="h2"
-          gutterBottom
-          sx={{ textAlign: "center" }}
-        >
-          Crea una publicación
-        </Typography>
-        {errorMsg && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {errorMsg}
-            {errorDetails.length > 0 && (
-              <ul style={{ marginTop: "0.5rem", paddingLeft: "1.2rem" }}>
-                {errorDetails.map((detalle, idx) => (
-                  <li key={idx}>{detalle}</li>
-                ))}
-              </ul>
-            )}
-          </Alert>
-        )}
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          sx={{ mt: 2, display: "flex", flexDirection: "column", gap: 3 }}
-        >
-          <TextField
-            fullWidth
-            label="Título"
-            name="titulo"
-            value={formData.titulo}
-            onChange={handleChange}
-            required
-            placeholder="Ej: Mochila negra, billetera, celular..."
-            inputProps={{ maxLength: 100 }}
-            helperText={`${formData.titulo.length}/100 caracteres (mín 3)`}
-            data-testid="titulo"
-          />
-          <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
-            <TextField
-              sx={{ flex: 1, minWidth: 200 }}
-              label="Lugar"
-              name="lugar"
-              value={formData.lugar}
-              onChange={handleChange}
-              required
-              placeholder="¿Dónde se perdió o encontró?"
-              inputProps={{ maxLength: 100 }}
-              helperText={`${formData.lugar.length}/100 caracteres`}
-              data-testid="lugar"
-            />
-            <TextField
-              sx={{ flex: 1, minWidth: 200 }}
-              label="Fecha"
-              name="fecha"
-              type="date"
-              value={formData.fecha}
-              onChange={handleChange}
-              required
-              InputLabelProps={{ shrink: true }}
-              inputProps={{ max: today }}
-              data-testid="fecha"
-            />
-          </Box>
-          <Box sx={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
-            <FormControl sx={{ flex: 1, minWidth: 200 }} required>
-              <InputLabel>Tipo</InputLabel>
-              <Select
-                name="tipo"
-                value={formData.tipo}
-                onChange={handleChange}
-                label="Tipo"
-                data-testid="tipo"
-              >
-                <MenuItem value="Perdido">Perdido</MenuItem>
-                <MenuItem value="Encontrado">Encontrado</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl sx={{ flex: 1, minWidth: 200 }} required>
-              <InputLabel>Categoría</InputLabel>
-              <Select
-                name="categoria"
-                value={formData.categoria}
-                onChange={handleChange}
-                label="Categoría"
-                data-testid="categoria"
-              >
-                <MenuItem value="Electrónicos">Electrónicos</MenuItem>
-                <MenuItem value="Ropa">Ropa</MenuItem>
-                <MenuItem value="Documentos">Documentos</MenuItem>
-                <MenuItem value="Accesorios">Accesorios</MenuItem>
-                <MenuItem value="Deportes">Deportes</MenuItem>
-                <MenuItem value="Útiles">Útiles</MenuItem>
-                <MenuItem value="Otros">Otros</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-          <TextField
-            fullWidth
-            label="Descripción"
-            name="descripcion"
-            value={formData.descripcion}
-            onChange={handleChange}
-            required
-            multiline
-            rows={4}
-            placeholder="Describe el objeto, características, color, marca, etc."
-            inputProps={{ maxLength: 500 }}
-            helperText={`${formData.descripcion.length}/500 caracteres (mín 10)`}
-            data-testid="descripcion"
-          />
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            size="large"
-            fullWidth
-            data-testid="publicar-button"
-          >
-            Publicar
-          </Button>
-        </Box>
-        <Box sx={{ mt: 4, p: 2, bgcolor: "background.paper", borderRadius: 1 }}>
-          <Typography variant="h6" gutterBottom>
-            ¿Qué significa el tipo?
-          </Typography>
-          <Typography component="div">
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Typography
+        variant="h3"
+        component="h1"
+        gutterBottom
+        align="center"
+        sx={{
+          fontWeight: 700,
+          mb: 4,
+          background: "linear-gradient(45deg, #17635b 30%, #226a63 90%)",
+          backgroundClip: "text",
+          textFillColor: "transparent",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+        }}
+      >
+        Crea una publicación
+      </Typography>
+
+      {errorMsg && (
+        <Alert severity="error" sx={{ mb: 3 }}>
+          {errorMsg}
+          {errorDetails.length > 0 && (
             <ul style={{ marginTop: "0.5rem", paddingLeft: "1.2rem" }}>
-              <li>
-                <strong>Perdido:</strong> significa que perdiste un objeto y
-                quieres recuperarlo
-              </li>
-              <li>
-                <strong>Encontrado:</strong> significa que encontraste un objeto
-                y quieres devolverlo
-              </li>
+              {errorDetails.map((detalle, idx) => (
+                <li key={idx}>{detalle}</li>
+              ))}
             </ul>
-          </Typography>
+          )}
+        </Alert>
+      )}
+
+      <Paper
+        elevation={0}
+        sx={{
+          border: "1px solid",
+          borderColor: "divider",
+          borderRadius: 1,
+          overflow: "hidden",
+        }}
+      >
+        {/* Barra superior de color */}
+        <Box
+          sx={{
+            height: 6,
+            background: "linear-gradient(90deg, #17635b 0%, #226a63 100%)",
+          }}
+        />
+
+        <Box component="form" onSubmit={handleSubmit} sx={{ p: 4 }}>
+          <Stack spacing={3}>
+            {/* Título */}
+            <Box>
+              <TextField
+                fullWidth
+                label="Título"
+                name="titulo"
+                value={formData.titulo}
+                onChange={handleChange}
+                required
+                placeholder="Ej: Mochila negra, billetera, celular..."
+                inputProps={{ maxLength: 100 }}
+                helperText={`${formData.titulo.length}/100 caracteres (mín 3)`}
+                data-testid="titulo"
+                variant="outlined"
+              />
+            </Box>
+
+            {/* Lugar y Fecha */}
+            <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+              <TextField
+                sx={{ flex: 1, minWidth: 200 }}
+                label="Lugar"
+                name="lugar"
+                value={formData.lugar}
+                onChange={handleChange}
+                required
+                placeholder="¿Dónde se perdió o encontró?"
+                inputProps={{ maxLength: 100 }}
+                helperText={`${formData.lugar.length}/100 caracteres`}
+                data-testid="lugar"
+                variant="outlined"
+              />
+              <TextField
+                sx={{ flex: 1, minWidth: 200 }}
+                label="Fecha del suceso"
+                name="fecha"
+                type="date"
+                value={formData.fecha}
+                onChange={handleChange}
+                required
+                InputLabelProps={{ shrink: true }}
+                inputProps={{ max: today }}
+                data-testid="fecha"
+                variant="outlined"
+              />
+            </Box>
+
+            {/* Tipo y Categoría */}
+            <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+              <FormControl sx={{ flex: 1, minWidth: 200 }} required>
+                <InputLabel>Tipo</InputLabel>
+                <Select
+                  name="tipo"
+                  value={formData.tipo}
+                  onChange={handleChange}
+                  label="Tipo"
+                  data-testid="tipo"
+                  sx={{
+                    borderRadius: 0.5,
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderRadius: 0.5,
+                    },
+                  }}
+                >
+                  <MenuItem value="Perdido">Perdido</MenuItem>
+                  <MenuItem value="Encontrado">Encontrado</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl sx={{ flex: 1, minWidth: 200 }} required>
+                <InputLabel>Categoría</InputLabel>
+                <Select
+                  name="categoria"
+                  value={formData.categoria}
+                  onChange={handleChange}
+                  label="Categoría"
+                  data-testid="categoria"
+                  sx={{
+                    borderRadius: 0.5,
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      borderRadius: 0.5,
+                    },
+                  }}
+                >
+                  <MenuItem value="Electrónicos">Electrónicos</MenuItem>
+                  <MenuItem value="Ropa">Ropa</MenuItem>
+                  <MenuItem value="Documentos">Documentos</MenuItem>
+                  <MenuItem value="Accesorios">Accesorios</MenuItem>
+                  <MenuItem value="Deportes">Deportes</MenuItem>
+                  <MenuItem value="Útiles">Útiles</MenuItem>
+                  <MenuItem value="Otros">Otros</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+
+            {/* Descripción */}
+            <Box>
+              <TextField
+                fullWidth
+                label="Descripción"
+                name="descripcion"
+                value={formData.descripcion}
+                onChange={handleChange}
+                required
+                multiline
+                rows={5}
+                placeholder="Describe el objeto con detalle: características, color, marca, condición, etc."
+                inputProps={{ maxLength: 500 }}
+                helperText={`${formData.descripcion.length}/500 caracteres (mín 10)`}
+                data-testid="descripcion"
+                variant="outlined"
+              />
+            </Box>
+
+            {/* Botón Publicar */}
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              size="large"
+              fullWidth
+              sx={{
+                py: 1.5,
+                borderRadius: 0.5,
+                textTransform: "none",
+                fontSize: "1rem",
+                fontWeight: 600,
+                boxShadow: "none",
+              }}
+              data-testid="publicar-button"
+            >
+              Publicar
+            </Button>
+          </Stack>
         </Box>
       </Paper>
+
+      {/* Información adicional */}
+      <Card
+        elevation={0}
+        sx={{
+          mt: 4,
+          border: "1px solid",
+          borderColor: "divider",
+          borderRadius: 0.5,
+          overflow: "hidden",
+        }}
+      >
+        <Box
+          sx={{
+            height: 4,
+            background: "linear-gradient(90deg, #17635b 0%, #226a63 100%)",
+          }}
+        />
+        <Box sx={{ p: 3 }}>
+          <Typography
+            variant="h6"
+            gutterBottom
+            align="center"
+            sx={{ fontWeight: 700, mb: 3, color: "text.primary" }}
+          >
+            ¿Qué significa el tipo?
+          </Typography>
+          <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 2 }}>
+            {/* Perdido */}
+            <Box
+              sx={{
+                p: 2.5,
+                border: "1px solid",
+                borderColor: "divider",
+                borderRadius: 0.5,
+                backgroundColor: "action.hover",
+                transition: "all 0.2s ease",
+                "&:hover": {
+                  borderColor: "error.light",
+                  backgroundColor: "rgba(244, 67, 54, 0.05)",
+                },
+              }}
+            >
+              <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}>
+                <Box
+                  sx={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    background:
+                      "linear-gradient(135deg, #f44336 0%, #e91e63 100%)",
+                    mt: 1,
+                    flexShrink: 0,
+                  }}
+                />
+                <Box>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{ fontWeight: 700, mb: 0.5, color: "error.main" }}
+                  >
+                    Perdido
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Usa esta opción si perdiste un objeto y deseas que otros te
+                    ayuden a recuperarlo. Describe el objeto con detalle para
+                    que sea más fácil identificarlo.
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
+
+            {/* Encontrado */}
+            <Box
+              sx={{
+                p: 2.5,
+                border: "1px solid",
+                borderColor: "divider",
+                borderRadius: 0.5,
+                backgroundColor: "action.hover",
+                transition: "all 0.2s ease",
+                "&:hover": {
+                  borderColor: "success.light",
+                  backgroundColor: "rgba(76, 175, 80, 0.05)",
+                },
+              }}
+            >
+              <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}>
+                <Box
+                  sx={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    background:
+                      "linear-gradient(135deg, #4caf50 0%, #66bb6a 100%)",
+                    mt: 1,
+                    flexShrink: 0,
+                  }}
+                />
+                <Box>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{ fontWeight: 700, mb: 0.5, color: "success.main" }}
+                  >
+                    Encontrado
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Usa esta opción si encontraste un objeto y quieres ayudar a
+                    su propietario a recuperarlo. Incluye todos los detalles que
+                    observaste para facilitar la identificación.
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
+      </Card>
     </Container>
   );
 };

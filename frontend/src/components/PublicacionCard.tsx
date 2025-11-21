@@ -30,7 +30,7 @@ const PublicacionCard: React.FC<PublicacionCardProps> = ({
     <Card
       elevation={0}
       sx={{
-        borderRadius: 1,
+        borderRadius: 0.5,
         border: "1px solid",
         borderColor: "divider",
         overflow: "hidden",
