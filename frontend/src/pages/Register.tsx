@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import Container from "@mui/material/Container";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import Alert from "@mui/material/Alert";
 import MuiLink from "@mui/material/Link";
 import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Avatar from "@mui/material/Avatar";
+import SearchIcon from "@mui/icons-material/Search";
 import { useUserStore } from "../stores/userStore";
 import { handleApiError } from "../utils/errorHandler";
 
@@ -57,122 +58,291 @@ const Register: React.FC = () => {
       setErrorMsg(apiError.message);
     }
   };
+
   return (
-    <Container
-      maxWidth="sm"
+    <Box
       sx={{
         display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
         minHeight: "100vh",
         backgroundColor: "background.default",
       }}
     >
-      <Paper
-        elevation={3}
+      {/* Lado izquierdo - Branding */}
+      <Box
         sx={{
-          padding: 3,
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
           textAlign: "center",
-          maxWidth: 400,
-          width: "100%",
+          p: 6,
+          background: "linear-gradient(135deg, #17635b 0%, #226a63 100%)",
+          color: "white",
         }}
       >
-        <Typography variant="h3" component="h1" gutterBottom color="primary">
-          ObjetosUni
-        </Typography>
-        <Typography variant="h5" component="h2" gutterBottom>
-          ¡Regístrate!
-        </Typography>
-        {errorMsg && (
-          <Alert severity="error" sx={{ marginBottom: 2 }}>
-            {errorMsg}
-            {errorDetails.length > 0 && (
-              <Box component="ul" sx={{ mt: 1, pl: 2, textAlign: "left" }}>
-                {errorDetails.map((detalle, idx) => (
-                  <li key={idx}>{detalle}</li>
-                ))}
-              </Box>
-            )}
-          </Alert>
-        )}
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
-          <TextField
-            fullWidth
-            label="Nombre"
-            type="text"
-            name="nombre"
-            value={registerData.nombre}
-            onChange={handleChange}
-            required
-            placeholder="Tu nombre completo"
-            margin="normal"
-            InputLabelProps={{ required: false }}
-          />
-          <TextField
-            fullWidth
-            label="Correo"
-            type="email"
-            name="email"
-            value={registerData.email}
-            onChange={handleChange}
-            required
-            placeholder="ejemplo@correo.com"
-            margin="normal"
-            InputLabelProps={{ required: false }}
-          />
-          <TextField
-            fullWidth
-            label="Teléfono (opcional)"
-            type="tel"
-            name="telefono"
-            value={registerData.telefono}
-            onChange={handleChange}
-            placeholder="Ej: +56912345678"
-            margin="normal"
-          />
-          <TextField
-            fullWidth
-            label="Contraseña"
-            type="password"
-            name="password"
-            value={registerData.password}
-            onChange={handleChange}
-            required
-            placeholder="Mínimo 6 caracteres"
-            margin="normal"
-            InputLabelProps={{ required: false }}
-          />
-          <TextField
-            fullWidth
-            label="Confirmar contraseña"
-            type="password"
-            name="confirm_password"
-            value={registerData.confirm_password}
-            onChange={handleChange}
-            required
-            placeholder="Repite la contraseña"
-            margin="normal"
-            InputLabelProps={{ required: false }}
-          />
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            sx={{ mt: 2, mb: 2 }}
+        <Avatar
+          sx={{
+            width: 100,
+            height: 100,
+            backgroundColor: "rgba(255, 255, 255, 0.2)",
+            mb: 3,
+            fontSize: "3rem",
+          }}
+        >
+          <SearchIcon sx={{ fontSize: "3rem" }} />
+        </Avatar>
+        <Box sx={{ mb: 4 }}>
+          <Typography
+            variant="h2"
+            component="h1"
+            sx={{
+              fontWeight: 700,
+              mb: 2,
+              color: "white",
+            }}
           >
-            Crear cuenta
-          </Button>
-        </Box>
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="body2">
-            ¿Ya tienes cuenta?{" "}
-            <MuiLink component={Link} to="/login" underline="hover">
-              Ingresar
-            </MuiLink>
+            ObjetosUni
+          </Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              fontWeight: 400,
+              color: "rgba(255, 255, 255, 0.9)",
+              maxWidth: 400,
+              lineHeight: 1.6,
+            }}
+          >
+            Únete a nuestra comunidad para ayudar a recuperar y devolver objetos
+            perdidos
           </Typography>
         </Box>
-      </Paper>
-    </Container>
+      </Box>
+
+      {/* Lado derecho - Register Form */}
+      <Box
+        sx={{
+          flex: 1,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          p: 4,
+          overflowY: "auto",
+        }}
+      >
+        <Paper
+          elevation={0}
+          sx={{
+            width: "100%",
+            maxWidth: 400,
+            border: "1px solid",
+            borderColor: "divider",
+            borderRadius: 1,
+            overflow: "hidden",
+          }}
+        >
+          {/* Barra superior de color */}
+          <Box
+            sx={{
+              height: 6,
+              background: "linear-gradient(90deg, #17635b 0%, #226a63 100%)",
+            }}
+          />
+
+          <Box sx={{ p: 4 }}>
+            <Typography
+              variant="h5"
+              component="h2"
+              gutterBottom
+              align="center"
+              sx={{
+                fontWeight: 700,
+                mb: 1,
+              }}
+            >
+              Crear cuenta
+            </Typography>
+            <Typography
+              variant="body2"
+              gutterBottom
+              align="center"
+              sx={{
+                color: "text.secondary",
+                mb: 3,
+              }}
+            >
+              Completa el formulario para registrarte
+            </Typography>
+
+            {errorMsg && (
+              <Box
+                sx={{
+                  mb: 3,
+                  p: 2.5,
+                  border: "1px solid",
+                  borderColor: "error.light",
+                  borderRadius: 0.5,
+                  backgroundColor: "rgba(244, 67, 54, 0.05)",
+                }}
+              >
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "error.main",
+                    fontWeight: 500,
+                  }}
+                >
+                  {errorMsg}
+                </Typography>
+                {errorDetails.length > 0 && (
+                  <Box component="ul" sx={{ mt: 1, pl: 2, mb: 0 }}>
+                    {errorDetails.map((detalle, idx) => (
+                      <li key={idx}>
+                        <Typography
+                          variant="body2"
+                          sx={{ color: "error.main" }}
+                        >
+                          {detalle}
+                        </Typography>
+                      </li>
+                    ))}
+                  </Box>
+                )}
+              </Box>
+            )}
+
+            <Box component="form" onSubmit={handleSubmit}>
+              <Stack spacing={2.5}>
+                <TextField
+                  fullWidth
+                  label="Nombre"
+                  type="text"
+                  name="nombre"
+                  value={registerData.nombre}
+                  onChange={handleChange}
+                  required
+                  placeholder="Tu nombre completo"
+                  variant="outlined"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 0.5,
+                    },
+                  }}
+                />
+                <TextField
+                  fullWidth
+                  label="Correo"
+                  type="email"
+                  name="email"
+                  value={registerData.email}
+                  onChange={handleChange}
+                  required
+                  placeholder="ejemplo@correo.com"
+                  variant="outlined"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 0.5,
+                    },
+                  }}
+                />
+                <TextField
+                  fullWidth
+                  label="Teléfono (opcional)"
+                  type="tel"
+                  name="telefono"
+                  value={registerData.telefono}
+                  onChange={handleChange}
+                  placeholder="Ej: +56912345678"
+                  variant="outlined"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 0.5,
+                    },
+                  }}
+                />
+                <TextField
+                  fullWidth
+                  label="Contraseña"
+                  type="password"
+                  name="password"
+                  value={registerData.password}
+                  onChange={handleChange}
+                  required
+                  placeholder="Mínimo 6 caracteres"
+                  variant="outlined"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 0.5,
+                    },
+                  }}
+                />
+                <TextField
+                  fullWidth
+                  label="Confirmar contraseña"
+                  type="password"
+                  name="confirm_password"
+                  value={registerData.confirm_password}
+                  onChange={handleChange}
+                  required
+                  placeholder="Repite la contraseña"
+                  variant="outlined"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: 0.5,
+                    },
+                  }}
+                />
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  fullWidth
+                  sx={{
+                    py: 1.5,
+                    borderRadius: 0.5,
+                    textTransform: "none",
+                    fontSize: "1rem",
+                    fontWeight: 600,
+                    boxShadow: "none",
+                    mt: 1,
+                  }}
+                >
+                  Crear cuenta
+                </Button>
+              </Stack>
+            </Box>
+
+            <Box
+              sx={{
+                mt: 3,
+                pt: 3,
+                borderTop: "1px solid",
+                borderColor: "divider",
+              }}
+            >
+              <Typography variant="body2" align="center" color="text.secondary">
+                ¿Ya tienes cuenta?{" "}
+                <MuiLink
+                  component={Link}
+                  to="/login"
+                  sx={{
+                    fontWeight: 600,
+                    textDecoration: "none",
+                    color: "primary.main",
+                    "&:hover": {
+                      textDecoration: "underline",
+                    },
+                  }}
+                >
+                  Inicia sesión
+                </MuiLink>
+              </Typography>
+            </Box>
+          </Box>
+        </Paper>
+      </Box>
+    </Box>
   );
 };
 
