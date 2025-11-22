@@ -20,7 +20,7 @@ const app = express();
 mongoose.set("strictQuery", false);
 
 if (config.MONGODB_URI) {
-  mongoose.connect(config.MONGODB_URI).catch((error) => {
+  mongoose.connect(config.MONGODB_URI, { dbName: config.MONGODB_DBNAME }).catch((error) => {
     logger.error("error connecting to MongoDB:", error.message);
   });
 }
@@ -28,8 +28,8 @@ app.use(cors());
 
 
 
-app.use(express.static("dist"));
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use(express.static(path.join(__dirname, '../../dist')));
+app.use('/uploads', express.static(path.join(__dirname, '../../uploads')));
 
 
 app.use(express.json());
@@ -50,9 +50,10 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   if (
     !reqPath.startsWith("/api") &&
     !reqPath.startsWith("/uploads") &&
-    !reqPath.startsWith("/images")
+    !reqPath.startsWith("/images") &&
+    !reqPath.startsWith("/assets")
   ) {
-    res.sendFile(path.join(__dirname, "../../dist/index.html"));
+    res.sendFile(path.join(__dirname, '../../dist/index.html'));
   } else {
     next();
   }

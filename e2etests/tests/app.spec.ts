@@ -22,7 +22,7 @@ test.describe('Objetos Perdidos App', () => {
 
   test('should display login page', async ({ page }) => {
     await expect(page).toHaveTitle(/ObjetosUni/);
-    await expect(page.getByText('¡Ingresa a tu cuenta!')).toBeVisible();
+    await expect(page.getByText('Inicia sesión')).toBeVisible();
   });
 
   test('login succeeds with correct credentials', async ({ page }) => {
@@ -93,7 +93,8 @@ test.describe('Objetos Perdidos App', () => {
 
       // Go to profile to edit
       await page.goto(`/perfil/${userId}`);
-      await page.getByText('Publication to Edit').locator('..').locator('..').getByTestId(/editar-publicacion-/).click();
+      const card = page.locator('div').filter({ hasText: 'Publication to Edit' });
+      await card.getByTestId(/editar-publicacion-/).click();
       await page.getByTestId('titulo-edit').locator('input').fill('Edited Publication');
       await page.getByTestId('descripcion-edit').locator('textarea').first().fill('Edited description.');
       await page.getByTestId('guardar-cambios-button').click();
@@ -116,7 +117,8 @@ test.describe('Objetos Perdidos App', () => {
 
       // Go to profile to delete
       await page.goto(`/perfil/${userId}`);
-      await page.getByText('Publication to Delete').locator('..').locator('..').getByTestId(/eliminar-publicacion-/).click();
+      const cardDelete = page.locator('div').filter({ hasText: 'Publication to Delete' });
+      await cardDelete.getByTestId(/eliminar-publicacion-/).click();
       await page.getByTestId('confirmar-eliminar-button').click();
       await expect(page.getByText('Publicación eliminada correctamente')).toBeVisible();
       await expect(page.getByText('Publication to Delete')).not.toBeVisible();

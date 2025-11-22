@@ -11,6 +11,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogActions from "@mui/material/DialogActions";
+import SearchIcon from "@mui/icons-material/Search";
 import { useUserStore } from "../stores/userStore";
 
 const Navbar: React.FC = () => {
@@ -67,11 +68,7 @@ const Navbar: React.FC = () => {
                   "&:hover": { backgroundColor: "transparent" },
                 }}
               >
-                <img
-                  src="/images/local/buscar.png"
-                  alt="Logo"
-                  style={{ width: 36, height: 36 }}
-                />
+                <SearchIcon sx={{ fontSize: "2.25rem" }} />
               </IconButton>
               <Typography
                 variant="h5"
