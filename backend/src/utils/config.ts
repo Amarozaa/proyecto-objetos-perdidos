@@ -1,5 +1,9 @@
 import dotenv from "dotenv";
-dotenv.config();
+if (process.env.NODE_ENV === 'test') {
+  dotenv.config({ path: '.env.test' });
+} else {
+  dotenv.config();
+}
 
 const PORT = process.env.PORT;
 const HOST = process.env.HOST || "localhost";
