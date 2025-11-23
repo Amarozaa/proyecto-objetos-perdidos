@@ -1,4 +1,10 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useLocation,
+  Navigate,
+} from "react-router-dom";
 import ListadoObjetosPerdidos from "./pages/ListadoObjetosPerdidos";
 import FormularioPublicacion from "./pages/FormularioPublicacion";
 import Navbar from "./pages/Navbar";
@@ -18,15 +24,13 @@ function App() {
 function MainRoutes() {
   const location = useLocation();
   const hideNavbar =
-    location.pathname === "/" ||
-    location.pathname === "/login" ||
-    location.pathname === "/register";
+    location.pathname === "/login" || location.pathname === "/register";
 
   return (
     <>
       {!hideNavbar && <Navbar />}
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route
