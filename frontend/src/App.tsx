@@ -11,6 +11,7 @@ import Navbar from "./pages/Navbar";
 import Perfil from "./pages/Perfil";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 
 function App() {
@@ -23,8 +24,14 @@ function App() {
 
 function MainRoutes() {
   const location = useLocation();
+  const isAuthenticated = !!localStorage.getItem("user");
+
   const hideNavbar =
-    location.pathname === "/login" || location.pathname === "/register";
+    location.pathname === "/login" ||
+    location.pathname === "/register" ||
+    (!isAuthenticated &&
+      location.pathname !== "/login" &&
+      location.pathname !== "/register");
 
   return (
     <>
@@ -57,6 +64,7 @@ function MainRoutes() {
             </ProtectedRoute>
           }
         />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );
