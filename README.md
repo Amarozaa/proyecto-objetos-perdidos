@@ -64,6 +64,8 @@ Se utiliza React Router para la navegación, donde tenemos las siguientes rutas:
 
 **Rutas protegidas**: Las rutas `/publicaciones`, `/formulario` y `/perfil/:id` están protegidas mediante el componente `ProtectedRoute` que verifica si el usuario está autenticado. Si no lo está, redirige a `/login`.
 
+**Manejo de rutas no encontradas**: Cualquier ruta que no exista en la aplicación muestra una página 404 personalizada. Si el usuario no está autenticado, se muestra solo la página 404. Si está autenticado, se muestra la página 404 junto con la navbar para mantener la navegación accesible.
+
 **Comportamiento de la Navbar**: La barra de navegación se oculta en las rutas `/login` y `/register` para tener una interfaz limpia.
 
 
