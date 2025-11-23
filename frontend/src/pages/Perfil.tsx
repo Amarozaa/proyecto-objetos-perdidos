@@ -386,14 +386,24 @@ const Perfil: React.FC = () => {
                           </Typography>
                         </Box>
 
-                        {/* Chip de tipo solo (arriba a la derecha) */}
-                        <Chip
-                          label={pub.tipo}
-                          color={pub.tipo === "Perdido" ? "error" : "success"}
-                          variant="outlined"
-                          size="medium"
-                          sx={{ fontWeight: 600, ml: 2 }}
-                        />
+                        {/* Chips de tipo y estado */}
+                        <Box sx={{ display: "flex", gap: 1, ml: 2 }}>
+                          <Chip
+                            label={pub.tipo}
+                            color={pub.tipo === "Perdido" ? "error" : "success"}
+                            variant="outlined"
+                            size="medium"
+                            sx={{ fontWeight: 600 }}
+                          />
+                          {pub.estado === "Resuelto" && (
+                            <Chip
+                              label="Resuelto"
+                              color="primary"
+                              size="medium"
+                              sx={{ fontWeight: 600 }}
+                            />
+                          )}
+                        </Box>
                       </Box>
 
                       {/* Descripción */}

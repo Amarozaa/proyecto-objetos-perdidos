@@ -31,6 +31,9 @@ const ListadoObjetosPerdidos: React.FC = () => {
 
   const publicacionesFiltradas = posts
     .filter((pub) => {
+      // Ocultar publicaciones resueltas en el listado general
+      if (pub.estado === "Resuelto") return false;
+
       if (filter === "Todos") return true;
       return pub.tipo === filter;
     })
