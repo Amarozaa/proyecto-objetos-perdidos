@@ -126,7 +126,7 @@ const FormularioPublicacion: React.FC = () => {
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <Typography
-        variant="h3"
+        variant="h4"
         component="h1"
         gutterBottom
         align="center"
