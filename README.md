@@ -1,5 +1,9 @@
 # Proyecto - Aplicaciones Web Reactivas
-
+## Integrantes
+- Amaro Zurita A.
+- Marco Martínez S.
+- Pedro Escobar L.
+- Rocio Farías
 ## Índice
 - [Descripción](#descripción)
 - [Estado Global](#estado-global)
